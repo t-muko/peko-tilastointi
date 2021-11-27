@@ -4,13 +4,13 @@ import './App.css';
 // Firebase stuff
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-
-import { signInWithRedirect } from "firebase/auth";
+import { getAuth, GoogleAuthProvider } from "firebase/auth";
+// signInWithPopup
+import { signInWithRedirect, signInWithPopup } from "firebase/auth";
 
 // Material-ui
 import * as React from 'react';
-import ReactDOM from 'react-dom';
+// import ReactDOM from 'react-dom';
 import Button from '@mui/material/Button';
 
 
@@ -29,13 +29,13 @@ const firebaseConfig = {
 // Initialize Firebase
 
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+// const analytics = getAnalytics(app);
 const provider = new GoogleAuthProvider();
 const auth = getAuth();
 
 function autentikoi() {
-  //signInWithPopup(auth, provider)
-  signInWithRedirect(auth, provider)
+  signInWithPopup(auth, provider)
+  // signInWithRedirect(auth, provider)
     .then((result) => {
       // This gives you a Google Access Token. You can use it to access the Google API.
       const credential = GoogleAuthProvider.credentialFromResult(result);

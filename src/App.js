@@ -1,12 +1,25 @@
 import logo from './logo.svg';
 import './App.css';
 
+import * as firebaseApp from 'firebase/app';
+import 'firebase/firestore';
+import { initFirestorter } from 'firestorter';
+
+
 // Firebase stuff
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 // signInWithPopup
 import { signInWithRedirect, signInWithPopup } from "firebase/auth";
+
+import { getFirestore } from "firebase/firestore";
+import { collection, query, where, getDocs } from "firebase/firestore";
+
+
+// mobx
+import { makeObservable, observable, action } from "mobx"
+
 
 // Material-ui
 import * as React from 'react';
@@ -32,10 +45,11 @@ const app = initializeApp(firebaseConfig);
 // const analytics = getAnalytics(app);
 const provider = new GoogleAuthProvider();
 const auth = getAuth();
+const db = getFirestore();
 
 function autentikoi() {
   signInWithPopup(auth, provider)
-  // signInWithRedirect(auth, provider)
+    // signInWithRedirect(auth, provider)
     .then((result) => {
       // This gives you a Google Access Token. You can use it to access the Google API.
       const credential = GoogleAuthProvider.credentialFromResult(result);
@@ -55,8 +69,34 @@ function autentikoi() {
       const credential = GoogleAuthProvider.credentialFromError(error);
       // ...
     });
-
 }
+
+function haeYhdistykset() {
+  
+
+  var myquery = collection('yhdistykset')
+    .limit(50);
+
+  // this.getDocumentsInQuery(query, renderer);
+  myquery.onSnapshot(function (snapshot) {
+    // if (!snapshot.size) return renderer.empty(); // Display "There are no restaurants".
+    if (!snapshot.size) {
+      console.debug("Tyhjä joukko")
+      return
+    } else {
+      snapshot.docChanges().forEach(function (change) {
+        if (change.type === 'removed') {
+          console.debug("poisto", change.doc)
+        } else {
+          console.debug("muutos", change.doc)
+        }
+      })
+    }
+  });
+
+};
+
+
 function App() {
   return (
     <div className="App">
@@ -74,9 +114,15 @@ function App() {
           Learn React
         </a>
         <Button variant="contained" onClick={() => {
-    autentikoi();
-  }}
-  >Hello World</Button>
+          autentikoi();
+        }}
+        >Hello World</Button>
+
+        <Button variant="contained" onClick={() => {
+          haeYhdistykset();
+        }}
+        >Hae</Button>
+
       </header>
     </div>
   );

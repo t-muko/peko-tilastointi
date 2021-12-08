@@ -4,7 +4,6 @@
   "private": true,
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.16.0",
-    "@babel/plugin-proposal-decorators": "^7.16.4",
     "@emotion/react": "^11.7.0",
     "@emotion/styled": "^11.6.0",
     "@mui/material": "^5.2.1",
@@ -17,6 +16,7 @@
     "firebase-tools": "^9.23.0",
     "firestorter": "^3.1.0",
     "mobx": "^6.3.8",
+    "mobx-react": "^7.2.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "4.0.3",

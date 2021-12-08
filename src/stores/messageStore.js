@@ -1,25 +1,32 @@
 import { makeObservable, observable, action, computed } from 'mobx';
 
 class MessageStore {
-  @observable messages = null;
-  @observable limit = 5;
+  messages = null;
+  limit = 5;
 
   constructor(rootStore) {
-    makeObservable(this)
+    makeObservable(this, {
+      messages: observable,
+      limit: observable,
+      setMessages: action,
+      setLimit: action,
+      messageList: computed
+    })
     this.rootStore = rootStore;
   }
-/*
-  @action 
+
+  //@action 
   setMessages = messages => {
     this.messages = messages;
   };
 
-  @action 
+  //@action 
   setLimit = limit => {
     this.limit = limit;
   };
-*/
-  @computed get messageList() {
+
+  // @computed 
+  get messageList() {
     return Object.keys(this.messages || {}).map(key => ({
       ...this.messages[key],
       uid: key,

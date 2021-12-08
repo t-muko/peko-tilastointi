@@ -1,29 +1,36 @@
 import { makeObservable, observable, action, computed } from 'mobx';
 
 class UserStore {
-  @observable users = null;
+  // @observable 
+  users = null;
 
   constructor(rootStore) {
-    makeObservable(this)
+    makeObservable(this, {
+      users: observable,
+      setUsers: action,
+      setUser: action,
+      userList: computed
+    })
     this.rootStore = rootStore;
   }
 
-  @action 
+  //@action 
   setUsers = users => {
     this.users = users;
   };
 
-  /*
-  @action 
+  
+  //@action 
   setUser = (user, uid) => {
     if (!this.users) {
       this.users = {};
     }
 
     this.users[uid] = user;
-  };*/
+  };
 
-  @computed get userList() {
+  // @computed 
+  get userList() {
     return Object.keys(this.users || {}).map(key => ({
       ...this.users[key],
       uid: key,

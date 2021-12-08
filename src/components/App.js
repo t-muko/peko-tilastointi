@@ -1,5 +1,4 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from '../logo.svg';
 
 import * as firebaseApp from 'firebase/app';
 import 'firebase/firestore';
@@ -18,7 +17,7 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 
 
 // mobx
-import { makeObservable, observable, action } from "mobx"
+// import { makeObservable, observable, action } from "mobx"
 
 
 // Material-ui

@@ -1,14 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+import './App.css';
+import { Provider } from 'mobx-react';
+
+import store from './stores';
+
+import App from './components/App';
 import reportWebVitals from './reportWebVitals';
 
 if (!new class { x }().hasOwnProperty('x')) throw new Error('Transpiler is not configured correctly');
 
 ReactDOM.render(
   <React.StrictMode>
+    <Provider {...store}>
     <App />
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );

@@ -8,15 +8,20 @@ import store from './stores';
 
 import App from './components/App';
 import reportWebVitals from './reportWebVitals';
+import Firebase, { FirebaseContext } from './components/Firebase';
 
 // if (!new class { x }().hasOwnProperty('x')) throw new Error('Transpiler is not configured correctly');
 
 ReactDOM.render(
+  
   <React.StrictMode>
     <Provider {...store}>
+    <FirebaseContext.Provider value={new Firebase()}>
     <App />
+    </FirebaseContext.Provider>
     </Provider>
-  </React.StrictMode>,
+  </React.StrictMode>
+  ,
   document.getElementById('root')
 );
 

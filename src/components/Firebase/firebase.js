@@ -1,6 +1,10 @@
-import * as firebaseApp from 'firebase/app';
+// import * as firebase from 'firebase/app';
+// import firebase from "firebase";
+// v9 compat packages are API compatible with v8 code
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
 import 'firebase/firestore';
-import { initFirestorter } from 'firestorter';
 import { collection, doc, query, where, getDoc, getDocs, onSnapshot } from "firebase/firestore";
 
 
@@ -15,6 +19,13 @@ import { signInWithRedirect, signInWithPopup } from "firebase/auth";
 
 import { getFirestore } from "firebase/firestore";
 
+
+import { initFirestorter } from 'firestorter';
+import { Collection, Document } from 'firestorter';
+
+
+import { struct } from "superstruct";
+
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
     apiKey: "AIzaSyCd5Cg_EC7k2dEM2v2AYH72q5JQqq-6Oxw",
@@ -25,16 +36,21 @@ const firebaseConfig = {
     appId: "1:1051905962064:web:e69f8452dc9e53d5e5a155",
     measurementId: "G-PL4VL06TTN"
 };
-
+firebase.initializeApp(firebaseConfig);
+// initFirestorter({ firebase });
 
 class Firebase {
     constructor() {
         // app.initializeApp(config);
         console.debug("Initialize Firebase")
-        this.app = initializeApp(firebaseConfig);
+        this.app = firebase.initializeApp(firebaseConfig);
         // const analytics = getAnalytics(app);
         this.provider = new GoogleAuthProvider();
         this.auth = getAuth(this.app);
+        // this.db = getFirestore(this.app);
+
+        // initFirestorter({ firebase });
+        
 
         onAuthStateChanged(this.auth, user => { console.debug("Auth change", user) });
 
@@ -74,15 +90,24 @@ class Firebase {
             });
     }
 
-    haeYhdistykset() {
-        var db = getFirestore(this.app);
+    async haeYhdistykset() {
+        /*var db = getFirestore(this.app);
         getDoc(doc(db, 'yhdistykset/1w1mbDJ8xfmofOrzkvGH')).then(
             (yhtdoc) => {
                 console.debug("Yhdistykset", yhtdoc.id, yhtdoc.data())
             }
-        )
+        )*/
+/*
+        const todos = new Collection('todos');
+        const user = new Document('todos/8273872***');
 
-
+        const doc = await todos.add({
+            finished: false,
+            text: 'new task'
+          });
+          console.log(doc.id, user);*/
+        
+/*
         const q = query(collection(db, "yhdistykset"), where("lyhenne", "==", "PPK"));
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
             const cities = [];
@@ -90,7 +115,7 @@ class Firebase {
                 cities.push(doc.data().name);
             });
             console.log("Current cities in CA: ", cities.join(", "));
-        });
+        });*/
 
         /*collection(db, 'yhdistykset')
             .where("lyhenne", "==", "PPK")
@@ -113,5 +138,6 @@ class Firebase {
 
     }
 }
+
 
 export default Firebase;

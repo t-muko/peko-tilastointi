@@ -1,0 +1,104 @@
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { observer } from 'mobx-react';
+import Checkbox from 'material-ui/Checkbox';
+import TextField from 'material-ui/TextField';
+import Divider from 'material-ui/Divider';
+import FlatButton from 'material-ui/FlatButton';
+import DeleteIcon from 'material-ui/svg-icons/action/delete';
+import EditIcon from '@mui/icons-material/Edit';
+import Paper from 'material-ui/Paper';
+import ReeniItem from '../ReeniItem';
+import { makeObservable, observable, action, computed } from 'mobx';
+
+
+const styles = {
+	container: {
+		display: 'flex',
+		flexDirection: 'column'
+	},
+	row: {
+		display: 'flex',
+		flexDirection: 'row',
+		alignItems: 'center'
+	},
+	checkbox: {
+		marginLeft: 16,
+		width: 40
+	},
+	input: {
+		flex: 1
+	},
+	icon: {
+		marginRight: 6
+	}
+};
+
+class ReeniListItem extends Component {
+	static propTypes = {
+		reeni: PropTypes.any
+	};
+
+	_editing = false
+
+	constructor(props) {
+		super(props)
+		makeObservable(this, {
+			_editing: observable
+		})
+	}
+
+	render() {
+		const { item } = this.props;
+		const { pvm, kategoria, tunnit, alakategoria, kommentti } = item.data;
+
+		console.log('ReeniItem.render: ', item.path, pvm, kategoria, tunnit);
+		return (
+			<div>
+				{this._editing && <ReeniItem key={item.id + 'edit'} item={item} closeF={this.onClose} />}
+				<Paper zDepth={1}>
+					<div style={styles.row}>
+						<div style={styles.input}>
+							{pvm || ''}
+						</div>
+						
+						<div style={styles.input}>
+							{tunnit || ''} h
+						</div>
+						<div style={styles.input}>
+							{kategoria || ''}
+						</div>
+						<FlatButton
+							style={styles.icon}
+							icon={<EditIcon />}
+							secondary
+							onClick={this.onPressEdit} />
+
+					</div>
+					<Divider />
+				</Paper>
+			</div>
+		);
+	}
+
+	onClose = () => {
+		this._editing = false
+	}
+
+	onPressEdit = async () => {
+		console.debug("Edit mode", this)
+		const { item } = this.props;
+		if (this._editing) return;
+		this._editing = true;
+		/*try {
+			// await todo.delete();
+			this._editing = false;
+		}
+		catch (err) {
+			this._editing = false;
+		}*/
+	};
+
+}
+
+export default observer(ReeniListItem);

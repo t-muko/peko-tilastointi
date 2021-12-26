@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import {observer} from 'mobx-react';
-import {todos} from '../../stores/todoStore';
+import {reenit} from '../../stores/reeniStore';
 // import FlipMove from 'react-flip-move';
 import CircularProgress from 'material-ui/CircularProgress';
 import Checkbox from 'material-ui/Checkbox';
-import TodoItem from '../TodoItem';
+import ReeniListItem from '../ReeniListItem';
 
 const styles = {
 	container: {
@@ -37,7 +37,7 @@ const styles = {
 	}
 };
 
-const Todos = observer(class Todos extends Component {
+const Reenit = observer(class Reenit extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -48,7 +48,7 @@ const Todos = observer(class Todos extends Component {
 	render() {
 		const {disabled} = this.state;
 		if (disabled) {
-			console.log('Todos.render, disabled');
+			console.log('Reenit.render, disabled');
 			return (
 				<div>
 					<div style={styles.header}>
@@ -61,23 +61,17 @@ const Todos = observer(class Todos extends Component {
 				</div>
 			);
 		}
-		const {docs, query} = todos;
-		const children = docs.map((todo) => <TodoItem key={todo.id} todo={todo} />);
+		const {docs, query} = reenit;
+		const children = docs.map((reeni) => <ReeniListItem key={reeni.id} item={reeni} />);
+		const yhteensa = docs.map((reeni) => reeni.data.tunnit || 0).reduce((a, b) => a + b, 0)
 		// console.debug("Docs: ", children)
-		const {isLoading} = todos;
-		console.log('Todos.render, isLoading: ', isLoading);
+		console.debug("Yhteensä", yhteensa)
+
+		const {isLoading} = reenit;
+		console.log('Reenit.render, isLoading: ', isLoading);
 		return (
 			<div style={styles.container}>
-				<div style={styles.header}>
-					<Checkbox
-						label='Hide finished'
-						checked={query ? true : false}
-						onCheck={this.onCheckShowOnlyUnfinished} />
-					{/* <Checkbox
-						label='Disable observe'
-						checked={disabled}
-						onCheck={this.onCheckDisable} />*/}
-				</div>
+				
 				<div style={styles.content} className='mobile-margins'>
 					
 						{children}
@@ -89,11 +83,11 @@ const Todos = observer(class Todos extends Component {
 	}
 
 	onCheckShowOnlyUnfinished = () => {
-		if (todos.query) {
-			todos.query = undefined;
+		if (reenit.query) {
+			reenit.query = undefined;
 		}
 		else {
-			todos.query = todos.ref.where('finished', '==', false).limit(10);
+			reenit.query = reenit.ref.where('finished', '==', false).limit(10);
 		}
 	};
 
@@ -104,4 +98,4 @@ const Todos = observer(class Todos extends Component {
 	}
 });
 
-export default Todos;
+export default Reenit;

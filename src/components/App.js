@@ -6,12 +6,15 @@ import React, { Component } from 'react';
 // import ReactDOM from 'react-dom';
 import Button from '@mui/material/Button';
 import { FirebaseContext } from './Firebase';
-import Todos from './Todos'
-import { todos } from '../stores/todoStore';
+// import Todos from './Todos'
+// import { todos } from '../stores/todoStore';
+import { reenit } from '../stores/reeniStore';
+
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import ContentAddIcon from 'material-ui/svg-icons/content/add';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
+import Reenit from './Reenit';
 
 
 const styles = {
@@ -66,23 +69,20 @@ class App extends Component {
               <header className="App-header">
                 
                 <Button variant="contained" onClick={() => {
-                  firebase2.autentikoi();
+                  console.debug("Autentikoiraan")
+				  firebase2.autentikoi();
                 }}
-                >Hello World</Button>
+                >Login</Button>
 
-                <Button variant="contained" onClick={() => {
-                  firebase2.haeYhdistykset();
-                }}
-                >Hae</Button>
+                
                 <div style={styles.container}>
 					<div style={styles.header}>
 						<div style={styles.headerRow}>
-							<img src={logo} alt='logo' style={styles.logo} />
-							<h1 style={styles.h1}>Firestorter Todo</h1>
+							<img src='https://pirkanmaanpelastuskoirat.fi/images/ppk-logo3.png' alt='logo' style={styles.logo} />
+							<h1 style={styles.h1}>Reenipäiväkirja</h1>
 						</div>
-						<h3 style={styles.h3}>Firestore & React, using MobX</h3>
 					</div>
-					<Todos />
+					<Reenit />
 					<FloatingActionButton style={styles.add} onClick={this.onPressAdd}>
 						<ContentAddIcon />
 					</FloatingActionButton>
@@ -99,9 +99,11 @@ class App extends Component {
 
   onPressAdd = async () => {
     try {
-      await todos.add({
-        finished: false,
-        text: ''
+      await reenit.add({
+        pvm: (new Date()).getFullYear()+'-'+((new Date()).getMonth()+1)+'-'+(new Date()).getDate(),
+        tunnit: 1,
+		kommentti: '',
+		kategoria: ''
       });
     }
     catch (err) {

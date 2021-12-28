@@ -25,7 +25,7 @@ import { initFirestorter } from 'firestorter';
 import { Collection, Document } from 'firestorter';
 
 
-import { struct } from "superstruct";
+// import { struct } from "superstruct";
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {

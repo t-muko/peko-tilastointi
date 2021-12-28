@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { observer } from 'mobx-react';
-import Checkbox from 'material-ui/Checkbox';
-// import TextField from 'material-ui/TextField';
 import { TextField } from "@mui/material";
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -70,9 +68,10 @@ class ReeniItem extends Component {
 								<MobileDatePicker
 									label="Date mobile"
 									inputFormat="MM/dd/yyyy"
-									value={new Date()}
+									value={pvm}
 									onChange={(e) => {
 										console.log("Date", e)
+
 									}}
 									renderInput={(params) => <TextField id={this.id + "foo"} {...params} />}
 								/>
@@ -103,10 +102,11 @@ class ReeniItem extends Component {
 									<Select
 										labelId="kategoria-label"
 										id={this.id +"kategoria-select"}
-										value={kategoria}
+										value={kategoria || "Ei kategoriaa"}
 										label="Kategoria"
 										onChange={this.onKategoriaChange}
 									>
+										<MenuItem value={'Ei kategoriaa'}>Ei kategoriaa</MenuItem>
 										<MenuItem value={'Jälki'}>Jälki</MenuItem>
 										<MenuItem value={'Partsa'}>Partsa</MenuItem>
 										<MenuItem value={'Ilmavainu'}>Ilmavainu</MenuItem>

@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { observer } from 'mobx-react';
-import Checkbox from 'material-ui/Checkbox';
-import TextField from 'material-ui/TextField';
-import Divider from 'material-ui/Divider';
+import { Paper, Divider } from '@mui/material';
+
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
-import Paper from 'material-ui/Paper';
+
 import ReeniItem from '../ReeniItem';
 import { makeObservable, observable, action, computed } from 'mobx';
 

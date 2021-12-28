@@ -7,7 +7,7 @@ import 'firebase/firestore';
 import { initFirestorter } from 'firestorter';
 import { Collection, Document } from 'firestorter';
 
-import { define } from "superstruct";
+// import { define } from "superstruct";
 
 
 const firebaseConfig = {

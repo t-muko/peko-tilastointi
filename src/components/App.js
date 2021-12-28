@@ -1,7 +1,5 @@
 import logo from '../logo.svg';
 
-// Material-ui
-// import * as React from 'react';
 import React, { Component } from 'react';
 // import ReactDOM from 'react-dom';
 import Button from '@mui/material/Button';
@@ -12,12 +10,12 @@ import { reenit } from '../stores/reeniStore';
 
 import {observer} from "mobx-react";
 
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import lightBaseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
+import { ThemeProvider, createTheme } from '@mui/material/styles'; // v1.x
 
-import ContentAddIcon from 'material-ui/svg-icons/content/add';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
+import FloatingActionButton from '@mui/material/Fab';
+import ContentAddIcon from '@mui/icons-material/Add';
+
+
 import Reenit from './Reenit';
 
 
@@ -64,7 +62,8 @@ const styles = {
 	}
 };
 
-const muiTheme = getMuiTheme(lightBaseTheme);
+// const muiTheme = getMuiTheme(lightBaseTheme);
+const muiTheme = createTheme()
 
 // function App() {
 class App extends Component {
@@ -78,7 +77,6 @@ class App extends Component {
 	render() {
 		console.debug("App render user", this.context.rootStore.sessionStore.authUser)
 		return (
-			<MuiThemeProvider muiTheme={muiTheme}>
 				<FirebaseContext.Consumer>
 					{context => {
 						return <div className="App">
@@ -114,7 +112,6 @@ class App extends Component {
 						</div>
 					}}
 				</FirebaseContext.Consumer>
-			</MuiThemeProvider>
 
 		);
 	}

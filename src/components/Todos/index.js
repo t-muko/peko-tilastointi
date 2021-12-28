@@ -3,7 +3,7 @@ import {observer} from 'mobx-react';
 import {todos} from '../../stores/todoStore';
 // import FlipMove from 'react-flip-move';
 import CircularProgress from 'material-ui/CircularProgress';
-import Checkbox from 'material-ui/Checkbox';
+// import Checkbox from 'material-ui/Checkbox';
 import TodoItem from '../TodoItem';
 
 const styles = {

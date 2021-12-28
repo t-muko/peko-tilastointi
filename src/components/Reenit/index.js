@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import {observer} from 'mobx-react';
 import {reenit} from '../../stores/reeniStore';
 // import FlipMove from 'react-flip-move';
-import CircularProgress from 'material-ui/CircularProgress';
-import Checkbox from 'material-ui/Checkbox';
+import { CircularProgress, Checkbox  } from "@mui/material";
 import ReeniListItem from '../ReeniListItem';
 
 const styles = {

@@ -54,7 +54,7 @@ class ReeniListItem extends Component {
 		return (
 			<div>
 				{this._editing && <ReeniItem key={item.id + 'edit'} item={item} closeF={this.onClose} />}
-				<Paper zDepth={1}>
+				<Paper>
 					<div style={styles.row}>
 						<div style={styles.input}>
 							{pvm || ''}
@@ -68,7 +68,6 @@ class ReeniListItem extends Component {
 						</div>
 						<IconButton
 							style={styles.icon}
-							secondary
 							onClick={this.onPressEdit} >
 								<EditIcon />
 								</IconButton>

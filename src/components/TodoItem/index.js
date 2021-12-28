@@ -43,7 +43,7 @@ class TodoItem extends Component {
 
 		console.log('TodoItem.render: ', todo.path, ', text: ', text);
 		return (
-			<Paper zDepth={1}>
+			<Paper>
 				<div style={styles.row}>
 					<Checkbox
 						style={styles.checkbox}
@@ -58,7 +58,6 @@ class TodoItem extends Component {
 						value={text || ''} />
 					<IconButton
 						style={styles.icon}
-						secondary
 						onClick={this.onPressDelete} >
 						<DeleteIcon />
 						</IconButton>

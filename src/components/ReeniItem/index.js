@@ -19,6 +19,7 @@ import DateAdapter from '@mui/lab/AdapterMoment';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import MobileDatePicker from '@mui/lab/MobileDatePicker';
+import moment from 'moment';
 
 const styles = {
 	container: {
@@ -65,13 +66,15 @@ class ReeniItem extends Component {
 					<Box sx={{ flexGrow: 1 }}>
 						<Grid container spacing={3} p={2} minHeight='200px'>
 							<Grid item xs={4}>
+							<InputLabel id="date-label">Päivämäärä</InputLabel>
+
 								<MobileDatePicker
-									label="Date mobile"
+									labelId="date-label"
 									inputFormat="MM/dd/yyyy"
 									value={pvm}
 									onChange={(e) => {
-										console.log("Date", e)
-
+										console.log("Date", moment(e).format('YYYY-MM-DD'));
+										this.onPvmChange(moment(e).format('YYYY-MM-DD'))
 									}}
 									renderInput={(params) => <TextField id={this.id + "foo"} {...params} />}
 								/>
@@ -121,11 +124,12 @@ class ReeniItem extends Component {
 								<TextField
 									id={item.id+"textfield"}
 									style={styles.input}
-									multiline="true"
+									multiline
+									fullWidth
+									label={"Muistiinpanot"}
           							rows={5}
 									variant={"filled"}
 									underlineShow={false}
-									hintText={kommentti ? undefined : 'Omat kommentit. Miten reeni meni?'}
 									onChange={this.onTextChange}
 									value={kommentti || ''} />
 							</Grid>
@@ -133,7 +137,6 @@ class ReeniItem extends Component {
 							<Grid item xs={1}>
 								<IconButton
 									style={styles.icon}
-									secondary
 									onClick={this.onPressDelete} >
 										<DeleteIcon />
 										</IconButton>
@@ -165,10 +168,17 @@ class ReeniItem extends Component {
 		});
 	};
 
-	onTextChange = async (event, newValue) => {
+	onTextChange = async (event) => {
 		const { item } = this.props;
 		await item.update({
-			kommentti: newValue
+			kommentti: event.target.value
+		});
+	};
+
+	onPvmChange = async (event) => {
+		const { item } = this.props;
+		await item.update({
+			pvm: event
 		});
 	};
 

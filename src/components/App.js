@@ -97,14 +97,15 @@ class App extends Component {
 									</div>}
 									
 								</div>
-								<Button variant="contained" onClick={() => {
+								{!context.rootStore.sessionStore.authUser && <Button variant="contained" onClick={() => {
 										context.rootStore.firebase.autentikoi();
 									}}
-									>Login</Button>
-									<Button variant="contained" onClick={() => {
+									>Login</Button>}
+								
+								{context.rootStore.sessionStore.authUser &&	<Button variant="contained" onClick={() => {
 										context.rootStore.firebase.logout();
 									}}
-									>Logout</Button>
+									>Logout</Button>}
 
 							</header>
 							

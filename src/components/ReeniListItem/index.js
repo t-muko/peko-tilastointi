@@ -4,8 +4,7 @@ import { observer } from 'mobx-react';
 import Checkbox from 'material-ui/Checkbox';
 import TextField from 'material-ui/TextField';
 import Divider from 'material-ui/Divider';
-import FlatButton from 'material-ui/FlatButton';
-import DeleteIcon from 'material-ui/svg-icons/action/delete';
+import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import Paper from 'material-ui/Paper';
 import ReeniItem from '../ReeniItem';
@@ -68,11 +67,12 @@ class ReeniListItem extends Component {
 						<div style={styles.input}>
 							{kategoria || ''}
 						</div>
-						<FlatButton
+						<IconButton
 							style={styles.icon}
-							icon={<EditIcon />}
 							secondary
-							onClick={this.onPressEdit} />
+							onClick={this.onPressEdit} >
+								<EditIcon />
+								</IconButton>
 
 					</div>
 					<Divider />

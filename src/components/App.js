@@ -14,9 +14,13 @@ import {observer} from "mobx-react";
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import lightBaseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
+
 import ContentAddIcon from 'material-ui/svg-icons/content/add';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import Reenit from './Reenit';
+
+
 
 // import { useStores } from '../hooks/use-stores'
 
@@ -60,7 +64,7 @@ const styles = {
 	}
 };
 
-const muiTheme = getMuiTheme();
+const muiTheme = getMuiTheme(lightBaseTheme);
 
 // function App() {
 class App extends Component {
@@ -75,7 +79,6 @@ class App extends Component {
 		console.debug("App render user", this.context.rootStore.sessionStore.authUser)
 		return (
 			<MuiThemeProvider muiTheme={muiTheme}>
-
 				<FirebaseContext.Consumer>
 					{context => {
 						return <div className="App">
@@ -86,7 +89,6 @@ class App extends Component {
 											<img src='https://pirkanmaanpelastuskoirat.fi/images/ppk-logo3.png' alt='logo' style={styles.logo} />
 											<h1 style={styles.h1}>Reenipäiväkirja</h1>
 										</div>
-
 									</div>
 									{context.rootStore.sessionStore.authUser && <div>
 										<h3>{context.rootStore.sessionStore.authUser.displayName}</h3>
@@ -107,6 +109,8 @@ class App extends Component {
 									>Logout</Button>
 
 							</header>
+							
+
 						</div>
 					}}
 				</FirebaseContext.Consumer>

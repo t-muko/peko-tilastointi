@@ -2,11 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { observer } from 'mobx-react';
 import Checkbox from 'material-ui/Checkbox';
-import TextField from 'material-ui/TextField';
-import Divider from 'material-ui/Divider';
-import FlatButton from 'material-ui/FlatButton';
-import DeleteIcon from 'material-ui/svg-icons/action/delete';
-import Paper from 'material-ui/Paper';
+// import TextField from 'material-ui/TextField';
+import { TextField } from "@mui/material";
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 
@@ -59,6 +58,7 @@ class ReeniItem extends Component {
 		console.log('TodoItem.render: ', item.path, ', kommentti: ', kommentti);
 		return (
 			<LocalizationProvider dateAdapter={AdapterDateFns}>
+
 				<Dialog onClose={() => {
 					// console.debug("Closing");
 					this.props.closeF()
@@ -72,7 +72,7 @@ class ReeniItem extends Component {
 									inputFormat="MM/dd/yyyy"
 									value={new Date()}
 									onChange={(e) => {
-										console.log("Date", e.target.value)
+										console.log("Date", e)
 									}}
 									renderInput={(params) => <TextField id={this.id + "foo"} {...params} />}
 								/>
@@ -82,7 +82,7 @@ class ReeniItem extends Component {
 									<InputLabel id="demo-simple-select-label">Kesto</InputLabel>
 									<Select
 										labelId="demo-simple-select-label"
-										id="demo-simple-select"
+										id={this.id +"demo-simple-select"}
 										value={tunnit || 1}
 										label="Kesto"
 										onChange={this.onKestoChange}
@@ -102,7 +102,7 @@ class ReeniItem extends Component {
 									<InputLabel id="kategoria-label">Kategoria</InputLabel>
 									<Select
 										labelId="kategoria-label"
-										id="kategoria-select"
+										id={this.id +"kategoria-select"}
 										value={kategoria}
 										label="Kategoria"
 										onChange={this.onKategoriaChange}
@@ -118,13 +118,12 @@ class ReeniItem extends Component {
 							</Grid>
 
 							<Grid item xs={12}>
-
 								<TextField
-									id={item.id}
+									id={item.id+"textfield"}
 									style={styles.input}
-									multiline
+									multiline="true"
           							rows={5}
-									  variant="filled"
+									variant={"filled"}
 									underlineShow={false}
 									hintText={kommentti ? undefined : 'Omat kommentit. Miten reeni meni?'}
 									onChange={this.onTextChange}
@@ -132,11 +131,12 @@ class ReeniItem extends Component {
 							</Grid>
 
 							<Grid item xs={1}>
-								<FlatButton
+								<IconButton
 									style={styles.icon}
-									icon={<DeleteIcon />}
 									secondary
-									onClick={this.onPressDelete} />
+									onClick={this.onPressDelete} >
+										<DeleteIcon />
+										</IconButton>
 							</Grid>
 						</Grid>
 					</Box>

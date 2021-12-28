@@ -3,10 +3,12 @@ import PropTypes from 'prop-types';
 import {observer} from 'mobx-react';
 import Checkbox from 'material-ui/Checkbox';
 import TextField from 'material-ui/TextField';
+
+// KESKEN!
 import Divider from 'material-ui/Divider';
-import FlatButton from 'material-ui/FlatButton';
-import DeleteIcon from 'material-ui/svg-icons/action/delete';
-import Paper from 'material-ui/Paper';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import Paper from '@mui/material/Paper';
 
 const styles = {
 	container: {
@@ -54,11 +56,12 @@ class TodoItem extends Component {
 						hintText={text ? undefined : 'What needs to be done?'}
 						onChange={this.onTextChange}
 						value={text || ''} />
-					<FlatButton
+					<IconButton
 						style={styles.icon}
-						icon={<DeleteIcon />}
 						secondary
-						onClick={this.onPressDelete} />
+						onClick={this.onPressDelete} >
+						<DeleteIcon />
+						</IconButton>
 				</div>
 				<Divider />
 			</Paper>

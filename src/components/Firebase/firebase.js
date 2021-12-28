@@ -6,6 +6,7 @@ import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 import 'firebase/firestore';
 import { collection, doc, query, where, getDoc, getDocs, onSnapshot } from "firebase/firestore";
+// import rootStore from '../../stores'
 
 
 // Firebase stuff
@@ -15,7 +16,7 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth, onAuthStateChanged, GoogleAuthProvider } from "firebase/auth";
 // signInWithPopup
-import { signInWithRedirect, signInWithPopup } from "firebase/auth";
+import { signInWithRedirect, signInWithPopup, signOut } from "firebase/auth";
 
 import { getFirestore } from "firebase/firestore";
 
@@ -40,7 +41,7 @@ firebase.initializeApp(firebaseConfig);
 // initFirestorter({ firebase });
 
 class Firebase {
-    constructor() {
+    constructor(rootStore) {
         // app.initializeApp(config);
         console.debug("Initialize Firebase")
         this.app = firebase.initializeApp(firebaseConfig);
@@ -50,9 +51,12 @@ class Firebase {
         // this.db = getFirestore(this.app);
 
         // initFirestorter({ firebase });
-        
 
-        onAuthStateChanged(this.auth, user => { console.debug("Auth change", user) });
+        this.rootStore = rootStore;
+
+        onAuthStateChanged(this.auth, user => { 
+            this.rootStore.sessionStore.setAuthUser(user)
+            console.debug("Auth change", user) });
 
         /*const q = query(collection(this.db, "yhdistykset"))
         const querySnapshot = getDocs(q);
@@ -88,6 +92,10 @@ class Firebase {
                 const credential = GoogleAuthProvider.credentialFromError(error);
                 // ...
             });
+    }
+
+    logout() {
+        signOut(this.auth)
     }
 
     async haeYhdistykset() {

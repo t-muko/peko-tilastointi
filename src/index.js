@@ -4,22 +4,23 @@ import './index.css';
 import './App.css';
 import { Provider } from 'mobx-react';
 
-import store from './stores';
+import rootStore from './stores';
 
 import App from './components/App';
 import reportWebVitals from './reportWebVitals';
-import Firebase, { FirebaseContext } from './components/Firebase';
+// import Firebase, { FirebaseContext } from './components/Firebase';
+import { FirebaseContext } from './components/Firebase';
 
 // if (!new class { x }().hasOwnProperty('x')) throw new Error('Transpiler is not configured correctly');
 
 ReactDOM.render(
   
   <React.StrictMode>
-    <Provider {...store}>
-    <FirebaseContext.Provider value={new Firebase()}>
+
+    <FirebaseContext.Provider value={{ rootStore: rootStore}}>
     <App />
     </FirebaseContext.Provider>
-    </Provider>
+
   </React.StrictMode>
   ,
   document.getElementById('root')

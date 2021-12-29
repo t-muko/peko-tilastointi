@@ -27,4 +27,7 @@ const reenit = new Collection("reenit", {
 	createDocument: (source, options) => new Document(source, options)
 });
 
+reenit.query = (ref) => ref.orderBy('pvm', 'desc');
+
+
 export { reenit };

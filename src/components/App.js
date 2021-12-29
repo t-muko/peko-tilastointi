@@ -56,9 +56,14 @@ const styles = {
 		marginRight: 10
 	},
 	add: {
-		position: 'absolute',
+		position: 'fixed',
 		bottom: 20,
 		right: 20
+	},
+	login: {
+		position: 'fixed',
+		bottom: 20,
+		left: 30
 	}
 };
 
@@ -97,12 +102,12 @@ class App extends Component {
 									</div>}
 									
 								</div>
-								{!context.rootStore.sessionStore.authUser && <Button variant="contained" onClick={() => {
+								{!context.rootStore.sessionStore.authUser && <Button  style={styles.login} variant="contained" onClick={() => {
 										context.rootStore.firebase.autentikoi();
 									}}
 									>Login</Button>}
 								
-								{context.rootStore.sessionStore.authUser &&	<Button variant="contained" onClick={() => {
+								{context.rootStore.sessionStore.authUser &&	<Button style={styles.login} variant="contained" onClick={() => {
 										context.rootStore.firebase.logout();
 									}}
 									>Logout</Button>}
@@ -121,7 +126,7 @@ class App extends Component {
 		try {
 			await reenit.add({
 				pvm: (new Date()).getFullYear() + '-' + ((new Date()).getMonth() + 1) + '-' + (new Date()).getDate(),
-				tunnit: 1,
+				tunnit: 0,
 				kommentti: '',
 				kategoria: ''
 			});

@@ -61,7 +61,7 @@ class ReeniListItem extends Component {
 						</div>
 						
 						<div style={styles.input}>
-							{tunnit || ''} h
+							{tunnit ? tunnit + ' h' : ''}
 						</div>
 						<div style={styles.input}>
 							{kategoria || ''}

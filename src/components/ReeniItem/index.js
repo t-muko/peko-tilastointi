@@ -72,6 +72,8 @@ class ReeniItem extends Component {
 									labelId="date-label"
 									inputFormat="MM/dd/yyyy"
 									value={pvm}
+									minDate={new Date("12/01/2021")}
+									maxDate={new Date("12/31/2031")}									
 									onChange={(e) => {
 										console.log("Date", moment(e).format('YYYY-MM-DD'));
 										this.onPvmChange(moment(e).format('YYYY-MM-DD'))
@@ -85,10 +87,11 @@ class ReeniItem extends Component {
 									<Select
 										labelId="demo-simple-select-label"
 										id={this.id +"demo-simple-select"}
-										value={tunnit || 1}
+										value={tunnit }
 										label="Kesto"
 										onChange={this.onKestoChange}
 									>
+										<MenuItem value={0}> </MenuItem>
 										<MenuItem value={0.5}>0,5h</MenuItem>
 										<MenuItem value={1}>1h</MenuItem>
 										<MenuItem value={1.5}>1,5h</MenuItem>
@@ -129,7 +132,6 @@ class ReeniItem extends Component {
 									label={"Muistiinpanot"}
           							rows={5}
 									variant={"filled"}
-									underlineShow={false}
 									onChange={this.onTextChange}
 									value={kommentti || ''} />
 							</Grid>

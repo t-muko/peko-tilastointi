@@ -11,6 +11,7 @@
 # production
 /build
 /publish
+/.firebase/hosting*
 
 # misc
 .DS_Store

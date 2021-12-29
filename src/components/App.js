@@ -17,7 +17,7 @@ import ContentAddIcon from '@mui/icons-material/Add';
 
 
 import Reenit from './Reenit';
-
+import Tilasto from './Tilasto';
 
 
 // import { useStores } from '../hooks/use-stores'
@@ -97,11 +97,14 @@ class App extends Component {
 									</div>
 									{context.rootStore.sessionStore.authUser && <div>
 										<h3>{context.rootStore.sessionStore.authUser.displayName}</h3>
+										<Tilasto />
+			
 										<Reenit />
 										<FloatingActionButton style={styles.add} onClick={this.onPressAdd}>
 											<ContentAddIcon />
 										</FloatingActionButton>
 									</div>}
+
 									
 								</div>
 								{!context.rootStore.sessionStore.authUser && <Button  style={styles.login} variant="contained" onClick={() => {

@@ -130,7 +130,9 @@ class App extends Component {
 				pvm: (new Date()).getFullYear() + '-' + ((new Date()).getMonth() + 1) + '-' + (new Date()).getDate(),
 				tunnit: 0,
 				kommentti: '',
-				kategoria: ''
+				kategoria: '',
+				yhdistys: 'PPK',
+				koira: 'Ei koiraa'
 			});
 		}
 		catch (err) {

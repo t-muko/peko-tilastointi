@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import { makeObservable, observable, action, computed } from 'mobx';
 import { FirebaseContext } from '../Firebase';
 
-import { reenit } from '../../stores/reeniStore';
+// import { reenit } from '../../stores/reeniStore';
 import { tilastot } from '../../stores/tilastoFirebase'
 import { Collection, Document } from 'firestorter';
 
@@ -50,6 +50,7 @@ const Reenit = observer(class Reenit extends Component {
 
 	_expand = false
 	yhteensa = null
+	reenit = null
 
 	static contextType = FirebaseContext
 
@@ -57,12 +58,14 @@ const Reenit = observer(class Reenit extends Component {
 	constructor(props) {
 		super(props);
 		makeObservable(this, {
-			_expand: observable
+			_expand: observable,
+			reenit: observable
 		})
 
 		this.state = {
 			disabled: false
 		};
+
 
 		//this.onAddTilasto()
 	}
@@ -73,32 +76,35 @@ const Reenit = observer(class Reenit extends Component {
 		// this.setState({ profile: context.profile });
 		this.uid = context.rootStore.sessionStore.authUser.uid
 		console.debug("uid", this.uid)
+		 
 	}
 
 	render() {
+		console.debug("Collection path", this.context.rootStore.reeniFirestore.reenit.path)
 		const { disabled } = this.state;
-		if (disabled) {
-			console.log('Reenit.render, disabled');
+		const context = this.context
+		this.reenit  = this.context.rootStore.reeniFirestore.reenit
+		const reenit = this.reenit
+		if (!context.rootStore.sessionStore.userOk ) {
+			console.log('Reenit.render, disabled. Bad path/user');
 			return (
 				<div>
 					<div style={styles.header}>
 						<div />
-						<Checkbox
-							label='Disable observe'
-							checked={disabled}
-							onCheck={this.onCheckDisable} />
+						
 					</div>
 				</div>
 			);
-		}
-		const { docs, query } = reenit;
+		} else {
+			console.log("Reenit render enabled", reenit.path, reenit)
+		const { docs, query, isLoading } = reenit;
 		const children = docs.map((reeni) => <ReeniListItem key={reeni.id} item={reeni} expand={this._expand} />);
 		this.yhteensa = docs.map((reeni) => reeni.data.tunnit || 0).reduce((a, b) => a + b, 0)
 		this.onAddTilasto()
 		// console.debug("Docs: ", children)
 		console.debug("Yhteensä", this.yhteensa)
 
-		const { isLoading } = reenit;
+		// const { isLoading } = this.reenit;
 		console.log('Reenit.render, isLoading: ', isLoading);
 		return (
 			<div style={styles.container}>
@@ -116,15 +122,15 @@ const Reenit = observer(class Reenit extends Component {
 				</div>
 				{isLoading ? <div style={styles.loader}><CircularProgress /></div> : undefined}
 			</div>
-		);
+		);}
 	}
 
 	onCheckShowOnlyUnfinished = () => {
-		if (reenit.query) {
-			reenit.query = undefined;
+		if (this.reenit.query) {
+			this.reenit.query = undefined;
 		}
 		else {
-			reenit.query = reenit.ref.where('finished', '==', false).limit(10);
+			this.reenit.query = this.reenit.ref.where('finished', '==', false).limit(10);
 		}
 	};
 

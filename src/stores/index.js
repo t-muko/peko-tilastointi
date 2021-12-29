@@ -3,6 +3,7 @@ import UserStore from './userStore';
 import MessageStore from './messageStore';
 import React from 'react'
 import Firebase from '../components/Firebase';
+import ReeniFireStorter from './reeniStore';
 
 class RootStore {
   constructor() {
@@ -10,6 +11,7 @@ class RootStore {
     // this.userStore = new UserStore(this);
     this.messageStore = new MessageStore(this);
     this.firebase = new Firebase(this);
+    this.reeniFirestore = new ReeniFireStorter(this)
   }
 }
 

@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import { makeObservable, observable, action, computed } from 'mobx';
 import { FirebaseContext } from '../Firebase';
 
-import { reenit } from '../../stores/reeniStore';
+// import { reenit } from '../../stores/reeniStore';
 import { tilastot } from '../../stores/tilastoFirebase'
 import { Collection, Document } from 'firestorter';
 
@@ -38,11 +38,11 @@ const styles = {
 	}
 };
 
-const Tilasto = observer(class Reenit extends Component {
+const Tilasto = observer(class Tilasto extends Component {
 
 	yhteensa = null
 
-//	static contextType = FirebaseContext
+	static contextType = FirebaseContext
 
 	constructor(props) {
 		super(props);
@@ -52,17 +52,19 @@ const Tilasto = observer(class Reenit extends Component {
 */
 	}
 
-/*	componentDidMount() {
+	componentDidMount() {
+		console.debug("<Tilasto> mounted")
 		const context = this.context;
 	}
-*/
+
 	render() {
+		console.debug("Tilastot render")
 	
 		const tilastoDocs = tilastot.docs;
 		console.debug("Tilastodocs", tilastoDocs)
 		// const kaikki_yhteensa = tilastoDocs.map((tilasto) => {console.debug("data", tilasto.data); tilasto.data.totalH || 0}).reduce((a, b) => a + b, 0)
 		
-		const { docs } = reenit;
+		const { docs } = this.context.rootStore.reeniFirestore.reenit;
 		console.debug("reenidocs", docs)
 		
 		const omat_yhteensa = docs.map((reeni) => reeni.data.tunnit || 0).reduce((a, b) => a + b, 0)

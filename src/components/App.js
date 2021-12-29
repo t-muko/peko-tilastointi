@@ -6,7 +6,7 @@ import Button from '@mui/material/Button';
 import { FirebaseContext } from './Firebase';
 // import Todos from './Todos'
 // import { todos } from '../stores/todoStore';
-import { reenit } from '../stores/reeniStore';
+// import { reenit } from '../stores/reeniStore';
 
 import {observer} from "mobx-react";
 
@@ -95,11 +95,12 @@ class App extends Component {
 											<h1 style={styles.h1}>Reenipäiväkirja</h1>
 										</div>
 									</div>
-									{context.rootStore.sessionStore.authUser && <div>
-										<h3>{context.rootStore.sessionStore.authUser.displayName}</h3>
-										<Tilasto />
-			
+									{context.rootStore.sessionStore.userOk && <div>
+										<h3>{context.rootStore.sessionStore.authUser.email}</h3>
+										
+										<Tilasto /> 
 										<Reenit />
+										
 										<FloatingActionButton style={styles.add} onClick={this.onPressAdd}>
 											<ContentAddIcon />
 										</FloatingActionButton>
@@ -107,12 +108,12 @@ class App extends Component {
 
 									
 								</div>
-								{!context.rootStore.sessionStore.authUser && <Button  style={styles.login} variant="contained" onClick={() => {
+								{!context.rootStore.sessionStore.userOk && <Button  style={styles.login} variant="contained" onClick={() => {
 										context.rootStore.firebase.autentikoi();
 									}}
 									>Login</Button>}
 								
-								{context.rootStore.sessionStore.authUser &&	<Button style={styles.login} variant="contained" onClick={() => {
+								{context.rootStore.sessionStore.userOk &&	<Button style={styles.login} variant="contained" onClick={() => {
 										context.rootStore.firebase.logout();
 									}}
 									>Logout</Button>}
@@ -127,19 +128,30 @@ class App extends Component {
 		);
 	}
 
+	componentDidMount() {
+		const context = this.context;
+		//It will get the data from context, and put it into the state.
+		// this.setState({ profile: context.profile });
+		this.uid = context.rootStore.sessionStore.authUser ? context.rootStore.sessionStore.authUser.uid : null
+		console.debug("uid", this.uid)
+	}
+
 	onPressAdd = async () => {
 		try {
-			await reenit.add({
+			console.debug("lisataan", this.context.rootStore.reeniFirestore.reenit.path)
+			await this.context.rootStore.reeniFirestore.reenit.add({
 				pvm: (new Date()).getFullYear() + '-' + ((new Date()).getMonth() + 1) + '-' + (new Date()).getDate(),
 				tunnit: 0,
 				kommentti: '',
 				kategoria: '',
-				yhdistys: 'PPK',
-				koira: 'Ei koiraa'
+				koira: 'Ei koiraa',
+				uid: this.context.rootStore.sessionStore.authUser.uid
 			});
 		}
 		catch (err) {
 			// TODO
+
+			console.debug("Virhe lisäyksessä", err)
 		}
 	};
 }

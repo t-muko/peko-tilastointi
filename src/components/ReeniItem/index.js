@@ -54,7 +54,7 @@ class ReeniItem extends Component {
 
 	render() {
 		const { item } = this.props;
-		const { pvm, kategoria, tunnit, alakategoria, kommentti, koira, yhdistys } = item.data;
+		const { pvm, kategoria, tunnit, alakategoria, kommentti, koira } = item.data;
 
 		// console.log('TodoItem.render: ', item.path, ', kommentti: ', kommentti);
 		return (
@@ -67,7 +67,7 @@ class ReeniItem extends Component {
 
 					<Box sx={{ flexGrow: 1 }}>
 						<Grid container spacing={3} p={2} minHeight='200px'>
-							<Grid item xs={4}>
+							<Grid item xs={6}>
 							<InputLabel id="date-label">Päivämäärä</InputLabel>
 
 								<MobileDatePicker
@@ -84,7 +84,7 @@ class ReeniItem extends Component {
 								/>
 							</Grid>
 
-							<Grid item xs={4}>
+							<Grid item xs={6}>
 									<InputLabel id="demo-simple-select-label">Kesto</InputLabel>
 									<Select
 										labelId="demo-simple-select-label"
@@ -105,7 +105,7 @@ class ReeniItem extends Component {
 									</Select>
 							</Grid>
 
-							<Grid item xs={4}>
+							<Grid item xs={6}>
 									<InputLabel id="kategoria-label">Kategoria</InputLabel>
 									<Select
 										labelId="kategoria-label"
@@ -125,7 +125,7 @@ class ReeniItem extends Component {
 									</Select>
 							</Grid>
 
-							<Grid item xs={4}>
+							<Grid item xs={6}>
 									<InputLabel id="koira-label">Koira</InputLabel>
 									<Select
 										labelId="koira-label"
@@ -139,21 +139,6 @@ class ReeniItem extends Component {
 										<MenuItem value={'Kakkoskoira'}>Kakkoskoira</MenuItem>
 										<MenuItem value={'Joku muu'}>Joku muu</MenuItem>
 										
-									</Select>
-							</Grid>
-
-							<Grid item xs={4}>
-									<InputLabel id="yhdistys-label">Yhdistys</InputLabel>
-									<Select
-										labelId="yhdistys-label"
-										id={this.id +"yhdistys-select"}
-										value={yhdistys || ""}
-										label="Yhdistys"
-										onChange={this.onYhdistysChange}
-									>
-										<MenuItem value={''}>Testi</MenuItem>
-										<MenuItem value={'PPK'}>PPK</MenuItem>
-										<MenuItem value={'KKK'}>KKK</MenuItem>
 									</Select>
 							</Grid>
 

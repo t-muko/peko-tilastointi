@@ -88,10 +88,7 @@ class ReeniListItem extends Component {
 						<Typography variant="body1" gutterBottom style={styles.preline} >
 							{kommentti || ''}
 						</Typography>
-					
-						<Typography variant="body1" gutterBottom  style={styles.input}>
-							{yhdistys || ''}
-						</Typography>
+	
 
 					</div>}
 

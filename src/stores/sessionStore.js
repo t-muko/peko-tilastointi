@@ -17,6 +17,11 @@ class SessionStore {
     this.authUser = authUser;
   };
   
+  get userOk() {
+    return (this.authUser && this.authUser.uid && this.rootStore.reeniFirestore.path != "reenit/anonyymi/reenit") 
+  }
+
+
 }
 
 export default SessionStore;

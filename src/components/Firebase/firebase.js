@@ -24,6 +24,7 @@ import { getFirestore } from "firebase/firestore";
 import { initFirestorter } from 'firestorter';
 import { Collection, Document } from 'firestorter';
 
+// import { reenit } from '../../stores/reeniStore';
 
 // import { struct } from "superstruct";
 
@@ -56,7 +57,12 @@ class Firebase {
 
         onAuthStateChanged(this.auth, user => { 
             this.rootStore.sessionStore.setAuthUser(user)
-            console.debug("Auth change", user) });
+            console.debug("Auth change", user) 
+            const uid = this.rootStore.sessionStore.authUser ? this.rootStore.sessionStore.authUser.uid : "anonyymi"
+            console.debug("Store uid", uid)
+            this.rootStore.reeniFirestore.reenit.path = "reenit/"+uid+"/reenit"
+            this.rootStore.reeniFirestore.changePath("reenit/"+uid+"/reenit")
+        });
 
         /*const q = query(collection(this.db, "yhdistykset"))
         const querySnapshot = getDocs(q);

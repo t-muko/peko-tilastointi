@@ -52,9 +52,9 @@ class ReeniItem extends Component {
 
 	render() {
 		const { item } = this.props;
-		const { pvm, kategoria, tunnit, alakategoria, kommentti } = item.data;
+		const { pvm, kategoria, tunnit, alakategoria, kommentti, koira, yhdistys } = item.data;
 
-		console.log('TodoItem.render: ', item.path, ', kommentti: ', kommentti);
+		// console.log('TodoItem.render: ', item.path, ', kommentti: ', kommentti);
 		return (
 			<LocalizationProvider dateAdapter={AdapterDateFns}>
 
@@ -75,7 +75,7 @@ class ReeniItem extends Component {
 									minDate={new Date("12/01/2021")}
 									maxDate={new Date("12/31/2031")}									
 									onChange={(e) => {
-										console.log("Date", moment(e).format('YYYY-MM-DD'));
+										// console.log("Date", moment(e).format('YYYY-MM-DD'));
 										this.onPvmChange(moment(e).format('YYYY-MM-DD'))
 									}}
 									renderInput={(params) => <TextField id={this.id + "foo"} {...params} />}
@@ -123,6 +123,38 @@ class ReeniItem extends Component {
 									</Select>
 							</Grid>
 
+							<Grid item xs={4}>
+									<InputLabel id="koira-label">Koira</InputLabel>
+									<Select
+										labelId="koira-label"
+										id={this.id +"koira-select"}
+										value={koira || "Ei koiraa" }
+										label="Koira"
+										onChange={this.onKoiraChange}
+									>
+										<MenuItem value={'Ei koiraa'}>Ei koiraa</MenuItem>
+										<MenuItem value={'Ykköskoira'}>Ykköskoira</MenuItem>
+										<MenuItem value={'Kakkoskoira'}>Kakkoskoira</MenuItem>
+										<MenuItem value={'Joku muu'}>Joku muu</MenuItem>
+										
+									</Select>
+							</Grid>
+
+							<Grid item xs={4}>
+									<InputLabel id="yhdistys-label">Yhdistys</InputLabel>
+									<Select
+										labelId="yhdistys-label"
+										id={this.id +"yhdistys-select"}
+										value={yhdistys || ""}
+										label="Yhdistys"
+										onChange={this.onYhdistysChange}
+									>
+										<MenuItem value={''}>Testi</MenuItem>
+										<MenuItem value={'PPK'}>PPK</MenuItem>
+										<MenuItem value={'KKK'}>KKK</MenuItem>
+									</Select>
+							</Grid>
+
 							<Grid item xs={12}>
 								<TextField
 									id={item.id+"textfield"}
@@ -132,8 +164,8 @@ class ReeniItem extends Component {
 									label={"Muistiinpanot"}
           							rows={5}
 									variant={"filled"}
-									onChange={this.onTextChange}
-									value={kommentti || ''} />
+									onBlur={this.onTextChange}
+									defaultValue={kommentti || ''} />
 							</Grid>
 
 							<Grid item xs={1}>
@@ -188,6 +220,20 @@ class ReeniItem extends Component {
 		const { item } = this.props;
 		await item.update({
 			tunnit: event.target.value
+		});
+	};
+
+	onKoiraChange = async (event) => {
+		const { item } = this.props;
+		await item.update({
+			koira: event.target.value
+		});
+	};
+
+	onYhdistysChange = async (event) => {
+		const { item } = this.props;
+		await item.update({
+			yhdistys: event.target.value
 		});
 	};
 

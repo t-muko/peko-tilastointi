@@ -5,6 +5,7 @@ import { Paper, Divider } from '@mui/material';
 
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
+import Typography from '@mui/material/Typography';
 
 import ReeniItem from '../ReeniItem';
 import { makeObservable, observable, action, computed } from 'mobx';
@@ -27,6 +28,10 @@ const styles = {
 	input: {
 		flex: 1
 	},
+	preline: {
+		whiteSpace: 'pre-line',
+		flex: 1
+	},
 	icon: {
 		marginRight: 6
 	}
@@ -47,10 +52,10 @@ class ReeniListItem extends Component {
 	}
 
 	render() {
-		const { item } = this.props;
-		const { pvm, kategoria, tunnit, alakategoria, kommentti } = item.data;
+		const { item, expand } = this.props;
+		const { pvm, kategoria, tunnit, alakategoria, kommentti, koira, yhdistys } = item.data;
 
-		console.log('ReeniItem.render: ', item.path, pvm, kategoria, tunnit);
+		// console.log('ReeniItem.render: ', item.path, pvm, kategoria, tunnit);
 		return (
 			<div>
 				{this._editing && <ReeniItem key={item.id + 'edit'} item={item} closeF={this.onClose} />}
@@ -73,6 +78,21 @@ class ReeniListItem extends Component {
 								</IconButton>
 
 					</div>
+
+					{expand && <div style={styles.row}>
+					<Typography variant="body1" gutterBottom style={styles.preline} >
+							{kommentti || ''}
+						</Typography>
+						
+						<Typography variant="body1" gutterBottom  style={styles.input}>
+							{koira || ''}
+						</Typography>
+						<Typography variant="body1" gutterBottom  style={styles.input}>
+							{yhdistys || ''}
+						</Typography>
+
+					</div>}
+
 					<Divider />
 				</Paper>
 			</div>

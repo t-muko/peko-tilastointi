@@ -73,11 +73,13 @@ const muiTheme = createTheme()
 // function App() {
 class App extends Component {
 	static contextType = FirebaseContext
-
+	
 	constructor(props) {
 		super(props)
         // this.rootStore = props.rootStore
 		// const { rootStore } = useStores()
+
+		
     }
 	render() {
 		console.debug("App render user", this.context.rootStore.sessionStore.authUser)

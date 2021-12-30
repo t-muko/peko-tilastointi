@@ -114,13 +114,13 @@ class ReeniItem extends Component {
 										label="Kategoria"
 										onChange={this.onKategoriaChange}
 									>
-										<MenuItem value={'Ei kategoriaa'}>Ei kategoriaa</MenuItem>
-										<MenuItem value={'Jälki'}>Jälki</MenuItem>
-										<MenuItem value={'Partsa'}>Partsa</MenuItem>
-										<MenuItem value={'Ilmavainu'}>Ilmavainu</MenuItem>
-										<MenuItem value={'Kokous'}>Kokous</MenuItem>
-										<MenuItem value={'Hälytys'}>Hälytys</MenuItem>
-										<MenuItem value={'Hälytysharjoitus'}>Hälytysharjoitus</MenuItem>
+										<MenuItem value={'Ei kategoriaa'}>	Ei kategoriaa</MenuItem>
+										<MenuItem value={'Jälki'}>			Jälki</MenuItem>
+										<MenuItem value={'Partsa'}>			Partsa</MenuItem>
+										<MenuItem value={'Ilmavainu'}>		Ilmavainu</MenuItem>
+										<MenuItem value={'Tottis'}>			Tottis</MenuItem>
+										<MenuItem value={'Muu reeni'}>		Muu reeni</MenuItem>
+										<MenuItem value={'Muu y-toiminta'}>	Muu yhdistystoiminta</MenuItem>
 										
 									</Select>
 							</Grid>

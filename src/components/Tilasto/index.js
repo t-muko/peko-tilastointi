@@ -6,6 +6,8 @@ import { FirebaseContext } from '../Firebase';
 // import { reenit } from '../../stores/reeniStore';
 import { tilastot } from '../../stores/tilastoFirebase'
 import { Collection, Document } from 'firestorter';
+import { CircularProgress } from "@mui/material";
+
 
 const styles = {
 	container: {
@@ -58,22 +60,36 @@ const Tilasto = observer(class Tilasto extends Component {
 	}
 
 	render() {
-		console.debug("Tilastot render")
-	
-		const tilastoDocs = tilastot.docs;
-		console.debug("Tilastodocs", tilastoDocs)
-		// const kaikki_yhteensa = tilastoDocs.map((tilasto) => {console.debug("data", tilasto.data); tilasto.data.totalH || 0}).reduce((a, b) => a + b, 0)
-		
-		const { docs } = this.context.rootStore.reeniFirestore.reenit;
-		console.debug("reenidocs", docs)
-		
-		const omat_yhteensa = docs.map((reeni) => reeni.data.tunnit || 0).reduce((a, b) => a + b, 0)
-		
-		return (
-			<div>
-				Reenit yhteensä {omat_yhteensa} h
-			</div>	
-		);
+		const context = this.context
+		if (!context.rootStore.sessionStore.userOk) {
+			console.log('Tilastot.render, disabled. Bad path/user');
+			return (
+				<div>
+				</div>
+			);
+		} else {
+			console.debug("Tilastot render")
+
+			const tilastoDocs = tilastot.docs;
+			const context = this.context
+			this.reenit  = this.context.rootStore.reeniFirestore.reenit
+			const reenit = this.reenit
+			console.debug("Tilastodocs path", tilastot.path)
+			// const kaikki_yhteensa = tilastoDocs.map((tilasto) => {console.debug("data", tilasto.data); tilasto.data.totalH || 0}).reduce((a, b) => a + b, 0)
+
+			const { docs, isLoading } = reenit
+			console.debug("reenidocs path", reenit.path)
+
+			const omat_yhteensa = docs.map((reeni) => reeni.data.tunnit || 0).reduce((a, b) => a + b, 0)
+
+			console.debug("omat yhteensä", omat_yhteensa)
+			return (
+				<div>
+					Reenit yhteensä {omat_yhteensa} h
+					{isLoading ? <div ><CircularProgress /></div> : undefined}
+				</div>
+			)
+		}
 	}
 
 

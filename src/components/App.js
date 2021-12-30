@@ -82,6 +82,7 @@ class App extends Component {
 		
     }
 	render() {
+		// tää pitää olla, muuten ei re-render herää
 		console.debug("App render user", this.context.rootStore.sessionStore.authUser)
 		return (
 				<FirebaseContext.Consumer>
@@ -133,7 +134,7 @@ class App extends Component {
 		//It will get the data from context, and put it into the state.
 		// this.setState({ profile: context.profile });
 		this.uid = context.rootStore.sessionStore.authUser ? context.rootStore.sessionStore.authUser.uid : null
-		console.debug("uid", this.uid)
+		// console.debug("uid", this.uid)
 	}
 
 	onPressAdd = async () => {

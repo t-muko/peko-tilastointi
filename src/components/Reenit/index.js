@@ -148,7 +148,7 @@ const Reenit = observer(class Reenit extends Component {
 		if (this.uid) {
 			try {
 				const docWithCustomId = new Document('tilastot/' + this.uid);
-				console.debug(docWithCustomId)
+				console.debug("doc with customid tilasto", docWithCustomId)
 				docWithCustomId.set({
 					totalH: this.yhteensa,
 					uid: this.uid

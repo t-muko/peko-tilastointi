@@ -120,7 +120,7 @@ class ReeniItem extends Component {
 										<MenuItem value={'Ilmavainu'}>		Ilmavainu</MenuItem>
 										<MenuItem value={'Tottis'}>			Tottis</MenuItem>
 										<MenuItem value={'Muu reeni'}>		Muu reeni</MenuItem>
-										<MenuItem value={'Muu y-toiminta'}>	Muu yhdistystoiminta</MenuItem>
+										<MenuItem value={'Muu y-toiminta'}>	Muu y-toiminta</MenuItem>
 										
 									</Select>
 							</Grid>

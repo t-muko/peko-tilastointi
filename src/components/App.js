@@ -92,7 +92,7 @@ class App extends Component {
 									<div style={styles.header}>
 										<div style={styles.headerRow}>
 											<img src='https://pirkanmaanpelastuskoirat.fi/images/ppk-logo3.png' alt='logo' style={styles.logo} />
-											<h1 style={styles.h1}>Reenipäiväkirja</h1>
+											<h1 style={styles.h1}>Peko-toimintapäiväkirja</h1>
 										</div>
 									</div>
 									{context.rootStore.sessionStore.userOk && <div>

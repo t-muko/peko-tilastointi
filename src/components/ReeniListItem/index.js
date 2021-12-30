@@ -85,7 +85,7 @@ class ReeniListItem extends Component {
 							{koira || ''}
 						</Typography>
 					
-						<Typography variant="body1" gutterBottom style={styles.preline} >
+						<Typography align="left" variant="body1" gutterBottom style={styles.preline} >
 							{kommentti || ''}
 						</Typography>
 	

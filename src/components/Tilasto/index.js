@@ -85,7 +85,7 @@ const Tilasto = observer(class Tilasto extends Component {
 			console.debug("omat yhteensä", omat_yhteensa)
 			return (
 				<div>
-					Reenit yhteensä {omat_yhteensa} h
+					Yhteensä {omat_yhteensa} h
 					{isLoading ? <div ><CircularProgress /></div> : undefined}
 				</div>
 			)

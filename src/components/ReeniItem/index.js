@@ -73,7 +73,7 @@ class ReeniItem extends Component {
 
 					<Box sx={{ flexGrow: 1 }}>
 						<Grid container spacing={3} p={2} minHeight='200px'>
-							<Grid item xs={4}>
+							<Grid item xs={6} md={3}>
 							<InputLabel id="date-label">Päivämäärä</InputLabel>
 
 								<MobileDatePicker
@@ -90,7 +90,7 @@ class ReeniItem extends Component {
 								/>
 							</Grid>
 
-							<Grid item xs={3}>
+							<Grid item xs={6} md={3}>
 									<InputLabel id="demo-simple-select-label">Kesto</InputLabel>
 									<Select
 										labelId="demo-simple-select-label"
@@ -112,7 +112,7 @@ class ReeniItem extends Component {
 									</Select>
 							</Grid>
 
-							<Grid item xs={4}>
+							<Grid item xs={6} md={3}>
 									<InputLabel id="kategoria-label">Kategoria</InputLabel>
 									<Select
 										labelId="kategoria-label"
@@ -133,7 +133,7 @@ class ReeniItem extends Component {
 									</Select>
 							</Grid>
 
-							<Grid item xs={4}>
+							<Grid item xs={6} md={3}>
 									<InputLabel id="koira-label">Koira</InputLabel>
 									<Select
 										labelId="koira-label"

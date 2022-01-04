@@ -81,11 +81,11 @@ class ReeniListItem extends Component {
 
 					{expand && <div style={styles.row}>
 						
-						<Typography variant="body1" gutterBottom  style={styles.input}>
+						<Typography  gutterBottom  style={styles.input}>
 							{koira || ''}
 						</Typography>
 					
-						<Typography align="left" variant="body1" gutterBottom style={styles.preline} >
+						<Typography align="left"  gutterBottom style={styles.preline} >
 							{kommentti || ''}
 						</Typography>
 	

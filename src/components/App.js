@@ -1,4 +1,4 @@
-import logo from '../logo.svg';
+// import logo from '../logo.svg';
 
 import React, { Component } from 'react';
 // import ReactDOM from 'react-dom';
@@ -92,7 +92,7 @@ class App extends Component {
 								<div style={styles.container}>
 									<div style={styles.header}>
 										<div style={styles.headerRow}>
-											<img src='https://pirkanmaanpelastuskoirat.fi/images/ppk-logo3.png' alt='logo' style={styles.logo} />
+											<img src='../tilasto128.png' alt='logo' style={styles.logo} />
 											<h1 style={styles.h1}>Peko-toimintapäiväkirja</h1>
 										</div>
 									</div>

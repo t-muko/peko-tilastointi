@@ -10,6 +10,12 @@ import Typography from '@mui/material/Typography';
 import ReeniItem from '../ReeniItem';
 import { makeObservable, observable, action, computed } from 'mobx';
 
+import * as moment from 'moment';
+import 'moment/locale/fi';
+moment.locale('fi')
+moment.updateLocale('fi', {
+    weekdaysShort : String["su", "ma", "ti", "ke", "to", "pe", "la"]
+});
 
 const styles = {
 	container: {
@@ -62,7 +68,7 @@ class ReeniListItem extends Component {
 				<Paper>
 					<div style={styles.row}>
 						<div style={styles.input}>
-							{pvm || ''}
+							{moment(pvm).format("D.M.YYYY dd") || ''}
 						</div>
 						
 						<div style={styles.input}>

@@ -19,7 +19,13 @@ import DateAdapter from '@mui/lab/AdapterMoment';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import MobileDatePicker from '@mui/lab/MobileDatePicker';
-import moment from 'moment';
+
+import fiLocale from 'date-fns/locale/fi';
+
+
+import * as moment from 'moment';
+import 'moment/locale/fi';
+moment.locale('fi')
 
 
 
@@ -58,7 +64,7 @@ class ReeniItem extends Component {
 
 		// console.log('TodoItem.render: ', item.path, ', kommentti: ', kommentti);
 		return (
-			<LocalizationProvider dateAdapter={AdapterDateFns}>
+			<LocalizationProvider dateAdapter={AdapterDateFns} locale={fiLocale}>
 
 				<Dialog onClose={() => {
 					// console.debug("Closing");
@@ -67,12 +73,12 @@ class ReeniItem extends Component {
 
 					<Box sx={{ flexGrow: 1 }}>
 						<Grid container spacing={3} p={2} minHeight='200px'>
-							<Grid item xs={6}>
+							<Grid item xs={4}>
 							<InputLabel id="date-label">Päivämäärä</InputLabel>
 
 								<MobileDatePicker
 									labelId="date-label"
-									inputFormat="MM/dd/yyyy"
+									inputFormat="dd.MM.yyyy"
 									value={pvm}
 									minDate={new Date("12/01/2021")}
 									maxDate={new Date("12/31/2031")}									
@@ -84,13 +90,14 @@ class ReeniItem extends Component {
 								/>
 							</Grid>
 
-							<Grid item xs={6}>
+							<Grid item xs={3}>
 									<InputLabel id="demo-simple-select-label">Kesto</InputLabel>
 									<Select
 										labelId="demo-simple-select-label"
 										id={this.id +"demo-simple-select"}
 										value={tunnit }
 										label="Kesto"
+										fullWidth
 										onChange={this.onKestoChange}
 									>
 										<MenuItem value={0}> </MenuItem>
@@ -105,13 +112,14 @@ class ReeniItem extends Component {
 									</Select>
 							</Grid>
 
-							<Grid item xs={6}>
+							<Grid item xs={4}>
 									<InputLabel id="kategoria-label">Kategoria</InputLabel>
 									<Select
 										labelId="kategoria-label"
 										id={this.id +"kategoria-select"}
 										value={kategoria || "Ei kategoriaa"}
 										label="Kategoria"
+										fullWidth
 										onChange={this.onKategoriaChange}
 									>
 										<MenuItem value={'Ei kategoriaa'}>	Ei kategoriaa</MenuItem>
@@ -125,13 +133,14 @@ class ReeniItem extends Component {
 									</Select>
 							</Grid>
 
-							<Grid item xs={6}>
+							<Grid item xs={4}>
 									<InputLabel id="koira-label">Koira</InputLabel>
 									<Select
 										labelId="koira-label"
 										id={this.id +"koira-select"}
 										value={koira || "Ei koiraa" }
 										label="Koira"
+										fullWidth
 										onChange={this.onKoiraChange}
 									>
 										<MenuItem value={'Ei koiraa'}>Ei koiraa</MenuItem>

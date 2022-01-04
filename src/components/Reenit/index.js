@@ -50,7 +50,7 @@ const styles = {
 	},
 	content: {
 		flex: 1,
-		overflowY: 'scroll'
+		// overflowY: 'scroll'
 	}
 };
 
@@ -163,7 +163,7 @@ const Reenit = observer(class Reenit extends Component {
 						pb: 0,
 						pl: 2,
 						pr: 2,
-						mr: 3,
+						
 						justifyContent: 'space-between',
 						display: 'flex',
 						alignItems: 'flex-start',

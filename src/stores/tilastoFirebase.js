@@ -33,14 +33,15 @@ class TilastoFireStorter {
 
 
     initCollection() {
-        this.tilastot = new Collection("tilastot", {
+        this.tilastot = new Collection("tilastot")
+        /*, {
             createDocument: (source, options) => {
                 const docWithCustomId = new Document('tilastot/myOwnId');
                 docWithCustomId.set({
                     totalH: 0,
                 });
             }
-        });
+        });*/
     }
 }
 

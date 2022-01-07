@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 import { TextField } from "@mui/material";
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
+import CheckIcon from '@mui/icons-material/Check';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 
@@ -72,7 +73,12 @@ class ReeniItem extends Component {
 				}} open={true}>
 
 					<Box sx={{ flexGrow: 1 }}>
-						<Grid container spacing={3} p={2} minHeight='200px'>
+						<Grid 
+						container 
+						justifyContent="space-between"
+						spacing={3} 
+						p={2} 
+						minHeight='200px'>
 							<Grid item xs={6} md={3}>
 							<InputLabel id="date-label">Päivämäärä</InputLabel>
 
@@ -164,11 +170,23 @@ class ReeniItem extends Component {
 									defaultValue={kommentti || ''} />
 							</Grid>
 
-							<Grid item xs={1}>
+							<Grid ml={1} item xs={1}>
 								<IconButton
 									style={styles.icon}
 									onClick={this.onPressDelete} >
 										<DeleteIcon />
+										</IconButton>
+							</Grid>
+
+							<Grid mr={3} item xs={1}>
+								<IconButton
+									
+									style={styles.icon}
+									onClick={() => {
+										// console.debug("Closing");
+										this.props.closeF()
+									}} >
+										<CheckIcon />
 										</IconButton>
 							</Grid>
 						</Grid>

@@ -294,8 +294,8 @@ const jasenjarjestot = [
 ]
 
 const flatProps = {
-    options: jasenjarjestot.map((option) => option.label),
-  };
+	options: jasenjarjestot.map((option) => option.label),
+};
 
 const Tilasto = observer(class Tilasto extends Component {
 
@@ -375,11 +375,13 @@ const Tilasto = observer(class Tilasto extends Component {
 							<Autocomplete
 								options={jasenjarjestot.map((option) => option.label)}
 								sx={{ width: 400 }}
-								id={"edityhdistys"}								
+								id={"edityhdistys"}
 								value={this.tilastoDokumentti.data.yhd || ''}
 								onChange={(e, value) => {
-									this.tilastoDokumentti.set({ yhd: value }, { merge: true });
-									this.editYhdistys = false;
+									if (value !== null) {
+										this.tilastoDokumentti.set({ yhd: value }, { merge: true });
+										this.editYhdistys = false;
+									}
 								}}
 								renderInput={(params) => (
 									<TextField {...params} label={"Tilastoiva yhdistys"} variant={"filled"} />

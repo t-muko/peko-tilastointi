@@ -54,7 +54,9 @@ class ReeniListItem extends Component {
 	constructor(props) {
 		super(props)
 		makeObservable(this, {
-			_editing: observable
+			_editing: observable,
+			onClose: action,
+			openEdit: action
 		})
 
 
@@ -64,7 +66,7 @@ class ReeniListItem extends Component {
 		const { item, expand } = this.props;
 		const { pvm, kategoria, tunnit, alakategoria, kommentti, koira, yhdistys } = item.data;
 		if (kategoria == '' && tunnit == 0) {
-			this._editing = true
+			this.openEdit()
 		}
 
 		// console.log('ReeniItem.render: ', item.path, pvm, kategoria, tunnit);
@@ -114,11 +116,16 @@ class ReeniListItem extends Component {
 		this._editing = false
 	}
 
+	openEdit = () => {
+		this._editing = true
+	} 
+
 	onPressEdit = async () => {
 		console.debug("Edit mode", this)
 		const { item } = this.props;
 		if (this._editing) return;
-		this._editing = true;
+		//this._editing = true;
+		this.openEdit()
 		/*try {
 			// await todo.delete();
 			this._editing = false;

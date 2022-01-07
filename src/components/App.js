@@ -14,7 +14,10 @@ import {observer} from "mobx-react";
 
 import FloatingActionButton from '@mui/material/Fab';
 import ContentAddIcon from '@mui/icons-material/Add';
+import LogoutIcon from '@mui/icons-material/Logout';
+import IconButton from '@mui/material/IconButton';
 
+import Tooltip from '@mui/material/Tooltip';
 
 import Reenit from './Reenit';
 import Tilasto from './Tilasto';
@@ -62,8 +65,13 @@ const styles = {
 	},
 	login: {
 		position: 'fixed',
-		bottom: 20,
-		left: 30
+		bottom: "50%",
+		left: "50%"
+	},
+	logout: {
+		position: 'fixed',
+		top: '1em',
+		right: '1em' 
 	}
 };
 
@@ -109,15 +117,17 @@ class App extends Component {
 
 									
 								</div>
-								{!context.rootStore.sessionStore.userOk && <Button  style={styles.login} variant="contained" onClick={() => {
+								{!context.rootStore.sessionStore.userOk && <div style={styles.login}><Button   variant="contained" onClick={() => {
 										context.rootStore.firebase.autentikoi();
 									}}
-									>Login</Button>}
+									>Login</Button>
+									</div>}
+
 								
-								{context.rootStore.sessionStore.userOk &&	<Button style={styles.login} variant="contained" onClick={() => {
+								{context.rootStore.sessionStore.userOk && <Tooltip title="Kirjaudu ulos"><IconButton color="primary" aria-label="upload picture" component="span" style={styles.logout} variant="contained" onClick={() => {
 										context.rootStore.firebase.logout();
 									}}
-									>Logout</Button>}
+									><LogoutIcon /></IconButton></Tooltip>}
 
 							</header>
 							

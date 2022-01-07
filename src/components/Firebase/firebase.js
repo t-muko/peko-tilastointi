@@ -5,15 +5,15 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 import 'firebase/firestore';
-import { collection, doc, query, where, getDoc, getDocs, onSnapshot } from "firebase/firestore";
+// import { collection, doc, query, where, getDoc, getDocs, onSnapshot } from "firebase/firestore";
 // import rootStore from '../../stores'
 
 
 // Firebase stuff
 // https://www.robinwieruch.de/complete-firebase-authentication-react-tutorial/
 
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+// import { initializeApp } from "firebase/app";
+// import { getAnalytics } from "firebase/analytics";
 import { getAuth, onAuthStateChanged, GoogleAuthProvider } from "firebase/auth";
 // signInWithPopup
 import { signInWithRedirect, signInWithPopup, signOut } from "firebase/auth";
@@ -21,8 +21,8 @@ import { signInWithRedirect, signInWithPopup, signOut } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 
-import { initFirestorter } from 'firestorter';
-import { Collection, Document } from 'firestorter';
+// import { initFirestorter } from 'firestorter';
+// import { Collection, Document } from 'firestorter';
 
 // import { reenit } from '../../stores/reeniStore';
 
@@ -59,7 +59,7 @@ class Firebase {
             this.rootStore.sessionStore.setAuthUser(user)
             console.debug("Auth change", user) 
             const uid = this.rootStore.sessionStore.authUser ? this.rootStore.sessionStore.authUser.uid : "anonyymi"
-            console.debug("Store uid", uid)
+            // console.debug("Store uid", uid)
             this.rootStore.reeniFirestore.reenit.path = "reenit/"+uid+"/reenit"
             this.rootStore.reeniFirestore.changePath("reenit/"+uid+"/reenit")
         });

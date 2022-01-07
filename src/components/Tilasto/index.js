@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { makeObservable, observable, action, computed } from 'mobx';
+import { makeObservable, observable, reaction } from 'mobx';
+
+// import { makeObservable, observable, action, computed } from 'mobx';
 import { FirebaseContext } from '../Firebase';
 
 // import { reenit } from '../../stores/reeniStore';
@@ -8,8 +10,18 @@ import { FirebaseContext } from '../Firebase';
 import { Collection, Document } from 'firestorter';
 import { CircularProgress } from "@mui/material";
 import Typography from '@mui/material/Typography';
+import EditIcon from '@mui/icons-material/Edit';
+import IconButton from '@mui/material/IconButton';
+import { TextField } from "@mui/material";
+import Autocomplete from '@mui/material/Autocomplete';
 
+import { Paper, Dialog } from '@mui/material';
 
+import * as moment from 'moment';
+import 'moment/locale/fi';
+moment.locale('fi')
+
+/*
 const styles = {
 	container: {
 		flex: 1,
@@ -40,28 +52,273 @@ const styles = {
 		overflowY: 'scroll'
 	}
 };
+*/
+
+
+
+const jasenjarjestot = [
+	{ label: '' },
+	{ label: 'Action ry' },
+	{ label: 'Action Dogs' },
+	{ label: 'Aktiivicolliet ry' },
+	{ label: 'Aktiivikoirat ry' },
+	{ label: 'Anjalankosken Palveluskoirayhdistys ry' },
+	{ label: 'Askola Country Dogs ry' },
+	{ label: 'Australianpaimenkoirat ry' },
+	{ label: 'Bullenbeisser-Klubi ry' },
+	{ label: 'Bullmastiffit ja Mastiffit ry' },
+	{ label: 'Cane Corso Club Finland ry' },
+	{ label: 'Citybelgit ry' },
+	{ label: 'Close-Knit Team ry' },
+	{ label: 'Dalmatiankoirat ry' },
+	{ label: 'Dobermann Team Turku ry' },
+	{ label: 'Dogo Argentino Club Finland ry' },
+	{ label: 'Espoon Koirakerho ry' },
+	{ label: 'Espoon Palveluskoiraklubi ry' },
+	{ label: 'Etelä-Hämeen Rottweilerkerho ry' },
+	{ label: 'Etelä-Pirkanmaan Pelastuskoirat EPPeko ry' },
+	{ label: 'Etelä-Pohjanmaan Koiraklubi ry' },
+	{ label: 'Etelä-Suomen Palveluskoira ry' },
+	{ label: 'Etelä-Suomen Ruttukuonokerho' },
+	{ label: 'Forssan Palveluskoirat' },
+	{ label: 'Haapaveden Kennelseura ry' },
+	{ label: 'Hakunilan Seudun Koiraharrastajat ry' },
+	{ label: 'Hangö Kennelklubb rf - Hangon Kennelkerho ry' },
+	{ label: 'Hankasalmen Kennelkerho ry' },
+	{ label: 'Harjavallan Palvelus- ja Seurakoiraharrastajat ry' },
+	{ label: 'Hausjärven Haukut ry' },
+	{ label: 'Heinolan Palvelus- ja Seurakoira ry' },
+	{ label: 'Helsingin Palveluskoiraharrastajat ry' },
+	{ label: 'Helsingin Vetokoirakerho ry' },
+	{ label: 'Helsingin Väestönsuojeluyhdistys/HEPeKo' },
+	{ label: 'H H Haku Hurtat ry' },
+	{ label: 'Hiiden Haukut ry' },
+	{ label: 'Hollolan Koiraharrastajat ry' },
+	{ label: 'Huittisten Seudun Koirayhdistys ry' },
+	{ label: 'Hundklubben Koirakerho Canidae ry' },
+	{ label: 'Hyvinkään Käyttökoirat ry' },
+	{ label: 'Hämeen Hakukoirat ry' },
+	{ label: 'Hämeenlinnan Etsintäkoirat ry' },
+	{ label: 'Hämeenlinnan Kennelkerho ry' },
+	{ label: 'Iisalmen Seudun Käyttö- ja Seurakoirayhdistys ry' },
+	{ label: 'Imatran Palveluskoirayhdistys ry' },
+	{ label: 'Impivaaran Hallit ry' },
+	{ label: 'Ipo-Klubi ry' },
+	{ label: 'Jalasjärven Koiraharrastajat ry' },
+	{ label: 'Joensuun Seudun Palveluskoirayhdistys ry' },
+	{ label: 'Jokelan Seudun Koirakerho ry' },
+	{ label: 'Joutsan Koiraharrastajat ry' },
+	{ label: 'Jämsän Seudun Palveluskoiraharrastajat ry' },
+	{ label: 'Järvenpään Koirakerho ry' },
+	{ label: 'Kaakon Käyttökoirat ry' },
+	{ label: 'Kaarinan Koiraharrastajat ry' },
+	{ label: 'Kainuun Palveluskoirayhdistys ry' },
+	{ label: 'Kanavan Koirakilta ry' },
+	{ label: 'Kangasniemen Kennelkerho ry' },
+	{ label: 'Kankaanpään Seudun Kennelyhdistys ry' },
+	{ label: 'Kannuksen Koiruudet ry' },
+	{ label: 'Karjalan Palveluskoiraharrastajat ry' },
+	{ label: 'Kauhajoen Koiraharrastajat ry' },
+	{ label: 'Kauhavan Kennelkerho ry' },
+	{ label: 'Kaustisenseudun Koiraharrastajat ry' },
+	{ label: 'Kemin Seura- ja Palveluskoirakerho ry' },
+	{ label: 'Keravan Koiraharrastajat ry' },
+	{ label: 'Keski-Karjalan Palveluskoirat ry' },
+	{ label: 'Keski-Pohjanmaan Palveluskoirat ry' },
+	{ label: 'Keski-Suomen Palveluskoirayhdistys ry' },
+	{ label: 'Keuruun Seudun Kennelkerho ry' },
+	{ label: 'Kirkkonummen Kennelkerho ry' },
+	{ label: 'Kiteen Kennelkerho ry' },
+	{ label: 'Koillismaan Koirakerho ry' },
+	{ label: 'Koirakerho Tassut ry' },
+	{ label: 'Kouvolan Palveluskoirayhdistys ry' },
+	{ label: 'Kouvolan Pelastuskoirat ry' },
+	{ label: 'Kristiinanseudun Koiraharrastajat ry' },
+	{ label: 'Kukkian Haukut' },
+	{ label: 'Kultainen Rengas - Golden Ring ry' },
+	{ label: 'Kuopion Palvelus- ja Seurakoiraharrastajat ry' },
+	{ label: 'Kuopion Pelastuskoirat ry' },
+	{ label: 'Kymen Vetokoiraseura ry' },
+	{ label: 'Kyrönmaan Koiraharrastajat' },
+	{ label: 'Kyröskosken Käyttökoirat ry' },
+	{ label: 'Labradorinnoutajakerho ry' },
+	{ label: 'Lahden Käyttökoira ry' },
+	{ label: 'Lappalaiskoirat ry' },
+	{ label: 'Lappeenrannan Palveluskoirayhdistys ry' },
+	{ label: 'Lapuan Koiraharrastajat ry' },
+	{ label: 'Lempäälän-Vesilahden Koirakerho (LeVeK) ry' },
+	{ label: 'Leppävirran Palvelus- ja Seurakoiraharrastajat ry' },
+	{ label: 'Lieksan Palveluskoirakerho ry' },
+	{ label: 'Lohjan Palvelus- ja Pelastuskoirayhdistys ry' },
+	{ label: 'Lohtajan Palveluskoiraharrastajat ry' },
+	{ label: 'Lounais-Hämeen Kennelkerho ry' },
+	{ label: 'Luoteis-Uudenmaan Käyttökoirat ry' },
+	{ label: 'Mikkelin Palveluskoirayhdistys ry' },
+	{ label: 'Mondioring ITU ry' },
+	{ label: 'Mondioring Kotka ry' },
+	{ label: 'Mondioringyhdistys ry' },
+	{ label: 'Mäntsälän Koirakerho ry' },
+	{ label: 'Mäntän Seudun Palveluskoirat ry' },
+	{ label: 'Nokian Palveluskoiraharrastajat ry' },
+	{ label: 'Novascotiannoutajat ry' },
+	{ label: 'Nu-Pun Koiraklubi ry' },
+	{ label: 'Nurmeksen Seudun Kennelkerho ry' },
+	{ label: 'Opaskoirayhdistys ry' },
+	{ label: 'Orimattilan Kennelkerho ry' },
+	{ label: 'Oriveden Seudun Koirakerho ry' },
+	{ label: 'Oulujokilaakson Kennelkerho ry' },
+	{ label: 'Oulun Koirakerho ry' },
+	{ label: 'Oulun Palveluskoirayhdistys ry' },
+	{ label: 'Ounasjokilaakson Kennelkerho ry' },
+	{ label: 'Outokummun Kennelseura ry' },
+	{ label: 'Palveluskoirayhdistys Kotikenttä ry' },
+	{ label: 'Parkanon Seudun Palveluskoirakerho ry' },
+	{ label: 'Pieksämäen Palveluskoirayhdistys ry' },
+	{ label: 'Pielisen Aktiivikoirat ry' },
+	{ label: 'Pietarsaaren Seudun Kennelseura ry' },
+	{ label: 'Piilonkiertäjät ry' },
+	{ label: 'Pirkanmaan Käyttökoirayhdistys ry' },
+	{ label: 'Pirkanmaan Palveluskoiraharrastajat ry' },
+	{ label: 'Pirkanmaan Pelastuskoirat ry' },
+	{ label: 'Pohjanmaan PK-klubi ry' },
+	{ label: 'Pohjanmaan Rottweilerkerho ry' },
+	{ label: 'Pohjois-Karjalan Käyttökoirat ry' },
+	{ label: 'Pohjois-Karjalan Pelastuskoirat ry' },
+	{ label: 'Pohjois-Lapin Koirakerho ry' },
+	{ label: 'Pohjois-Pohjanmaan Urheilu- ja Työkoirat ry' },
+	{ label: 'Pohjois-Savon Rottweilerkerho ry' },
+	{ label: 'Pondera Team ry' },
+	{ label: 'Porin Palveluskoirakerho ry' },
+	{ label: 'Porvoon Palveluskoirat ry' },
+	{ label: 'Porvoonseudun Koiraharrastajat ry' },
+	{ label: 'Pumit ry' },
+	{ label: 'Punkaharjun Koirat ry' },
+	{ label: 'Päijäthoffit ry' },
+	{ label: 'Pure Dogs ry' },
+	{ label: 'Raahen Koirakerho ry' },
+	{ label: 'Rannikon rakit ry' },
+	{ label: 'Rauman Käyttö- ja Seurakoirat ry' },
+	{ label: 'Riihimäen Seudun Kennelkerho ry' },
+	{ label: 'Rovaniemen Käyttökoirat ry' },
+	{ label: 'Rovaniemen Palveluskoirakerho ry' },
+	{ label: 'Saarijärven Käyttökoirat ry' },
+	{ label: 'Saksanpaimenkoiraliitto ry' },
+	{ label: 'Salon Seudun Palveluskoiraharrastajat ry' },
+	{ label: 'Sarplaninac Club Finland ry' },
+	{ label: 'Satakunnan Pelastuskoirat ry' },
+	{ label: 'Savonlinnan Kennelkerho ry' },
+	{ label: 'Savonlinnan Palveluskoirayhdistys ry' },
+	{ label: 'Seinäjoen Kennelkerho ry' },
+	{ label: 'Siilinjärven-Maaningan Pelastuskoirat ry' },
+	{ label: 'Sodankylän Karvakuonot ry' },
+	{ label: 'Someron Seudun Koiraharrastajat ry' },
+	{ label: 'SPL Ala-Satakunta ry' },
+	{ label: 'SPL Etelä-Oulu ry' },
+	{ label: 'SPL Etelä-Pohjanmaa ry' },
+	{ label: 'SPL Etelä-Uusimaa ry' },
+	{ label: 'SPL Forssa ry' },
+	{ label: 'SPL Helsinki ry' },
+	{ label: 'SPL Imatra ry' },
+	{ label: 'SPL Itä-Helsinki ry' },
+	{ label: 'SPL Itä-Pirkanmaa ry' },
+	{ label: 'SPL Itä-Uusimaa ry' },
+	{ label: 'SPL Jokela ry' },
+	{ label: 'SPL Kanta-Häme ry' },
+	{ label: 'SPL Kemi ry' },
+	{ label: 'SPL Keski-Suomi ry' },
+	{ label: 'SPL Kotka ry' },
+	{ label: 'SPL Kouvola ry' },
+	{ label: 'SPL Kuopio ry' },
+	{ label: 'SPL Kurikka ry' },
+	{ label: 'SPL Kuusjoki ry' },
+	{ label: 'SPL Kärkölä ry' },
+	{ label: 'SPL Lahti ry' },
+	{ label: 'SPL Lapinlahti ry' },
+	{ label: 'SPL Länsi-Häme ry' },
+	{ label: 'SPL Länsi-Uusimaa ry' },
+	{ label: 'SPL Merenkurkku ry' },
+	{ label: 'SPL Nurmijärvi ry' },
+	{ label: 'SPL Oulu ry' },
+	{ label: 'SPL Pietarsaarenseutu ry' },
+	{ label: 'SPL Pohjois-Karjala ry' },
+	{ label: 'SPL Pori ry' },
+	{ label: 'SPL Porvoo ry' },
+	{ label: 'SPL Raahe ry' },
+	{ label: 'SPL Rauma ry' },
+	{ label: 'SPL Rovaniemi ry' },
+	{ label: 'SPL Röykkä ry' },
+	{ label: 'SPL Saimaa ry' },
+	{ label: 'SPL Savo-Karjala ry' },
+	{ label: 'SPL Seinäjoki ry' },
+	{ label: 'SPL Tampere ry' },
+	{ label: 'SPL Turku ry' },
+	{ label: 'SPL Wasa ry' },
+	{ label: 'Sport Riesen Klub ry' },
+	{ label: 'Suomenselän Palveluskoirat ry' },
+	{ label: 'Suonenjoen Palvelus- ja Seurakoiraharrastajat ry' },
+	{ label: 'Tampereen Palveluskoiraharrastajat ry' },
+	{ label: 'Tampereen Vetokoiraseura ry' },
+	{ label: 'Team Working Dogs ry' },
+	{ label: 'Teiskon Tahto Tassut ry' },
+	{ label: 'TervaNuuskut' },
+	{ label: 'Toijalan Seudun Koirakerho ry' },
+	{ label: 'T.O.P K-9 ry' },
+	{ label: 'T-Team Sport Dogs ry' },
+	{ label: 'Turun Kenttäkoirayhdistys ry' },
+	{ label: 'Turun Käyttökoirakerho ry' },
+	{ label: 'Turun Palveluskoiraharrastajat ry' },
+	{ label: 'Tuuloksen Koirakerho' },
+	{ label: 'Tuusulan Kennelkerho ry' },
+	{ label: 'TVA Pori ry' },
+	{ label: 'Tyrnävän koiraharrastajat ry' },
+	{ label: 'Ulvilan Palveluskoirat ry' },
+	{ label: 'Uudenmaan Harrastuskoirat ry' },
+	{ label: 'Uudenmaan Vetokoiraurheilijat ry' },
+	{ label: 'Vaasan Seudun Palveluskoiraharrastajat ry' },
+	{ label: 'Vakka-Suomen Kennelkerho' },
+	{ label: 'Vakka-Suomen Palveluskoiraharrastajat ry' },
+	{ label: 'Valkeakosken Kennelkerho ry' },
+	{ label: 'Vammalan Palveluskoiraharrastajat ry' },
+	{ label: 'Vantaan Etsintäkoirat' },
+	{ label: 'Vantaan Palveluskoirayhdistys ry' },
+	{ label: 'Vantaa SAR Dogs ry' },
+	{ label: 'Varkauden Palvelus- ja Seurakoirat ry' },
+	{ label: 'Varsinaiset Hoffit' },
+	{ label: 'Veikkolan Koirakerho ry' },
+	{ label: 'Vesikoirat ry' },
+	{ label: 'Western Finland Ring Club ry' },
+	{ label: 'Working Dobermann Club ry' },
+	{ label: 'Ylöjärven Koirakerho ry' },
+	{ label: 'Ylöjärven Käyttöhukat ry' },
+	{ label: 'Ålands Bruks- och Sällskapshundklubb' }
+]
+
+const flatProps = {
+    options: jasenjarjestot.map((option) => option.label),
+  };
 
 const Tilasto = observer(class Tilasto extends Component {
 
 	yhteensa = null
+	editYhdistys = false
 
 	static contextType = FirebaseContext
 
-	
-
 	constructor(props) {
 		super(props);
-		// this.tilastot = tilastot
-		/*makeObservable(this, {
-			_expand: observable
+
+		makeObservable(this, {
+			editYhdistys: observable
 		})
-*/
-		this.tilastot = new Collection('tilastot');
+
+		this.tilastotColl = new Collection('tilastot');
+
+
 	}
 
-	componentDidMount() {
-		// console.debug("<Tilasto> mounted")
-		const context = this.context;
+	componentWillMount() {
+		this.uid = this.context.rootStore.sessionStore.authUser.uid
+		this.tilastoDokumentti = new Document('tilastot/' + this.uid);
 	}
 
 	render() {
@@ -73,33 +330,68 @@ const Tilasto = observer(class Tilasto extends Component {
 				</div>
 			);
 		} else {
-			console.debug("Tilastot render")
 
-			const context = this.context
-			this.reenit  = this.context.rootStore.reeniFirestore.reenit
-			const reenit = this.reenit
+			// const context = this.context
+			// this.reenit = context.rootStore.reeniFirestore.reenit
+			// const reenit = this.reenit
 
 			// this.tilastot = this.context.rootStore.tilastoFirestore.tilastot
 			// const tilastot = this.tilastot
 
-			const {docs: tilastoDocs, isLoaded: isTilastoLoading } = this.tilastot;
+			const kuluvaVuosi = (new Date()).getFullYear()
+			const { docs: tilastoDocs, isLoading: isTilastoLoading } = this.tilastotColl;
 			// console.debug("Tilastodocs path", this.tilastot.path, tilastoDocs)
 			const kaikki_yhteensa = tilastoDocs.map((tilasto) => tilasto.data.totalH || 0).reduce((a, b) => a + b, 0)
+			const yhdistyksenTilastoDocs = tilastoDocs.filter((row) => (row.data.yhd || '') === this.tilastoDokumentti.data.yhd)
+			const yhdistys_yhteensa = yhdistyksenTilastoDocs.map((tilasto) => tilasto.data[kuluvaVuosi] ? tilasto.data[kuluvaVuosi].sumH : 0).reduce((a, b) => a + b, 0)
+			// const reenejaViikossaSum = tilastoDocs.map((tilasto) => tilasto.data[kuluvaVuosi].sumD/moment().dayOfYear()*7 || 0).reduce((a, b) => a + b, 0)
+
+
 			// console.debug("Kaikki yhteensa", kaikki_yhteensa, tilastoDocs.length)
 
-			const { docs, isLoading } = reenit
+			// const { docs, isLoading } = reenit
 			// console.debug("reenidocs path", reenit.path)
 
-			const omat_yhteensa = docs.map((reeni) => reeni.data.tunnit || 0).reduce((a, b) => a + b, 0)
+			// const omat_yhteensa = docs.map((reeni) => reeni.data.tunnit || 0).reduce((a, b) => a + b, 0)
+			const yhdistys = this.tilastoDokumentti.data.yhd || 'PUUTTUU!'
 
-			// console.debug("omat yhteensä", omat_yhteensa)
 			return (
 				<div>
-				<div>
-					Omat merkinnät yhteensä {omat_yhteensa} h
-					{(isLoading || false) ? <div ><CircularProgress /></div> : undefined}
-				</div>
-				<Typography variant="body1" gutterBottom >Kaikkien merkinnät yhteensä {kaikki_yhteensa} h ({tilastoDocs.length} käyttäjää)</Typography>
+					<div>
+						{(isTilastoLoading || false) ? <div ><CircularProgress /></div> : undefined}
+					</div>
+					<Typography variant="body1" gutterBottom >Tilastoiva yhdistys: {yhdistys}
+						<IconButton
+							// style={styles.icon}
+							onClick={() => this.editYhdistys = !this.editYhdistys} >
+							<EditIcon sx={{ color: 'white' }} />
+						</IconButton>
+					</Typography>
+					<Dialog onClose={() => {
+						this.editYhdistys = false;
+					}
+					} open={this.editYhdistys}>
+						<Paper sx={{ m: 2, p: 2 }}>
+							<Autocomplete
+								options={jasenjarjestot.map((option) => option.label)}
+								sx={{ width: 400 }}
+								id={"edityhdistys"}								
+								value={this.tilastoDokumentti.data.yhd || ''}
+								onChange={(e, value) => {
+									this.tilastoDokumentti.set({ yhd: value }, { merge: true });
+									this.editYhdistys = false;
+								}}
+								renderInput={(params) => (
+									<TextField {...params} label={"Tilastoiva yhdistys"} variant={"filled"} />
+								)}
+							/>
+
+
+						</Paper>
+					</Dialog>
+					<Typography variant="body1" gutterBottom >Yhdistyksen vuoden {kuluvaVuosi} merkinnät yhteensä {yhdistys_yhteensa} h ({yhdistyksenTilastoDocs.length} käyttäjää)</Typography>
+
+					<Typography variant="body1" gutterBottom >Kaikkien merkinnät yhteensä {kaikki_yhteensa} h ({tilastoDocs.length} käyttäjää)</Typography>
 
 				</div>
 			)

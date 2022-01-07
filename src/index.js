@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import './App.css';
-import { Provider } from 'mobx-react';
+// import { Provider } from 'mobx-react';
 
 import rootStore from './stores';
 

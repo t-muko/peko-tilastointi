@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { makeObservable, observable, action, computed, reaction } from 'mobx';
+import { makeObservable, observable, reaction } from 'mobx';
 import { FirebaseContext } from '../Firebase';
 
 // import { reenit } from '../../stores/reeniStore';
-import { tilastot } from '../../stores/tilastoFirebase'
-import { Collection, Document } from 'firestorter';
+// import { tilastot } from '../../stores/tilastoFirebase'
+import { Document } from 'firestorter';
 
 
 // import FlipMove from 'react-flip-move';
@@ -64,6 +64,7 @@ const Reenit = observer(class Reenit extends Component {
 	yhteensa = null
 	suodatetut = 0
 	reenit = null
+	tilastoRecord = Object()
 	searchValue = ""
 	// filteredRows = null
 
@@ -76,28 +77,31 @@ const Reenit = observer(class Reenit extends Component {
 			_expand: observable,
 			reenit: observable,
 			searchValue: observable,
+			tilastoRecord: observable,
 			yhteensa: observable
 		})
 
-		this.state = {
+		/*this.state = {
 			disabled: false
-		};
+		};*/
 
 
 	}
 
 
 
-	componentDidMount() {
+	componentWillMount() {
 		const context = this.context;
 		//It will get the data from context, and put it into the state.
 		// this.setState({ profile: context.profile });
 		this.uid = context.rootStore.sessionStore.authUser.uid
-		console.debug("uid", this.uid)
+		// console.debug("uid", this.uid)
 		// this.filteredRows = this.context.rootStore.reeniFirestore.reenit.docs
 
+		this.tilastoDokumentti = new Document('tilastot/' + this.uid);
+
 		reaction(
-			() => this.yhteensa,
+			() => this.tilastoRecord,
 			() => this.onAddTilasto(),
 			{ "delay": 2000 }
 		)
@@ -119,7 +123,7 @@ const Reenit = observer(class Reenit extends Component {
 */
 	render() {
 		// console.debug("Collection path", this.context.rootStore.reeniFirestore.reenit.path)
-		const { disabled } = this.state;
+		// const { disabled } = this.state;
 		const context = this.context
 		// this.reenit  = context.rootStore.reeniFirestore.reenit
 		// this.reenit = context.rootStore.reeniFirestore.reenit
@@ -144,18 +148,51 @@ const Reenit = observer(class Reenit extends Component {
 				</div>
 			);
 		} else {
-			console.log("Reenit render enabled") //, this.reenit.path, this.reenit)
-			const { docs, query, isLoading } = context.rootStore.reeniFirestore.reenit;
+			const { docs, isLoading } = context.rootStore.reeniFirestore.reenit;
 			// const children = docs.map((reeni) => <ReeniListItem key={reeni.id} item={reeni} expand={this._expand} />);
 			const children = filteredRows.map((reeni) => <ReeniListItem key={reeni.id} item={reeni} expand={this._expand} />);
 			this.yhteensa = docs.map((reeni) => reeni.data.tunnit || 0).reduce((a, b) => a + b, 0)
 			this.suodatetut = filteredRows.map((reeni) => reeni.data.tunnit || 0).reduce((a, b) => a + b, 0)
+
+			if (!isLoading) { 
+			const vt = new Object()
+			const reenipaivat = new Set()
+			docs.map((reeni) => reenipaivat.add(reeni.data.pvm))
+
+			// vt['yhd'] = 'PPK'
+			vt['totalH'] = docs.map((reeni) => reeni.data.tunnit || 0).reduce((a, b) => a + b, 0)
+			vt['totalD'] = reenipaivat.size
+			
+			const foo = [2021, 2022].map((vuosi) => {
+				const vuodenReenit = docs.filter((rivi) => rivi.data.pvm.includes(vuosi))
+				const reenipaivat = new Set()
+				vuodenReenit.map((reeni) => reenipaivat.add(reeni.data.pvm))
+				vt[vuosi] = {
+					sumH: vuodenReenit.map((reeni) => reeni.data.tunnit || 0).reduce((a, b) => a + b, 0),
+					sumX: vuodenReenit.length,
+					sumD: reenipaivat.size
+				}
+				// console.debug("set", reenipaivat)
+				
+				const cat = ['Jälki', 'Partsa', 'Ilmavainu', 'Tottis', 'Muu reeni', 'Ei kategoriaa', 'Muu y-toiminta']
+				cat.map((kategoria) =>{
+					const kategorianReenit = vuodenReenit.filter((rivi) => rivi.data.kategoria.includes(kategoria))
+					vt[vuosi][kategoria] = {
+						H: kategorianReenit.map((reeni) => reeni.data.tunnit || 0).reduce((a, b) => a + b, 0),
+						X: kategorianReenit.length
+					}
+				})
+			}
+			)
+			// console.debug("vuositilasto", vt)
+			this.tilastoRecord = vt
+}
 			// this.onAddTilasto()
 			// console.debug("Docs: ", children)
 			// console.debug("Yhteensä", this.yhteensa)
 
 			// const { isLoading } = this.reenit;
-			console.log('Reenit.render, isLoading: ', isLoading);
+			// console.log('Reenit.render, isLoading: ', isLoading);
 			return (
 				<div style={styles.container}>
 					<Box sx={{
@@ -163,7 +200,7 @@ const Reenit = observer(class Reenit extends Component {
 						pb: 0,
 						pl: 2,
 						pr: 2,
-						
+
 						justifyContent: 'space-between',
 						display: 'flex',
 						alignItems: 'flex-start',
@@ -176,10 +213,10 @@ const Reenit = observer(class Reenit extends Component {
 								label='Näytä muistiinpanot' />
 						</FormGroup>
 
-						{this.suodatetut != this.yhteensa &&
-							<Typography sx={{ color: 'black', verticalAlign: 'middle', p:1 }}>
+							<Typography sx={{ color: 'black', verticalAlign: 'middle', p: 1 }}>
 								{filteredRows.length}x, yht.{this.suodatetut} h
-							</Typography>}
+							</Typography>
+							
 
 						<TextField
 							variant="standard"
@@ -238,33 +275,39 @@ const Reenit = observer(class Reenit extends Component {
 		}
 	};
 
-	onCheckDisable = () => {
+	/*onCheckDisable = () => {
 		this.setState({
 			disabled: !this.state.disabled
 		});
-	}
+	}*/
 
 	onCheckExpand = () => {
 		this._expand = !this._expand
 	}
 
 	onAddTilasto = async () => {
+		console.debug("Päivitetään tilasto")
 		if (this.uid) {
 			try {
-				const docWithCustomId = new Document('tilastot/' + this.uid);
-				console.debug("doc with customid tilasto", docWithCustomId)
-				docWithCustomId.set({
-					totalH: this.yhteensa
-					// uid: this.uid
-				});
+				//const tilastoDokumentti = new Document('tilastot/' + this.uid);
+				// console.debug("doc with customid tilasto", docWithCustomId)
+				this.tilastoDokumentti.set(
+					this.tilastoRecord
+					/*{
+					totalH: this.yhteensa,
+					yhd: 'PPK',
+					2021: { totalH: 123, partsaH: 12, jälkiH: 13, partsaX: 2 },
+				}*/
+				,
+				{merge: true});
 			}
 			catch (err) {
-				console.error("Virhe", err)
-				// TODO
-			}
+	console.error("Virhe", err)
+	// TODO
+}
 		} else {
-			console.error("Ei ole uid:ta")
-		}
+	console.error("Ei ole uid:ta")
+}
 	};
 
 });

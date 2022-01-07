@@ -10,7 +10,7 @@ import { FirebaseContext } from './Firebase';
 
 import {observer} from "mobx-react";
 
-import { ThemeProvider, createTheme } from '@mui/material/styles'; // v1.x
+// import { createTheme } from '@mui/material/styles'; // v1.x
 
 import FloatingActionButton from '@mui/material/Fab';
 import ContentAddIcon from '@mui/icons-material/Add';
@@ -68,19 +68,19 @@ const styles = {
 };
 
 // const muiTheme = getMuiTheme(lightBaseTheme);
-const muiTheme = createTheme()
+// const muiTheme = createTheme()
 
 // function App() {
 class App extends Component {
 	static contextType = FirebaseContext
 	
+	/*
 	constructor(props) {
 		super(props)
         // this.rootStore = props.rootStore
-		// const { rootStore } = useStores()
+		// const { rootStore } = useStores()		
+    }*/
 
-		
-    }
 	render() {
 		// tää pitää olla, muuten ei re-render herää
 		console.debug("App render user", this.context.rootStore.sessionStore.authUser)
@@ -146,7 +146,7 @@ class App extends Component {
 				kommentti: '',
 				kategoria: '',
 				koira: 'Ei koiraa',
-				uid: this.context.rootStore.sessionStore.authUser.uid
+				// uid: this.context.rootStore.sessionStore.authUser.uid
 			});
 		}
 		catch (err) {

@@ -360,7 +360,7 @@ const Tilasto = observer(class Tilasto extends Component {
 					<div>
 						{(isTilastoLoading || false) ? <div ><CircularProgress /></div> : undefined}
 					</div>
-					<Typography variant="body1" gutterBottom >Tilastoiva yhdistys: {yhdistys}
+					<Typography variant="body1" gutterBottom >Oma yhdistys: {yhdistys}
 						<IconButton
 							// style={styles.icon}
 							onClick={() => this.editYhdistys = !this.editYhdistys} >
@@ -384,14 +384,14 @@ const Tilasto = observer(class Tilasto extends Component {
 									}
 								}}
 								renderInput={(params) => (
-									<TextField {...params} label={"Tilastoiva yhdistys"} variant={"filled"} />
+									<TextField {...params} label={"Oma yhdistys"} variant={"filled"} />
 								)}
 							/>
 
 
 						</Paper>
 					</Dialog>
-					<Typography variant="body1" gutterBottom >Yhdistyksen vuoden {kuluvaVuosi} merkinnät yhteensä {yhdistys_yhteensa} h ({yhdistyksenTilastoDocs.length} käyttäjää)</Typography>
+					<Typography variant="body1" gutterBottom >Yhdistyksen {kuluvaVuosi} merkinnät yhteensä {yhdistys_yhteensa} h ({yhdistyksenTilastoDocs.length} käyttäjää)</Typography>
 
 					<Typography variant="body1" gutterBottom >Kaikkien merkinnät yhteensä {kaikki_yhteensa} h ({tilastoDocs.length} käyttäjää)</Typography>
 

@@ -69,7 +69,7 @@ const styles = {
 		left: "50%"
 	},
 	logout: {
-		position: 'fixed',
+		position: 'absolute',
 		top: '1em',
 		right: '1em' 
 	}

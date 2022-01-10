@@ -49,6 +49,8 @@ class Firebase {
         // const analytics = getAnalytics(app);
         this.provider = new GoogleAuthProvider();
         this.auth = getAuth(this.app);
+        this.auth.languageCode = 'fi';
+
         // this.db = getFirestore(this.app);
 
         // initFirestorter({ firebase });
@@ -75,8 +77,8 @@ class Firebase {
 
 
     autentikoi() {
-        signInWithPopup(this.auth, this.provider)
-            // signInWithRedirect(auth, provider)
+        //signInWithPopup(this.auth, this.provider)
+        signInWithRedirect(this.auth, this.provider)
             .then((result) => {
                 // This gives you a Google Access Token. You can use it to access the Google API.
                 const credential = GoogleAuthProvider.credentialFromResult(result);

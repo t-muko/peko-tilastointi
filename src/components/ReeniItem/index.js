@@ -89,7 +89,7 @@ class ReeniItem extends Component {
 									minDate={new Date("12/01/2021")}
 									maxDate={new Date("12/31/2031")}									
 									onChange={(e) => {
-										// console.log("Date", moment(e).format('YYYY-MM-DD'));
+										// console.log("Date to send", moment(e).format('YYYY-MM-DD'));
 										this.onPvmChange(moment(e).format('YYYY-MM-DD'))
 									}}
 									renderInput={(params) => <TextField id={this.id + "foo"} {...params} />}

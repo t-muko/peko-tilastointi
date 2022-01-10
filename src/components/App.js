@@ -9,6 +9,8 @@ import { FirebaseContext } from './Firebase';
 // import { reenit } from '../stores/reeniStore';
 
 import {observer} from "mobx-react";
+import { makeObservable, observable, action, computed } from 'mobx';
+
 
 // import { createTheme } from '@mui/material/styles'; // v1.x
 
@@ -16,11 +18,15 @@ import FloatingActionButton from '@mui/material/Fab';
 import ContentAddIcon from '@mui/icons-material/Add';
 import LogoutIcon from '@mui/icons-material/Logout';
 import IconButton from '@mui/material/IconButton';
+import InfoIcon from '@mui/icons-material/Info';
 
 import Tooltip from '@mui/material/Tooltip';
 
 import Reenit from './Reenit';
 import Tilasto from './Tilasto';
+import Info from './Info'
+
+import * as moment from 'moment';
 
 
 // import { useStores } from '../hooks/use-stores'
@@ -72,6 +78,11 @@ const styles = {
 		position: 'absolute',
 		top: '1em',
 		right: '1em' 
+	},
+	info: {
+		position: 'absolute',
+		top: '1em',
+		right: '3em' 
 	}
 };
 
@@ -82,14 +93,24 @@ const styles = {
 class App extends Component {
 	static contextType = FirebaseContext
 	
-	/*
+	showInfo = false;
+	
 	constructor(props) {
 		super(props)
-        // this.rootStore = props.rootStore
-		// const { rootStore } = useStores()		
-    }*/
+        
+		makeObservable(this, {
+			showInfo: observable,
+			toggleShowInfo: action
+		})
+
+    }
+
+	toggleShowInfo = () => {
+		this.showInfo = !this.showInfo
+	}
 
 	render() {
+		const showInfo = this.showInfo
 		// tää pitää olla, muuten ei re-render herää
 		console.debug("App render user", this.context.rootStore.sessionStore.authUser)
 		return (
@@ -107,6 +128,8 @@ class App extends Component {
 									{context.rootStore.sessionStore.userOk && <div>
 										<h3>{context.rootStore.sessionStore.authUser.email}</h3>
 										
+										{ showInfo && <Info toggleShowInfoF={this.toggleShowInfo} />}
+
 										<Tilasto /> 
 										<Reenit />
 										
@@ -124,13 +147,18 @@ class App extends Component {
 									</div>}
 
 								
-								{context.rootStore.sessionStore.userOk && <Tooltip title="Kirjaudu ulos"><IconButton color="primary" aria-label="upload picture" component="span" style={styles.logout} variant="contained" onClick={() => {
+								{context.rootStore.sessionStore.userOk && <Tooltip title="Info"><IconButton color="primary" aria-label="info" component="span" style={styles.info} variant="contained" 
+									onClick={() => {
+										this.toggleShowInfo();
+									}}
+									><InfoIcon /></IconButton></Tooltip>}
+
+								{context.rootStore.sessionStore.userOk && <Tooltip title="Kirjaudu ulos"><IconButton color="primary" aria-label="logout" component="span" style={styles.logout} variant="contained" onClick={() => {
 										context.rootStore.firebase.logout();
 									}}
 									><LogoutIcon /></IconButton></Tooltip>}
 
 							</header>
-							
 
 						</div>
 					}}
@@ -151,7 +179,8 @@ class App extends Component {
 		try {
 			console.debug("lisataan", this.context.rootStore.reeniFirestore.reenit.path)
 			await this.context.rootStore.reeniFirestore.reenit.add({
-				pvm: (new Date()).getFullYear() + '-' + ((new Date()).getMonth() + 1) + '-' + (new Date()).getDate(),
+				// pvm: (new Date()).getFullYear() + '-' + ((new Date()).getMonth() + 1) + '-' + (new Date()).getDate(),
+				pvm: moment(new Date()).format("YYYY-MM-DD"),
 				tunnit: 0,
 				kommentti: '',
 				kategoria: '',

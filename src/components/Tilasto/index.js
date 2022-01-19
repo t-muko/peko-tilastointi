@@ -16,9 +16,17 @@ import { TextField } from "@mui/material";
 import Autocomplete from '@mui/material/Autocomplete';
 
 import { Paper, Dialog } from '@mui/material';
+import { Chart } from "react-google-charts";
+
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+
 
 import * as moment from 'moment';
 import 'moment/locale/fi';
+import { VolumeUpOutlined } from '@mui/icons-material';
 moment.locale('fi')
 
 /*
@@ -297,6 +305,20 @@ const flatProps = {
 	options: jasenjarjestot.map((option) => option.label),
 };
 
+const data = [
+	["Task", "Hours per Day"],
+	["Work", 11],
+	["Eat", 2],
+	["Commute", 2],
+	["Watch TV", 2],
+	["Sleep", 7],
+];
+
+const options = {
+	title: "Merkintöjen jakauma",
+	pieSliceText: "value"
+};
+
 const Tilasto = observer(class Tilasto extends Component {
 
 	yhteensa = null
@@ -319,7 +341,11 @@ const Tilasto = observer(class Tilasto extends Component {
 	componentWillMount() {
 		this.uid = this.context.rootStore.sessionStore.authUser.uid
 		this.tilastoDokumentti = new Document('tilastot/' + this.uid);
+
 	}
+
+
+
 
 	render() {
 		const context = this.context
@@ -345,8 +371,68 @@ const Tilasto = observer(class Tilasto extends Component {
 			const yhdistyksenTilastoDocs = tilastoDocs.filter((row) => (row.data.yhd || '') === this.tilastoDokumentti.data.yhd)
 			const yhdistys_yhteensa = yhdistyksenTilastoDocs.map((tilasto) => tilasto.data[kuluvaVuosi] ? tilasto.data[kuluvaVuosi].sumH : 0).reduce((a, b) => a + b, 0)
 			// const reenejaViikossaSum = tilastoDocs.map((tilasto) => tilasto.data[kuluvaVuosi].sumD/moment().dayOfYear()*7 || 0).reduce((a, b) => a + b, 0)
+			const kuluvanVuodenTilastot = yhdistyksenTilastoDocs.filter((tilasto) => tilasto.data[kuluvaVuosi]).map((tilasto) => tilasto.data[kuluvaVuosi])
+			console.debug("kuluvanVuodenTilastot", kuluvanVuodenTilastot)
 
 
+			if (kuluvanVuodenTilastot.length > 1) {
+				const byCat = new Object()
+				const kategoriat = ['Jälki', 'Partsa', 'Ilmavainu', 'Tottis', 'Muu reeni', 'Ei kategoriaa', 'Muu y-toiminta']
+				kategoriat.forEach((cat) => byCat[cat] = kuluvanVuodenTilastot
+					.map((tilasto) => (tilasto[cat].X))
+					.reduce((p, c) => p + c, 0)
+				)
+
+				console.debug("By Kategoria", byCat)
+				var chartDataYhd = [["Kategoria", "Kerrat"]]
+				chartDataYhd = chartDataYhd.concat(Object.entries(byCat).map(([key, value]) => ([key, value])))
+				console.debug("By Kategoria yhd", chartDataYhd)
+
+			}
+
+			if (tilastoDocs.length > 1) {
+				const byCat = new Object()
+				const kategoriat = ['Jälki', 'Partsa', 'Ilmavainu', 'Tottis', 'Muu reeni', 'Ei kategoriaa', 'Muu y-toiminta']
+				kategoriat.forEach((cat) => byCat[cat] = tilastoDocs
+					.filter((tilasto) => tilasto.data[kuluvaVuosi])
+					.map((tilasto) => tilasto.data[kuluvaVuosi])
+					.map((tilasto) => (tilasto[cat].X))
+					.reduce((p, c) => p + c, 0)
+				)
+
+				console.debug("By Kategoria", byCat)
+				var chartDataAll = [["Kategoria", "Kerrat"]]
+				chartDataAll = chartDataAll.concat(Object.entries(byCat).map(([key, value]) => ([key, value])))
+				console.debug("By Kategoria all", chartDataAll)
+
+			}
+
+			if (tilastoDocs.length > 1) {
+				const byCat = new Object()
+				const kategoriat = ['Jälki', 'Partsa', 'Ilmavainu', 'Tottis', 'Muu reeni', 'Ei kategoriaa', 'Muu y-toiminta']
+				kategoriat.forEach((cat) => byCat[cat] = tilastoDocs
+					.filter((tilasto) => tilasto.id == this.uid)
+					.filter((tilasto) => tilasto.data[kuluvaVuosi])
+					.map((tilasto) => tilasto.data[kuluvaVuosi])
+					.map((tilasto) => (tilasto[cat].X))
+					.reduce((p, c) => p + c, 0)
+				)
+
+				console.debug("By Kategoria", byCat)
+				var chartDataMy = [["Kategoria", "Kerrat"]]
+				chartDataMy = chartDataMy.concat(Object.entries(byCat).map(([key, value]) => ([key, value])))
+				console.debug("By Kategoria my", chartDataMy)
+
+			}
+			// const kuluvanVuodenKoirareenit = kuluvanVuodenTilastot.filter((tilasto) => (tilasto.koira == "Ykköskoira" || tilasto.koira == "Kakkoskoira"))
+			var reenejaViikossa = 0
+			if (kuluvanVuodenTilastot.length > 1) {
+				reenejaViikossa = kuluvanVuodenTilastot
+					.filter((tilasto) => (tilasto.sumD > 0))
+					.map((tilasto) => (tilasto.sumD))
+					.reduce((p, c) => p + c, 0) / kuluvanVuodenTilastot.length / (moment().dayOfYear() / 7)
+				console.debug("Reenejä viikossa", reenejaViikossa.toFixed(2), moment().dayOfYear())
+			}
 			// console.debug("Kaikki yhteensa", kaikki_yhteensa, tilastoDocs.length)
 
 			// const { docs, isLoading } = reenit
@@ -391,10 +477,52 @@ const Tilasto = observer(class Tilasto extends Component {
 
 						</Paper>
 					</Dialog>
-					<Typography variant="body1" gutterBottom >Yhdistyksen {kuluvaVuosi} merkinnät yhteensä {yhdistys_yhteensa} h ({yhdistyksenTilastoDocs.length} käyttäjää)</Typography>
 
-					<Typography variant="body1" gutterBottom >Kaikkien merkinnät yhteensä {kaikki_yhteensa} h ({tilastoDocs.length} käyttäjää)</Typography>
+					<Accordion TransitionProps={{ unmountOnExit: true }}>
+						<AccordionSummary
+							expandIcon={<ExpandMoreIcon />}
+							aria-controls="panel1a-content"
+							id="panel1a-header"
+						>
+							<Typography variant="body1" gutterBottom >Yhdistyksen vuosi {kuluvaVuosi} yhteensä: {yhdistys_yhteensa} h. Merkintöjä
+								keskimäärin {reenejaViikossa.toFixed(2)} päivänä viikossa ({yhdistyksenTilastoDocs.length} käyttäjää)</Typography>
 
+						</AccordionSummary>
+						<AccordionDetails>
+						<Typography variant="body1" gutterBottom >Kaikkien käyttäjien merkinnät yhteensä {kaikki_yhteensa} h ({tilastoDocs.length} käyttäjää)</Typography>
+
+							<Chart
+								chartType="PieChart"
+								data={chartDataMy}
+								options={{
+									title: "Omien merkintöjen määrän jakauma",
+									pieSliceText: "value"
+								}}
+								width={"100%"}
+								height={"300px"}
+							/>
+							<Chart
+								chartType="PieChart"
+								data={chartDataYhd}
+								options={{
+									title: "Merkintöjen määrän jakauma yhdistyksessä",
+									pieSliceText: "value"
+								}}
+								width={"100%"}
+								height={"300px"}
+							/>
+							<Chart
+								chartType="PieChart"
+								data={chartDataAll}
+								options={{
+									title: "Merkintöjen määrän jakauma, kaikki käyttäjät",
+									pieSliceText: "value"
+								}}
+								width={"100%"}
+								height={"300px"}
+							/>
+						</AccordionDetails>
+					</Accordion>
 				</div>
 			)
 		}

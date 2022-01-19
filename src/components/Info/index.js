@@ -75,7 +75,8 @@ class Info extends Component {
 					<li> Tunteihin "peko-toimintahyvinvointitunnit". Kokoukset, koulutukset, hallinto kuuluu tunteihin, matkat ei.</li>
 					<li> Kategoriat, koiravalinnat helpottavat kun haluat löytää tiedot esimerkiksi mitä jälkitreenejä olet viimeksi tehnyt</li>
 					<li> Kategoriajako on tarkoituksella melko korkealla tasolla, jotta käyttö on nopeaa. Valitse kategoria "pääasiallisen" teeman mukaan.
-						Muistiinpanoihin voi lisätä tietoja esim. vesistöetsintä, rakennusetsintä jne.</li>
+						Muistiinpanoihin voi lisätä tietoja esim. vesistöetsintä, rakennusetsintä jne. Muu reeni -kategoriaa 
+						voi käyttää esim. ilmaisutreenien kategoriana.</li>
 					<li> Voit niputtaa yhteen merkintään päivän kaikki jutut, tai tehdä useamman merkinnän.
 						Tilatoinnissa merkintöjen määrä ei ole mielenkiintoinen, vaan ensisijaiseti tunnit ja ehkä toissijaisesti monenako päivänä viikossa jotain toimintaa tehdään.</li>
 					<li> Tämä ei ole valvontaväline, vaan kunkin yksilön oma helppokäyttöinen kirjanpitoväline </li>
@@ -83,7 +84,7 @@ class Info extends Component {
 					<li> Merkinnöistä voidaan laskea myös eritellympää anynyymia tilastotietoa yhteenvetotasolla, mutta omien reenien avaaminen esim.
 						ryhmänjohtajalle tapahtuu vain käyttäjän omasta toimesta vaikkapa printtaamalla halutun suodatetun näkymän merkinnöistä.</li>
 					<li> Kaikenlaista yksilöivää tietoa vältetään kuin ruttoa EU:n tietosuoja-asetusta mukaillen</li>
-					<li> Tiedot tallennetaan Googlen pilveen, eikä niitä käytetä mihinkään muuhun tarkoitukseen, kuin tähän äppiin.</li>
+					<li> Tiedot tallennetaan Googlen pilveen Frankfurtiin, eikä niitä käytetä mihinkään muuhun tarkoitukseen, kuin tähän äppiin.</li>
 					<li> Palvelu ei tallenna nimeä tai sähköpostiosoitettasi tietojen yhteyteen, vaan tiedot liitetään tekniseen tunnisteeseen (uid).
 						Vain ylläpitäjä näkee palveluun kirjautuneet käyttäjät.</li>
 				</ul >

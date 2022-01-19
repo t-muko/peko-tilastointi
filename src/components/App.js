@@ -21,6 +21,7 @@ import IconButton from '@mui/material/IconButton';
 import InfoIcon from '@mui/icons-material/Info';
 
 import Tooltip from '@mui/material/Tooltip';
+import Box from '@mui/material/Box';
 
 import Reenit from './Reenit';
 import Tilasto from './Tilasto';
@@ -72,7 +73,6 @@ const styles = {
 	login: {
 		position: 'fixed',
 		bottom: "50%",
-		left: "50%"
 	},
 	logout: {
 		position: 'absolute',
@@ -140,11 +140,11 @@ class App extends Component {
 
 									
 								</div>
-								{!context.rootStore.sessionStore.userOk && <div style={styles.login}><Button   variant="contained" onClick={() => {
+								{!context.rootStore.sessionStore.userOk && <Box style={styles.login}><Button   variant="contained" onClick={() => {
 										context.rootStore.firebase.autentikoi();
 									}}
 									>Login</Button>
-									</div>}
+									</Box>}
 
 								
 								{context.rootStore.sessionStore.userOk && <Tooltip title="Info"><IconButton color="primary" aria-label="info" component="span" style={styles.info} variant="contained" 

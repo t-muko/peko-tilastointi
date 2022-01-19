@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { makeObservable, observable, reaction } from 'mobx';
+import { makeObservable, observable, action } from 'mobx';
 
 // import { makeObservable, observable, action, computed } from 'mobx';
 import { FirebaseContext } from '../Firebase';
@@ -23,6 +23,12 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
+
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
 
 import * as moment from 'moment';
 import 'moment/locale/fi';
@@ -323,6 +329,7 @@ const Tilasto = observer(class Tilasto extends Component {
 
 	yhteensa = null
 	editYhdistys = false
+	yksikko = "X"
 
 	static contextType = FirebaseContext
 
@@ -330,7 +337,9 @@ const Tilasto = observer(class Tilasto extends Component {
 		super(props);
 
 		makeObservable(this, {
-			editYhdistys: observable
+			editYhdistys: observable,
+			yksikko: observable,
+			vaihdaYksikko: action
 		})
 
 		this.tilastotColl = new Collection('tilastot');
@@ -344,6 +353,9 @@ const Tilasto = observer(class Tilasto extends Component {
 
 	}
 
+	vaihdaYksikko = (event) => {
+		this.yksikko = event.target.value
+	}
 
 
 
@@ -363,6 +375,7 @@ const Tilasto = observer(class Tilasto extends Component {
 
 			// this.tilastot = this.context.rootStore.tilastoFirestore.tilastot
 			// const tilastot = this.tilastot
+			const yksikko = this.yksikko
 
 			const kuluvaVuosi = (new Date()).getFullYear()
 			const { docs: tilastoDocs, isLoading: isTilastoLoading } = this.tilastotColl;
@@ -372,21 +385,22 @@ const Tilasto = observer(class Tilasto extends Component {
 			const yhdistys_yhteensa = yhdistyksenTilastoDocs.map((tilasto) => tilasto.data[kuluvaVuosi] ? tilasto.data[kuluvaVuosi].sumH : 0).reduce((a, b) => a + b, 0)
 			// const reenejaViikossaSum = tilastoDocs.map((tilasto) => tilasto.data[kuluvaVuosi].sumD/moment().dayOfYear()*7 || 0).reduce((a, b) => a + b, 0)
 			const kuluvanVuodenTilastot = yhdistyksenTilastoDocs.filter((tilasto) => tilasto.data[kuluvaVuosi]).map((tilasto) => tilasto.data[kuluvaVuosi])
-			console.debug("kuluvanVuodenTilastot", kuluvanVuodenTilastot)
+			// console.debug("kuluvanVuodenTilastot", kuluvanVuodenTilastot)
+
 
 
 			if (kuluvanVuodenTilastot.length > 1) {
 				const byCat = new Object()
 				const kategoriat = ['Jälki', 'Partsa', 'Ilmavainu', 'Tottis', 'Muu reeni', 'Ei kategoriaa', 'Muu y-toiminta']
 				kategoriat.forEach((cat) => byCat[cat] = kuluvanVuodenTilastot
-					.map((tilasto) => (tilasto[cat].X))
+					.map((tilasto) => (tilasto[cat][yksikko]))
 					.reduce((p, c) => p + c, 0)
 				)
 
-				console.debug("By Kategoria", byCat)
+				// console.debug("By Kategoria", byCat)
 				var chartDataYhd = [["Kategoria", "Kerrat"]]
 				chartDataYhd = chartDataYhd.concat(Object.entries(byCat).map(([key, value]) => ([key, value])))
-				console.debug("By Kategoria yhd", chartDataYhd)
+				// console.debug("By Kategoria yhd", chartDataYhd)
 
 			}
 
@@ -396,14 +410,14 @@ const Tilasto = observer(class Tilasto extends Component {
 				kategoriat.forEach((cat) => byCat[cat] = tilastoDocs
 					.filter((tilasto) => tilasto.data[kuluvaVuosi])
 					.map((tilasto) => tilasto.data[kuluvaVuosi])
-					.map((tilasto) => (tilasto[cat].X))
+					.map((tilasto) => (tilasto[cat][yksikko]))
 					.reduce((p, c) => p + c, 0)
 				)
 
-				console.debug("By Kategoria", byCat)
+				// console.debug("By Kategoria", byCat)
 				var chartDataAll = [["Kategoria", "Kerrat"]]
 				chartDataAll = chartDataAll.concat(Object.entries(byCat).map(([key, value]) => ([key, value])))
-				console.debug("By Kategoria all", chartDataAll)
+				// console.debug("By Kategoria all", chartDataAll)
 
 			}
 
@@ -414,14 +428,14 @@ const Tilasto = observer(class Tilasto extends Component {
 					.filter((tilasto) => tilasto.id == this.uid)
 					.filter((tilasto) => tilasto.data[kuluvaVuosi])
 					.map((tilasto) => tilasto.data[kuluvaVuosi])
-					.map((tilasto) => (tilasto[cat].X))
+					.map((tilasto) => (tilasto[cat][yksikko]))
 					.reduce((p, c) => p + c, 0)
 				)
 
-				console.debug("By Kategoria", byCat)
+				// console.debug("By Kategoria", byCat)
 				var chartDataMy = [["Kategoria", "Kerrat"]]
 				chartDataMy = chartDataMy.concat(Object.entries(byCat).map(([key, value]) => ([key, value])))
-				console.debug("By Kategoria my", chartDataMy)
+				// console.debug("By Kategoria my", chartDataMy)
 
 			}
 			// const kuluvanVuodenKoirareenit = kuluvanVuodenTilastot.filter((tilasto) => (tilasto.koira == "Ykköskoira" || tilasto.koira == "Kakkoskoira"))
@@ -431,7 +445,7 @@ const Tilasto = observer(class Tilasto extends Component {
 					.filter((tilasto) => (tilasto.sumD > 0))
 					.map((tilasto) => (tilasto.sumD))
 					.reduce((p, c) => p + c, 0) / kuluvanVuodenTilastot.length / (moment().dayOfYear() / 7)
-				console.debug("Reenejä viikossa", reenejaViikossa.toFixed(2), moment().dayOfYear())
+				// console.debug("Reenejä viikossa", reenejaViikossa.toFixed(2), moment().dayOfYear())
 			}
 			// console.debug("Kaikki yhteensa", kaikki_yhteensa, tilastoDocs.length)
 
@@ -489,13 +503,27 @@ const Tilasto = observer(class Tilasto extends Component {
 
 						</AccordionSummary>
 						<AccordionDetails>
-						<Typography variant="body1" gutterBottom >Kaikkien käyttäjien merkinnät yhteensä {kaikki_yhteensa} h ({tilastoDocs.length} käyttäjää)</Typography>
 
+							<FormControl>
+								<FormLabel id="yksikko-buttons">Kuvaajien yksikkö</FormLabel>
+								<RadioGroup
+									row
+									aria-labelledby="yksikko-buttons"
+									name="controlled-radio-buttons-group"
+									value={yksikko}
+									onChange={this.vaihdaYksikko}
+								>
+									<FormControlLabel value="X" control={<Radio />} label="Merkintöjä" />
+									<FormControlLabel value="H" control={<Radio />} label="Tunteja" />
+
+								</RadioGroup>
+
+							</FormControl>
 							<Chart
 								chartType="PieChart"
 								data={chartDataMy}
 								options={{
-									title: "Omien merkintöjen määrän jakauma",
+									title: "Omien merkintöjen jakauma",
 									pieSliceText: "value"
 								}}
 								width={"100%"}
@@ -505,7 +533,7 @@ const Tilasto = observer(class Tilasto extends Component {
 								chartType="PieChart"
 								data={chartDataYhd}
 								options={{
-									title: "Merkintöjen määrän jakauma yhdistyksessä",
+									title: "Merkintöjen jakauma yhdistyksessä",
 									pieSliceText: "value"
 								}}
 								width={"100%"}
@@ -515,12 +543,15 @@ const Tilasto = observer(class Tilasto extends Component {
 								chartType="PieChart"
 								data={chartDataAll}
 								options={{
-									title: "Merkintöjen määrän jakauma, kaikki käyttäjät",
+									title: "Merkintöjen jakauma, kaikki käyttäjät",
 									pieSliceText: "value"
 								}}
 								width={"100%"}
 								height={"300px"}
 							/>
+
+							<Typography variant="body1" gutterBottom >Kaikkien käyttäjien merkinnät yhteensä {kaikki_yhteensa} h ({tilastoDocs.length} käyttäjää)</Typography>
+
 						</AccordionDetails>
 					</Accordion>
 				</div>

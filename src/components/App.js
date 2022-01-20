@@ -138,7 +138,7 @@ class App extends Component {
 										
 										{ showInfo && <Info toggleShowInfoF={this.toggleShowInfo} />}
 
-										<Accordion TransitionProps={{ unmountOnExit: true }}>
+										<Accordion TransitionProps={{ mountOnEnter: true }}>
 						<AccordionSummary
 							expandIcon={<ExpandMoreIcon />}
 							aria-controls="panel1a-content"
@@ -167,6 +167,10 @@ class App extends Component {
 										context.rootStore.firebase.autentikoi();
 									}}
 									>Login</Button>
+									<Box sx={{mt: '5em', fontSize: 10}}>
+										Jos login ei onnistu, voit kokeilla ensin logata Googlen palveluista kokonaan ulos ja sitten kokeilla kirjautumista uudelleen.<br />
+										Voit joutua navigoimaan uudelleen peko-tilastointisivulle.<br />
+										<a href="https://accounts.google.com/Logout" target="_blank" rel="noopener noreferrer"><LogoutIcon sx={{color: 'white'}} /></a></Box>
 									</Box>}
 
 								

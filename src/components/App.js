@@ -22,6 +22,14 @@ import InfoIcon from '@mui/icons-material/Info';
 
 import Tooltip from '@mui/material/Tooltip';
 import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+
+
 
 import Reenit from './Reenit';
 import Tilasto from './Tilasto';
@@ -130,9 +138,24 @@ class App extends Component {
 										
 										{ showInfo && <Info toggleShowInfoF={this.toggleShowInfo} />}
 
+										<Accordion TransitionProps={{ unmountOnExit: true }}>
+						<AccordionSummary
+							expandIcon={<ExpandMoreIcon />}
+							aria-controls="panel1a-content"
+							id="panel1a-header"
+						>
+							<Typography variant="body1" gutterBottom  >Tilastot</Typography>
+
+						</AccordionSummary>
+						<AccordionDetails>
 										<Tilasto /> 
+										</AccordionDetails>
+										</Accordion>
+
 										<Reenit />
 										
+										<Box sx={{p:'40px' }}></Box>
+
 										<FloatingActionButton style={styles.add} onClick={this.onPressAdd}>
 											<ContentAddIcon />
 										</FloatingActionButton>

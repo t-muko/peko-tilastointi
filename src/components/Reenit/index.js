@@ -77,7 +77,7 @@ const Reenit = observer(class Reenit extends Component {
 			_expand: observable,
 			reenit: observable,
 			searchValue: observable,
-			tilastoRecord: observable,
+			tilastoRecord: observable.struct,
 			yhteensa: observable
 		})
 
@@ -287,7 +287,7 @@ const Reenit = observer(class Reenit extends Component {
 
 	onAddTilasto = async () => {
 		console.debug("Päivitetään tilasto")
-		if (this.uid) {
+		if (this.uid && (this.tilastoRecord['totalD'] || 0) >0 ) {
 			try {
 				//const tilastoDokumentti = new Document('tilastot/' + this.uid);
 				// console.debug("doc with customid tilasto", docWithCustomId)
@@ -306,7 +306,7 @@ const Reenit = observer(class Reenit extends Component {
 	// TODO
 }
 		} else {
-	console.error("Ei ole uid:ta")
+	console.error("Ei ole uid:ta, tai tilastopäiviä on nolla")
 }
 	};
 

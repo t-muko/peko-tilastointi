@@ -18,12 +18,6 @@ import Autocomplete from '@mui/material/Autocomplete';
 import { Paper, Dialog } from '@mui/material';
 import { Chart } from "react-google-charts";
 
-import Accordion from '@mui/material/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-
-
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -387,7 +381,8 @@ const Tilasto = observer(class Tilasto extends Component {
 			const kuluvanVuodenTilastot = yhdistyksenTilastoDocs.filter((tilasto) => tilasto.data[kuluvaVuosi]).map((tilasto) => tilasto.data[kuluvaVuosi])
 			// console.debug("kuluvanVuodenTilastot", kuluvanVuodenTilastot)
 
-
+			const yhdistykset = new Set()
+			tilastoDocs.map((tilasto) => yhdistykset.add(tilasto.data.yhd))
 
 			if (kuluvanVuodenTilastot.length > 1) {
 				const byCat = new Object()
@@ -464,7 +459,7 @@ const Tilasto = observer(class Tilasto extends Component {
 						<IconButton
 							// style={styles.icon}
 							onClick={() => this.editYhdistys = !this.editYhdistys} >
-							<EditIcon sx={{ color: 'white' }} />
+							<EditIcon  />
 						</IconButton>
 					</Typography>
 					<Dialog onClose={() => {
@@ -492,17 +487,10 @@ const Tilasto = observer(class Tilasto extends Component {
 						</Paper>
 					</Dialog>
 
-					<Accordion TransitionProps={{ unmountOnExit: true }}>
-						<AccordionSummary
-							expandIcon={<ExpandMoreIcon />}
-							aria-controls="panel1a-content"
-							id="panel1a-header"
-						>
 							<Typography variant="body1" gutterBottom >Yhdistyksen vuosi {kuluvaVuosi} yhteensä: {yhdistys_yhteensa} h. Merkintöjä
 								keskimäärin {reenejaViikossa.toFixed(2)} päivänä viikossa ({yhdistyksenTilastoDocs.length} käyttäjää)</Typography>
 
-						</AccordionSummary>
-						<AccordionDetails>
+						
 
 							<FormControl>
 								<FormLabel id="yksikko-buttons">Kuvaajien yksikkö</FormLabel>
@@ -550,10 +538,10 @@ const Tilasto = observer(class Tilasto extends Component {
 								height={"300px"}
 							/>
 
-							<Typography variant="body1" gutterBottom >Kaikkien käyttäjien merkinnät yhteensä {kaikki_yhteensa} h ({tilastoDocs.length} käyttäjää)</Typography>
+							<Typography variant="body1" gutterBottom >Kaikkien käyttäjien merkinnät 
+							yhteensä {kaikki_yhteensa} h ({tilastoDocs.length} käyttäjää, {yhdistykset.size} yhdistystä)</Typography>
 
-						</AccordionDetails>
-					</Accordion>
+						
 				</div>
 			)
 		}

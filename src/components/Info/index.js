@@ -93,6 +93,7 @@ class Info extends Component {
 					Vinkki: appi kannattaa kännykässä lisätä kotinäyttöön tms. niin se löytyy helposti.</Typography>
 
 				<Typography variant="body1" gutterBottom>Palvelun tarjoaa Teemu Koivisto teemu@pirkanmaanpelastuskoirat.fi</Typography>
+				<Typography variant="body1" gutterBottom>Logon taiteili Kaisa Kuisma</Typography>
 			</Paper>
 			</Dialog>
 			);

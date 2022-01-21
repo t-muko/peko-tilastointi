@@ -90,7 +90,7 @@ const styles = {
 	info: {
 		position: 'absolute',
 		top: '1em',
-		right: '3em' 
+		right: '3em'
 	}
 };
 
@@ -163,7 +163,7 @@ class App extends Component {
 
 									
 								</div>
-								{!context.rootStore.sessionStore.userOk && <Box style={styles.login}><Button   variant="contained" onClick={() => {
+								{!context.rootStore.sessionStore.userOk && <Box style={styles.login}><Button variant="contained" onClick={() => {
 										context.rootStore.firebase.autentikoi();
 									}}
 									>Login</Button>
@@ -174,7 +174,8 @@ class App extends Component {
 									</Box>}
 
 								
-								{context.rootStore.sessionStore.userOk && <Tooltip title="Info"><IconButton color="primary" aria-label="info" component="span" style={styles.info} variant="contained" 
+								{context.rootStore.sessionStore.userOk && <Tooltip title="Info">
+									<IconButton color="primary" aria-label="info" component="span" style={styles.info} variant="contained" 
 									onClick={() => {
 										this.toggleShowInfo();
 									}}

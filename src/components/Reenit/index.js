@@ -55,7 +55,13 @@ const styles = {
 };
 
 function escapeRegExp(value) {
-	return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+//	return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+// value.replace(/[-[\]{}()*+?.,\\^$|#]/g, '\\$&').replace(/[\s]/g, '.*');
+// ^(?=.*\bSidney\b)(?=.*\bAlice\b)(?=.*\bPeter\b).*$
+	var searchRe = value.replace(/[-[\]{}()*+?.,\\^$|#]/g, '\\$&').split(" ")
+	searchRe = searchRe.map((wrd) => "(?=.*"+wrd+")" ).join("")
+// return "(?=.*vespa)(?=.*lumi)"
+return searchRe
 }
 
 const Reenit = observer(class Reenit extends Component {
@@ -129,7 +135,7 @@ const Reenit = observer(class Reenit extends Component {
 		// this.reenit = context.rootStore.reeniFirestore.reenit
 
 		// this.requestSearch(this.searchValue)
-
+		// console.debug("Regexp", escapeRegExp(this.searchValue))
 		const searchRegex = new RegExp(escapeRegExp(this.searchValue), 'i');
 		const filteredRows = context.rootStore.reeniFirestore.reenit.docs.filter((row) => {
 			return Object.keys(row.data).some((field) => {

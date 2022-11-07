@@ -107,13 +107,20 @@ class ReeniItem extends Component {
 										onChange={this.onKestoChange}
 									>
 										<MenuItem value={0}> </MenuItem>
-										<MenuItem value={0.5}>0,5h</MenuItem>
-										<MenuItem value={1}>1h</MenuItem>
-										<MenuItem value={1.5}>1,5h</MenuItem>
-										<MenuItem value={2}>2h</MenuItem>
-										<MenuItem value={3}>3h</MenuItem>
-										<MenuItem value={4}>4h</MenuItem>
-										<MenuItem value={5}>5h</MenuItem>
+										<MenuItem value={0.25}>lyhyt</MenuItem>
+										<MenuItem value={0.5}>0,5 h</MenuItem>
+										<MenuItem value={1}>1 h</MenuItem>
+										<MenuItem value={1.5}>1,5 h</MenuItem>
+										<MenuItem value={2}>2 h</MenuItem>
+										<MenuItem value={2.5}>2,5 h</MenuItem>
+										<MenuItem value={3}>3 h</MenuItem>
+										<MenuItem value={4}>4 h</MenuItem>
+										<MenuItem value={5}>5 h</MenuItem>
+										<MenuItem value={6}>6 h</MenuItem>
+										<MenuItem value={7}>7 h</MenuItem>
+										<MenuItem value={8}>8 h</MenuItem>
+										<MenuItem value={9}>9 h</MenuItem>
+										<MenuItem value={10}>10 h</MenuItem>
 
 									</Select>
 							</Grid>
@@ -152,6 +159,7 @@ class ReeniItem extends Component {
 										<MenuItem value={'Ei koiraa'}>Ei koiraa</MenuItem>
 										<MenuItem value={'Ykköskoira'}>Ykköskoira</MenuItem>
 										<MenuItem value={'Kakkoskoira'}>Kakkoskoira</MenuItem>
+										<MenuItem value={'Kolmoskoira'}>Kolmoskoira</MenuItem>
 										<MenuItem value={'Joku muu'}>Joku muu</MenuItem>
 										
 									</Select>

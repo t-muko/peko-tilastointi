@@ -24,6 +24,10 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 
+import InputLabel from '@mui/material/InputLabel';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+
 import * as moment from 'moment';
 import 'moment/locale/fi';
 import { VolumeUpOutlined } from '@mui/icons-material';
@@ -324,6 +328,7 @@ const Tilasto = observer(class Tilasto extends Component {
 	yhteensa = null
 	editYhdistys = false
 	yksikko = "X"
+	tilastoVuosi = (new Date()).getFullYear()
 
 	static contextType = FirebaseContext
 
@@ -333,7 +338,11 @@ const Tilasto = observer(class Tilasto extends Component {
 		makeObservable(this, {
 			editYhdistys: observable,
 			yksikko: observable,
-			vaihdaYksikko: action
+			tilastoVuosi: observable,
+			vaihdaVuosi: action,
+			vaihdaYksikko: action,
+			closeYhdistysEdit: action,
+			openYhdistysEdit: action
 		})
 
 		this.tilastotColl = new Collection('tilastot');
@@ -351,7 +360,17 @@ const Tilasto = observer(class Tilasto extends Component {
 		this.yksikko = event.target.value
 	}
 
+	vaihdaVuosi = (event) => {
+		this.tilastoVuosi = event.target.value
+	}
 
+	openYhdistysEdit = (event) => {
+		this.editYhdistys = true
+	}
+
+	closeYhdistysEdit = (event) => {
+		this.editYhdistys = false
+	}
 
 	render() {
 		const context = this.context
@@ -370,15 +389,20 @@ const Tilasto = observer(class Tilasto extends Component {
 			// this.tilastot = this.context.rootStore.tilastoFirestore.tilastot
 			// const tilastot = this.tilastot
 			const yksikko = this.yksikko
+			const tilastoVuosi = this.tilastoVuosi
 
 			const kuluvaVuosi = (new Date()).getFullYear()
+			const range = (start, stop, step = 1) =>
+				Array(Math.ceil((stop - start) / step)).fill(start).map((x, y) => x + y * step)
+			const vuodet = range(2021, kuluvaVuosi + 1, 1)
+
 			const { docs: tilastoDocs, isLoading: isTilastoLoading } = this.tilastotColl;
 			// console.debug("Tilastodocs path", this.tilastot.path, tilastoDocs)
 			const kaikki_yhteensa = tilastoDocs.map((tilasto) => tilasto.data.totalH || 0).reduce((a, b) => a + b, 0)
 			const yhdistyksenTilastoDocs = tilastoDocs.filter((row) => (row.data.yhd || '') === this.tilastoDokumentti.data.yhd)
-			const yhdistys_yhteensa = yhdistyksenTilastoDocs.map((tilasto) => tilasto.data[kuluvaVuosi] ? tilasto.data[kuluvaVuosi].sumH : 0).reduce((a, b) => a + b, 0)
-			// const reenejaViikossaSum = tilastoDocs.map((tilasto) => tilasto.data[kuluvaVuosi].sumD/moment().dayOfYear()*7 || 0).reduce((a, b) => a + b, 0)
-			const kuluvanVuodenTilastot = yhdistyksenTilastoDocs.filter((tilasto) => tilasto.data[kuluvaVuosi]).map((tilasto) => tilasto.data[kuluvaVuosi])
+			const yhdistys_yhteensa = yhdistyksenTilastoDocs.map((tilasto) => tilasto.data[tilastoVuosi] ? tilasto.data[tilastoVuosi].sumH : 0).reduce((a, b) => a + b, 0)
+			// const reenejaViikossaSum = tilastoDocs.map((tilasto) => tilasto.data[tilastoVuosi].sumD/moment().dayOfYear()*7 || 0).reduce((a, b) => a + b, 0)
+			const kuluvanVuodenTilastot = yhdistyksenTilastoDocs.filter((tilasto) => tilasto.data[tilastoVuosi]).map((tilasto) => tilasto.data[tilastoVuosi])
 			// console.debug("kuluvanVuodenTilastot", kuluvanVuodenTilastot)
 
 			const yhdistykset = new Set()
@@ -395,16 +419,21 @@ const Tilasto = observer(class Tilasto extends Component {
 				// console.debug("By Kategoria", byCat)
 				var chartDataYhd = [["Kategoria", "Kerrat"]]
 				chartDataYhd = chartDataYhd.concat(Object.entries(byCat).map(([key, value]) => ([key, value])))
-				// console.debug("By Kategoria yhd", chartDataYhd)
-
+				
 			}
+			else {
+				var chartDataYhd = [["Kategoria", "Kerrat"]]
+			}
+
+			// console.debug("By Kategoria yhd", chartDataYhd)
+			
 
 			if (tilastoDocs.length > 1) {
 				const byCat = new Object()
 				const kategoriat = ['Jälki', 'Partsa', 'Ilmavainu', 'Tottis', 'Muu reeni', 'Ei kategoriaa', 'Muu y-toiminta']
 				kategoriat.forEach((cat) => byCat[cat] = tilastoDocs
-					.filter((tilasto) => tilasto.data[kuluvaVuosi])
-					.map((tilasto) => tilasto.data[kuluvaVuosi])
+					.filter((tilasto) => tilasto.data[tilastoVuosi])
+					.map((tilasto) => tilasto.data[tilastoVuosi])
 					.map((tilasto) => (tilasto[cat][yksikko]))
 					.reduce((p, c) => p + c, 0)
 				)
@@ -421,8 +450,8 @@ const Tilasto = observer(class Tilasto extends Component {
 				const kategoriat = ['Jälki', 'Partsa', 'Ilmavainu', 'Tottis', 'Muu reeni', 'Ei kategoriaa', 'Muu y-toiminta']
 				kategoriat.forEach((cat) => byCat[cat] = tilastoDocs
 					.filter((tilasto) => tilasto.id == this.uid)
-					.filter((tilasto) => tilasto.data[kuluvaVuosi])
-					.map((tilasto) => tilasto.data[kuluvaVuosi])
+					.filter((tilasto) => tilasto.data[tilastoVuosi])
+					.map((tilasto) => tilasto.data[tilastoVuosi])
 					.map((tilasto) => (tilasto[cat][yksikko]))
 					.reduce((p, c) => p + c, 0)
 				)
@@ -458,14 +487,11 @@ const Tilasto = observer(class Tilasto extends Component {
 					<Typography variant="body1" gutterBottom >Oma yhdistys: {yhdistys}
 						<IconButton
 							// style={styles.icon}
-							onClick={() => this.editYhdistys = !this.editYhdistys} >
-							<EditIcon  />
+							onClick={this.openYhdistysEdit} >
+							<EditIcon />
 						</IconButton>
 					</Typography>
-					<Dialog onClose={() => {
-						this.editYhdistys = false;
-					}
-					} open={this.editYhdistys}>
+					<Dialog onClose={this.closeYhdistysEdit	} open={this.editYhdistys}>
 						<Paper sx={{ m: 2, p: 2 }}>
 							<Autocomplete
 								options={jasenjarjestot.map((option) => option.label)}
@@ -475,7 +501,7 @@ const Tilasto = observer(class Tilasto extends Component {
 								onChange={(e, value) => {
 									if (value !== null) {
 										this.tilastoDokumentti.set({ yhd: value }, { merge: true });
-										this.editYhdistys = false;
+										this.closeYhdistysEdit();
 									}
 								}}
 								renderInput={(params) => (
@@ -487,61 +513,78 @@ const Tilasto = observer(class Tilasto extends Component {
 						</Paper>
 					</Dialog>
 
-							<Typography variant="body1" gutterBottom >Yhdistyksen vuosi {kuluvaVuosi} yhteensä: {yhdistys_yhteensa} h. Merkintöjä
-								keskimäärin {reenejaViikossa.toFixed(2)} päivänä viikossa ({yhdistyksenTilastoDocs.length} käyttäjää)</Typography>
+					<FormControl >
+					<InputLabel id="vuosi-select-label">Vuosi</InputLabel>
+					<Select
+						labelId="vuosi-select-label"
+						id="vuosi-select"
+						value={tilastoVuosi}
+						label="Vuosi"
+						onChange={this.vaihdaVuosi}
+					>
+						{
+							vuodet.map((vuosi) =>  <MenuItem value={vuosi} key={vuosi}>{vuosi}</MenuItem>)
+						}
+					</Select>
+					</FormControl>
 
-						
 
-							<FormControl>
-								<FormLabel id="yksikko-buttons">Kuvaajien yksikkö</FormLabel>
-								<RadioGroup
-									row
-									aria-labelledby="yksikko-buttons"
-									name="controlled-radio-buttons-group"
-									value={yksikko}
-									onChange={this.vaihdaYksikko}
-								>
-									<FormControlLabel value="X" control={<Radio />} label="Merkintöjä" />
-									<FormControlLabel value="H" control={<Radio />} label="Tunteja" />
 
-								</RadioGroup>
+					<Typography variant="body1" gutterBottom >Yhdistyksen vuosi {tilastoVuosi} yhteensä: {yhdistys_yhteensa} h. Merkintöjä
+						keskimäärin {reenejaViikossa.toFixed(2)} päivänä viikossa ({yhdistyksenTilastoDocs.length} käyttäjää)</Typography>
 
-							</FormControl>
-							<Chart
-								chartType="PieChart"
-								data={chartDataMy}
-								options={{
-									title: "Omien merkintöjen jakauma",
-									pieSliceText: "value"
-								}}
-								width={"100%"}
-								height={"300px"}
-							/>
-							<Chart
-								chartType="PieChart"
-								data={chartDataYhd}
-								options={{
-									title: "Merkintöjen jakauma yhdistyksessä",
-									pieSliceText: "value"
-								}}
-								width={"100%"}
-								height={"300px"}
-							/>
-							<Chart
-								chartType="PieChart"
-								data={chartDataAll}
-								options={{
-									title: "Merkintöjen jakauma, kaikki käyttäjät",
-									pieSliceText: "value"
-								}}
-								width={"100%"}
-								height={"300px"}
-							/>
 
-							<Typography variant="body1" gutterBottom >Kaikkien käyttäjien merkinnät 
-							yhteensä {kaikki_yhteensa} h ({tilastoDocs.length} käyttäjää, {yhdistykset.size} yhdistystä)</Typography>
 
-						
+					<FormControl>
+						<FormLabel id="yksikko-buttons">Kuvaajien yksikkö</FormLabel>
+						<RadioGroup
+							row
+							aria-labelledby="yksikko-buttons"
+							name="controlled-radio-buttons-group"
+							value={yksikko}
+							onChange={this.vaihdaYksikko}
+						>
+							<FormControlLabel value="X" control={<Radio />} label="Merkintöjä" />
+							<FormControlLabel value="H" control={<Radio />} label="Tunteja" />
+
+						</RadioGroup>
+
+					</FormControl>
+					<Chart
+						chartType="PieChart"
+						data={chartDataMy}
+						options={{
+							title: "Omien merkintöjen jakauma",
+							pieSliceText: "value"
+						}}
+						width={"100%"}
+						height={"300px"}
+					/>
+					<Chart
+						chartType="PieChart"
+						data={chartDataYhd}
+						options={{
+							title: "Merkintöjen jakauma yhdistyksessä",
+							pieSliceText: "value"
+						}}
+						width={"100%"}
+						height={"300px"}
+					/>
+					<Chart
+						chartType="PieChart"
+						data={chartDataAll}
+						options={{
+							title: "Merkintöjen jakauma, kaikki käyttäjät",
+							pieSliceText: "value"
+						}}
+						width={"100%"}
+						height={"300px"}
+					/>
+
+					<Typography variant="body1" gutterBottom >Kaikkien käyttäjien merkinnät
+						yhteensä {kaikki_yhteensa} h ({tilastoDocs.length} käyttäjää, {yhdistykset.size} yhdistystä)</Typography>
+
+
 				</div>
 			)
 		}

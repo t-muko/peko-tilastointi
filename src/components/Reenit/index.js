@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { makeObservable, observable, reaction } from 'mobx';
+import { makeObservable, observable, reaction, action } from 'mobx';
 import { FirebaseContext } from '../Firebase';
 
 // import { reenit } from '../../stores/reeniStore';
@@ -84,7 +84,8 @@ const Reenit = observer(class Reenit extends Component {
 			reenit: observable,
 			searchValue: observable,
 			tilastoRecord: observable.struct,
-			yhteensa: observable
+			yhteensa: observable,
+			setTilastoRecord: action
 		})
 
 		/*this.state = {
@@ -96,7 +97,7 @@ const Reenit = observer(class Reenit extends Component {
 
 
 
-	componentWillMount() {
+	componentDidMount() {
 		const context = this.context;
 		//It will get the data from context, and put it into the state.
 		// this.setState({ profile: context.profile });
@@ -126,7 +127,13 @@ const Reenit = observer(class Reenit extends Component {
 		});
 		
 	  };
+
 */
+
+	setTilastoRecord = (tilasto) => {
+		this.tilastoRecord = tilasto
+	}
+
 	render() {
 		// console.debug("Collection path", this.context.rootStore.reeniFirestore.reenit.path)
 		// const { disabled } = this.state;
@@ -169,7 +176,15 @@ const Reenit = observer(class Reenit extends Component {
 			vt['totalH'] = docs.map((reeni) => reeni.data.tunnit || 0).reduce((a, b) => a + b, 0)
 			vt['totalD'] = reenipaivat.size
 			
-			const foo = [2021, 2022].map((vuosi) => {
+			const kuluvaVuosi = (new Date()).getFullYear()
+
+			const range = (start, stop, step = 1) =>
+			  Array(Math.ceil((stop - start) / step)).fill(start).map((x, y) => x + y * step)
+			const vuodet = range(2021, kuluvaVuosi+1, 1)
+
+			// console.log("Vuodet", vuodet)
+			// const foo = [2021, 2022].map((vuosi) => {
+			vuodet.map((vuosi) => {
 				const vuodenReenit = docs.filter((rivi) => rivi.data.pvm.includes(vuosi))
 				const reenipaivat = new Set()
 				vuodenReenit.map((reeni) => reenipaivat.add(reeni.data.pvm))
@@ -190,8 +205,9 @@ const Reenit = observer(class Reenit extends Component {
 				})
 			}
 			)
-			// console.debug("vuositilasto", vt)
-			this.tilastoRecord = vt
+			console.debug("vuositilasto", vt)
+			// this.tilastoRecord = vt
+			this.setTilastoRecord(vt)
 }
 			// this.onAddTilasto()
 			// console.debug("Docs: ", children)

@@ -16,10 +16,11 @@ import Select from '@mui/material/Select';
 import Dialog from '@mui/material/Dialog';
 import Stack from '@mui/material/Stack';
 
-import DateAdapter from '@mui/lab/AdapterMoment';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import MobileDatePicker from '@mui/lab/MobileDatePicker';
+// import DateAdapter from '@mui/lab/AdapterMoment';
+// import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 
 import fiLocale from 'date-fns/locale/fi';
 
@@ -65,7 +66,7 @@ class ReeniItem extends Component {
 
 		// console.log('TodoItem.render: ', item.path, ', kommentti: ', kommentti);
 		return (
-			<LocalizationProvider dateAdapter={AdapterDateFns} locale={fiLocale}>
+			<LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={fiLocale}>
 
 				<Dialog onClose={() => {
 					// console.debug("Closing");

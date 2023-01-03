@@ -162,7 +162,7 @@ const Reenit = observer(class Reenit extends Component {
 
 			// Haku toimii niin, että regexp etsii hakusanoja missä tahansa järjestyksessä stringistä. Luodaan string, jossa on kaikki halutut kentät formatoituna
 			// console.debug("rowdata", row.data)
-			const concatenoituString = (moment(row.data['pvm']).format("D.M.YYYY dddd").toString() || '') 
+			const concatenoituString = (moment(row.data['pvm']).format("D.M.YYYY dddd MMMM").toString() || '') 
 			+ ' ' + row.data['koira'].toString()
 			+ ' ' + row.data['kategoria'].toString()
 			+ ' ' + row.data['kommentti'].toString()

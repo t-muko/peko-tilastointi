@@ -568,7 +568,7 @@ const Tilasto = observer(class Tilasto extends Component {
 						chartType="PieChart"
 						data={chartDataMy}
 						options={{
-							title: "Omien merkintöjen jakauma",
+							title: "Omien merkintöjen " + (yksikko == 'X' ? "" : "tunti") + "jakauma",
 							pieSliceText: "value"
 						}}
 						width={"100%"}
@@ -578,7 +578,7 @@ const Tilasto = observer(class Tilasto extends Component {
 						chartType="PieChart"
 						data={chartDataYhd}
 						options={{
-							title: "Merkintöjen jakauma yhdistyksessä",
+							title: "Merkintöjen " + (yksikko == 'X' ? "" : "tunti") + "jakauma yhdistyksessä",
 							pieSliceText: "value"
 						}}
 						width={"100%"}
@@ -588,7 +588,7 @@ const Tilasto = observer(class Tilasto extends Component {
 						chartType="PieChart"
 						data={chartDataAll}
 						options={{
-							title: "Merkintöjen jakauma, kaikki käyttäjät",
+							title: "Merkintöjen " + (yksikko == 'X' ? "" : "tunti") + "jakauma, kaikki käyttäjät",
 							pieSliceText: "value"
 						}}
 						width={"100%"}

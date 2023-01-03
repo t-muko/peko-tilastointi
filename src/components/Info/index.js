@@ -120,6 +120,11 @@ class Info extends Component {
 					kokeiden järjestelyt, kokoukset, kurssit, hallinto jne.
 				</Typography>
 
+				<Typography variant="body1" gutterBottom>
+					Hakutoiminto osaa päivien ja kuukausien nimet. Jos haluat löytää vuoden 2022 kesäkuun jälkireenit, kirjoita hakutermiksi "kesäkuu 2022 jälki".
+					Kommenteista vuoden 2022 nostot löytyvät kirjoittamalla hakusanaksi "nosto 2022".
+				</Typography>
+
 				<Typography variant="h5" gutterBottom>Vinkki</Typography>
 				<Typography variant="body1" gutterBottom>
 					Appi kannattaa kännykässä lisätä kotinäyttöön tms. niin se löytyy helposti.</Typography>

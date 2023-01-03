@@ -397,16 +397,30 @@ const Tilasto = observer(class Tilasto extends Component {
 			const vuodet = range(2021, kuluvaVuosi + 1, 1)
 
 			const { docs: tilastoDocs, isLoading: isTilastoLoading } = this.tilastotColl;
-			// console.debug("Tilastodocs path", this.tilastot.path, tilastoDocs)
-			const kaikki_yhteensa = tilastoDocs.map((tilasto) => tilasto.data.totalH || 0).reduce((a, b) => a + b, 0)
+			// console.debug("Tilastodocs ", tilastoDocs)
+			// const kaikki_yhteensa = tilastoDocs.map((tilasto) => tilasto.data.totalH || 0).reduce((a, b) => a + b, 0)
+			const tilastoVuodenKaikkiTilastot = tilastoDocs
+			.filter((tilasto) => tilasto.data[tilastoVuosi]).map((tilasto) => tilasto.data[tilastoVuosi])
+			.filter((tilasto) => tilasto.sumH > 0)
+			// console.debug("tilastovuoden kaikki", tilastoVuodenKaikkiTilastot)
+			const tilastovuoden_tunnit_yhteensa = tilastoVuodenKaikkiTilastot.map((tilasto) => tilasto.sumH || 0).reduce((a, b) => a + b, 0)
+			// console.debug("Tilastovuoden tunnit yhteensä", tilastovuoden_tunnit_yhteensa)
+			const tilastovuoden_paivat_yhteensa = tilastoVuodenKaikkiTilastot.map((tilasto) => tilasto.sumD || 0).reduce((a, b) => a + b, 0)
+			// console.debug("Tilastovuoden paivat yhteensä", tilastovuoden_paivat_yhteensa)
+			const tilastovuoden_merkinnat_yhteensa = tilastoVuodenKaikkiTilastot.map((tilasto) => tilasto.sumX || 0).reduce((a, b) => a + b, 0)
+			// console.debug("Tilastovuoden merkinnat yhteensä", tilastovuoden_merkinnat_yhteensa)
+			// console.debug("Tilastovuoden käyttäjät yhteensä", tilastoVuodenKaikkiTilastot.length)
+
+
 			const yhdistyksenTilastoDocs = tilastoDocs.filter((row) => (row.data.yhd || '') === this.tilastoDokumentti.data.yhd)
 			const yhdistys_yhteensa = yhdistyksenTilastoDocs.map((tilasto) => tilasto.data[tilastoVuosi] ? tilasto.data[tilastoVuosi].sumH : 0).reduce((a, b) => a + b, 0)
 			// const reenejaViikossaSum = tilastoDocs.map((tilasto) => tilasto.data[tilastoVuosi].sumD/moment().dayOfYear()*7 || 0).reduce((a, b) => a + b, 0)
-			const kuluvanVuodenTilastot = yhdistyksenTilastoDocs.filter((tilasto) => tilasto.data[tilastoVuosi]).map((tilasto) => tilasto.data[tilastoVuosi])
+			const kuluvanVuodenTilastot = yhdistyksenTilastoDocs.filter((tilasto) => tilasto.data[tilastoVuosi]).map((tilasto) => tilasto.data[tilastoVuosi]).filter((tilasto) => tilasto.sumH > 0)
 			// console.debug("kuluvanVuodenTilastot", kuluvanVuodenTilastot)
 
 			const yhdistykset = new Set()
-			tilastoDocs.map((tilasto) => yhdistykset.add(tilasto.data.yhd))
+			// tilastoDocs.map((tilasto) => yhdistykset.add(tilasto.data.yhd))
+			tilastoDocs.filter((tilasto) => tilasto.data[tilastoVuosi] !== undefined).map((tilasto) => yhdistykset.add(tilasto.data.yhd))
 
 			if (kuluvanVuodenTilastot.length > 1) {
 				const byCat = new Object()
@@ -468,7 +482,7 @@ const Tilasto = observer(class Tilasto extends Component {
 				reenejaViikossa = kuluvanVuodenTilastot
 					.filter((tilasto) => (tilasto.sumD > 0))
 					.map((tilasto) => (tilasto.sumD))
-					.reduce((p, c) => p + c, 0) / kuluvanVuodenTilastot.length / (moment().dayOfYear() / 7)
+					.reduce((p, c) => p + c, 0) / kuluvanVuodenTilastot.length / (tilastoVuosi == kuluvaVuosi ? (moment().dayOfYear()/7) : 365 / 7)
 				// console.debug("Reenejä viikossa", reenejaViikossa.toFixed(2), moment().dayOfYear())
 			}
 			// console.debug("Kaikki yhteensa", kaikki_yhteensa, tilastoDocs.length)
@@ -531,7 +545,7 @@ const Tilasto = observer(class Tilasto extends Component {
 
 
 					<Typography variant="body1" gutterBottom >Yhdistyksen vuosi {tilastoVuosi} yhteensä: {yhdistys_yhteensa} h. Merkintöjä
-						keskimäärin {reenejaViikossa.toFixed(2)} päivänä viikossa ({yhdistyksenTilastoDocs.length} käyttäjää)</Typography>
+						keskimäärin {reenejaViikossa.toFixed(2)} päivänä viikossa ({kuluvanVuodenTilastot.length} käyttäjää)</Typography>
 
 
 
@@ -581,8 +595,14 @@ const Tilasto = observer(class Tilasto extends Component {
 						height={"300px"}
 					/>
 
-					<Typography variant="body1" gutterBottom >Kaikkien käyttäjien merkinnät
-						yhteensä {kaikki_yhteensa} h ({tilastoDocs.length} käyttäjää, {yhdistykset.size} yhdistystä)</Typography>
+					<Typography variant="body1" gutterBottom >Tilastovuoden käyttäjien merkinnät
+						yhteensä {tilastovuoden_tunnit_yhteensa} h, 
+						keskimäärin {(tilastovuoden_paivat_yhteensa 
+						/ tilastoVuodenKaikkiTilastot.length 
+						/ (tilastoVuosi == kuluvaVuosi ? (moment().dayOfYear()) : 365 )
+						* 7
+						).toFixed(2)} reenipäivää viikossa 
+						({tilastoVuodenKaikkiTilastot.length} käyttäjää, {yhdistykset.size} yhdistystä)</Typography>
 
 
 				</div>

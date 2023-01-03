@@ -266,7 +266,7 @@ const Reenit = observer(class Reenit extends Component {
 							value={this.searchValue}
 							// onChange={(e) => this.requestSearch(e.target.value)}
 							onChange={(e) => this.searchValue = e.target.value}
-							placeholder="Hae…"
+							placeholder="Hae esim. '2022 ilmaisu'..."
 							InputProps={{
 								startAdornment: <SearchIcon fontSize="small" />,
 								endAdornment: (

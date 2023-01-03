@@ -432,7 +432,7 @@ const Tilasto = observer(class Tilasto extends Component {
 
 				// console.debug("By Kategoria", byCat)
 				var chartDataYhd = [["Kategoria", "Kerrat"]]
-				chartDataYhd = chartDataYhd.concat(Object.entries(byCat).map(([key, value]) => ([key, value])))
+				chartDataYhd = chartDataYhd.concat(Object.entries(byCat).map(([key, value]) => ([key, Math.round(value)])))
 				
 			}
 			else {
@@ -454,7 +454,7 @@ const Tilasto = observer(class Tilasto extends Component {
 
 				// console.debug("By Kategoria", byCat)
 				var chartDataAll = [["Kategoria", "Kerrat"]]
-				chartDataAll = chartDataAll.concat(Object.entries(byCat).map(([key, value]) => ([key, value])))
+				chartDataAll = chartDataAll.concat(Object.entries(byCat).map(([key, value]) => ([key, Math.round(value)])))
 				// console.debug("By Kategoria all", chartDataAll)
 
 			}

@@ -102,7 +102,8 @@ class Info extends Component {
 				
 				<Typography variant="body1" gutterBottom>
 					Pelastuskoiran perustyökalut ovat ilmavainutyöskentely ja 
-				jälkityöskentely. Ohjaajan kannalta taas tärkeä on sokkoharjoitus, jossa sovelletaan kaikkea opittua. Tämä kategoria on nimetty lyhyesti 
+				jälkityöskentely. Näitä harjoitellaan erilaisissa ympäristöissä. 
+				Ohjaajan kannalta taas tärkeä on sokkoharjoitus, jossa sovelletaan kaikkea opittua. Tämä kategoria on nimetty lyhyesti 
 				'partsa'-nimellä. Tällä ei siis viitata koeohjeen partiointiin.</Typography>
 
 				<Typography variant="body1" gutterBottom>Merkitse muistiinpanoihin haluamasi tarkenteet. Nämä löytyvät hakutoiminnolla, jolloin 

@@ -23,6 +23,16 @@ import Box from '@mui/material/Box';
 
 import Typography from '@mui/material/Typography';
 
+
+import * as moment from 'moment';
+import 'moment/locale/fi';
+import { timelineClasses } from '@mui/lab';
+moment.locale('fi')
+moment.updateLocale('fi', {
+    weekdaysShort : String["su", "ma", "ti", "ke", "to", "pe", "la"]
+});
+
+
 const styles = {
 	container: {
 		flex: 1,
@@ -145,9 +155,20 @@ const Reenit = observer(class Reenit extends Component {
 		// console.debug("Regexp", escapeRegExp(this.searchValue))
 		const searchRegex = new RegExp(escapeRegExp(this.searchValue), 'i');
 		const filteredRows = context.rootStore.reeniFirestore.reenit.docs.filter((row) => {
-			return Object.keys(row.data).some((field) => {
-				return searchRegex.test(row.data[field].toString());
-			});
+			// return Object.keys(row.data).some((field) => {
+			//	console.debug("rowdata", field)
+			//	return searchRegex.test(field == "pvm" ? moment(row.data[field]).format("D.M.YYYY dddd").toString() || '' : row.data[field].toString());
+			// });
+
+			// Haku toimii niin, että regexp etsii hakusanoja missä tahansa järjestyksessä stringistä. Luodaan string, jossa on kaikki halutut kentät formatoituna
+			// console.debug("rowdata", row.data)
+			const concatenoituString = (moment(row.data['pvm']).format("D.M.YYYY dddd").toString() || '') 
+			+ ' ' + row.data['koira'].toString()
+			+ ' ' + row.data['kategoria'].toString()
+			+ ' ' + row.data['kommentti'].toString()
+			// console.debug("concatenoituString", concatenoituString)
+			return searchRegex.test(concatenoituString);
+			
 		});
 
 		if (!context.rootStore.sessionStore.userOk) {

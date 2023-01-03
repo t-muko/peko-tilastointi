@@ -165,8 +165,8 @@ const Reenit = observer(class Reenit extends Component {
 			const concatenoituString = (moment(row.data['pvm']).format("D.M.YYYY dddd MMMM").toString() || '') 
 			+ ' ' + row.data['koira'].toString()
 			+ ' ' + row.data['kategoria'].toString()
-			+ ' ' + row.data['kommentti'].toString()
-			// console.debug("concatenoituString", concatenoituString)
+			+ ' ' + row.data['kommentti'].toString().replace(/(\r\n|\n|\r)/gm, "")
+			// console.debug("concatenoituString", concatenoituString, searchRegex)
 			return searchRegex.test(concatenoituString);
 			
 		});

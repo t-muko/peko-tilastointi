@@ -597,11 +597,11 @@ const Tilasto = observer(class Tilasto extends Component {
 
 					<Typography variant="body1" gutterBottom >Tilastovuoden käyttäjien merkinnät
 						yhteensä {tilastovuoden_tunnit_yhteensa} h, 
-						keskimäärin {(tilastovuoden_paivat_yhteensa 
+						hyvinvointia edistävää harrastamista keskimäärin {(tilastovuoden_paivat_yhteensa 
 						/ tilastoVuodenKaikkiTilastot.length 
 						/ (tilastoVuosi == kuluvaVuosi ? (moment().dayOfYear()) : 365 )
 						* 7
-						).toFixed(2)} reenipäivää viikossa 
+						).toFixed(2)} päivänä viikossa 
 						({tilastoVuodenKaikkiTilastot.length} käyttäjää, {yhdistykset.size} yhdistystä)</Typography>
 
 

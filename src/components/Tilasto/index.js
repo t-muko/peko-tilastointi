@@ -30,7 +30,7 @@ import MenuItem from '@mui/material/MenuItem';
 
 import * as moment from 'moment';
 import 'moment/locale/fi';
-import { VolumeUpOutlined } from '@mui/icons-material';
+// import { VolumeUpOutlined } from '@mui/icons-material';
 moment.locale('fi')
 
 /*
@@ -305,23 +305,23 @@ const jasenjarjestot = [
 	{ label: 'Ålands Bruks- och Sällskapshundklubb' }
 ]
 
-const flatProps = {
-	options: jasenjarjestot.map((option) => option.label),
-};
+// const flatProps = {
+// 	options: jasenjarjestot.map((option) => option.label),
+// };
 
-const data = [
+/*const data = [
 	["Task", "Hours per Day"],
 	["Work", 11],
 	["Eat", 2],
 	["Commute", 2],
 	["Watch TV", 2],
 	["Sleep", 7],
-];
+];*/
 
-const options = {
+/*const options = {
 	title: "Merkintöjen jakauma",
 	pieSliceText: "value"
-};
+};*/
 
 const Tilasto = observer(class Tilasto extends Component {
 
@@ -407,7 +407,7 @@ const Tilasto = observer(class Tilasto extends Component {
 			// console.debug("Tilastovuoden tunnit yhteensä", tilastovuoden_tunnit_yhteensa)
 			const tilastovuoden_paivat_yhteensa = tilastoVuodenKaikkiTilastot.map((tilasto) => tilasto.sumD || 0).reduce((a, b) => a + b, 0)
 			// console.debug("Tilastovuoden paivat yhteensä", tilastovuoden_paivat_yhteensa)
-			const tilastovuoden_merkinnat_yhteensa = tilastoVuodenKaikkiTilastot.map((tilasto) => tilasto.sumX || 0).reduce((a, b) => a + b, 0)
+			// const tilastovuoden_merkinnat_yhteensa = tilastoVuodenKaikkiTilastot.map((tilasto) => tilasto.sumX || 0).reduce((a, b) => a + b, 0)
 			// console.debug("Tilastovuoden merkinnat yhteensä", tilastovuoden_merkinnat_yhteensa)
 			// console.debug("Tilastovuoden käyttäjät yhteensä", tilastoVuodenKaikkiTilastot.length)
 

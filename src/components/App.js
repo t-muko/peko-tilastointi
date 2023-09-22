@@ -9,7 +9,7 @@ import { FirebaseContext } from './Firebase';
 // import { reenit } from '../stores/reeniStore';
 
 import {observer} from "mobx-react";
-import { makeObservable, observable, action, computed } from 'mobx';
+import { makeObservable, observable, action } from 'mobx';
 
 
 // import { createTheme } from '@mui/material/styles'; // v1.x
@@ -120,7 +120,9 @@ class App extends Component {
 	render() {
 		const showInfo = this.showInfo
 		// tää pitää olla, muuten ei re-render herää
-		console.debug("App render user", this.context.rootStore.sessionStore.authUser)
+		// console.debug("App render user", this.context.rootStore.sessionStore.authUser)
+		const userEmail = this.context.rootStore.sessionStore.authUser ? this.context.rootStore.sessionStore.authUser.email : "nobody"
+
 		return (
 				<FirebaseContext.Consumer>
 					{context => {
@@ -134,7 +136,7 @@ class App extends Component {
 										</div>
 									</div>
 									{context.rootStore.sessionStore.userOk && <div>
-										<h3>{context.rootStore.sessionStore.authUser.email}</h3>
+										<h3>{userEmail}</h3>
 										
 										{ showInfo && <Info toggleShowInfoF={this.toggleShowInfo} />}
 

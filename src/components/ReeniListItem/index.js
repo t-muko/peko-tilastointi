@@ -8,11 +8,11 @@ import EditIcon from '@mui/icons-material/Edit';
 import Typography from '@mui/material/Typography';
 
 import ReeniItem from '../ReeniItem';
-import { makeObservable, observable, action, computed } from 'mobx';
+import { makeObservable, observable, action } from 'mobx';
 
 import * as moment from 'moment';
 import 'moment/locale/fi';
-import { timelineClasses } from '@mui/lab';
+// import { timelineClasses } from '@mui/lab';
 moment.locale('fi')
 moment.updateLocale('fi', {
     weekdaysShort : String["su", "ma", "ti", "ke", "to", "pe", "la"]
@@ -64,8 +64,8 @@ class ReeniListItem extends Component {
 
 	render() {
 		const { item, expand } = this.props;
-		const { pvm, kategoria, tunnit, alakategoria, kommentti, koira, yhdistys } = item.data;
-		if (kategoria == '' && tunnit == 0) {
+		const { pvm, kategoria, tunnit, kommentti, koira } = item.data;
+		if (kategoria === '' && tunnit === 0) {
 			this.openEdit()
 		}
 
@@ -122,7 +122,7 @@ class ReeniListItem extends Component {
 
 	onPressEdit = async () => {
 		console.debug("Edit mode", this)
-		const { item } = this.props;
+		// const { item } = this.props;
 		if (this._editing) return;
 		//this._editing = true;
 		this.openEdit()

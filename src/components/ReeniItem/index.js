@@ -10,11 +10,11 @@ import Box from '@mui/material/Box';
 
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
+// import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
 import Dialog from '@mui/material/Dialog';
-import Stack from '@mui/material/Stack';
+// import Stack from '@mui/material/Stack';
 
 // import DateAdapter from '@mui/lab/AdapterMoment';
 // import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
@@ -62,7 +62,8 @@ class ReeniItem extends Component {
 
 	render() {
 		const { item } = this.props;
-		const { pvm, kategoria, tunnit, alakategoria, kommentti, koira } = item.data;
+		// const { pvm, kategoria, tunnit, alakategoria, kommentti, koira } = item.data;
+		const { pvm, kategoria, tunnit, kommentti, koira } = item.data;
 
 		// console.log('TodoItem.render: ', item.path, ', kommentti: ', kommentti);
 		return (

@@ -26,7 +26,7 @@ import Typography from '@mui/material/Typography';
 
 import * as moment from 'moment';
 import 'moment/locale/fi';
-import { timelineClasses } from '@mui/lab';
+// import { timelineClasses } from '@mui/lab';
 moment.locale('fi')
 moment.updateLocale('fi', {
     weekdaysShort : String["su", "ma", "ti", "ke", "to", "pe", "la"]
@@ -121,6 +121,21 @@ const Reenit = observer(class Reenit extends Component {
 			() => this.tilastoRecord,
 			() => this.onAddTilasto(),
 			{ "delay": 2000 }
+		)
+
+		reaction(
+			() => context.rootStore.sessionStore.authUser,
+			() => {
+				if (context.rootStore.sessionStore.authUser != null) {
+					console.debug("User changed, change tilastoDokumentti")
+					this.uid = context.rootStore.sessionStore.authUser.uid
+					this.tilastoDokumentti = new Document('tilastot/' + this.uid);
+				}
+				else {
+					console.debug("User nulled, null tilastoDokumentti")
+					this.tilastoDokumentti = null;
+			}
+			}
 		)
 	}
 

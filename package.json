@@ -2,8 +2,10 @@
   "name": "peko-tilastointi",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=22"
+  },
   "dependencies": {
-    "@babel/plugin-proposal-class-properties": "^7.16.0",
     "@date-io/moment": "^2.11.0",
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
@@ -14,11 +16,8 @@
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.3",
     "date-fns": "^2.27.0",
     "firebase": "^9.6.1",
-    "firebase-tools": "^9.23.0",
     "firestorter": "^3.1.0",
     "mobx": "^6.3.8",
     "mobx-react": "^7.2.1",
@@ -26,8 +25,11 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-google-charts": "^3.0.15",
-    "react-scripts": "4.0.3",
+    "react-scripts": "^5.0.1",
     "web-vitals": "^1.0.1"
+  },
+  "devDependencies": {
+    "firebase-tools": "^14.0.0"
   },
   "scripts": {
     "start": "react-scripts start",

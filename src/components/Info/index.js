@@ -121,8 +121,8 @@ class Info extends Component {
 				</Typography>
 
 				<Typography variant="body1" gutterBottom>
-					Hakutoiminto osaa päivien ja kuukausien nimet. Jos haluat löytää vuoden 2022 kesäkuun jälkireenit, kirjoita hakutermiksi "kesäkuu 2022 jälki".
-					Kommenteista vuoden 2022 nostot löytyvät kirjoittamalla hakusanaksi "nosto 2022".
+					Hakutoiminto osaa päivien ja kuukausien nimet. Jos haluat löytää vuoden 2026 kesäkuun jälkireenit, kirjoita hakutermiksi "kesäkuu 2026 jälki".
+					Kommenteista vuoden 2026 nostot löytyvät kirjoittamalla hakusanaksi "nosto 2026".
 				</Typography>
 
 				<Typography variant="h5" gutterBottom>Vinkki</Typography>

@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - test
   pull_request:
     types: [opened, synchronize, reopened, closed]
 
@@ -51,9 +52,43 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: firebase deploy --only hosting --project peko-tilastointi
 
+      # --- TEST BRANCH → PREVIEW CHANNEL DEPLOY ---
+      - name: Deploy test branch preview
+        if: github.event_name == 'push' && github.ref == 'refs/heads/test'
+        run: |
+          output=$(firebase hosting:channel:deploy test --project peko-tilastointi 2>&1)
+          status=$?
+          echo "$output"
+          if [ $status -ne 0 ]; then
+            exit $status
+          fi
+
+          preview_url=$(echo "$output" | grep -Eo 'https://[^[:space:]]+' | grep -E 'web\.app|firebaseapp\.com' | head -n1 || true)
+          if [ -n "$preview_url" ]; then
+            echo "Test preview URL: $preview_url"
+            echo "### Test Preview" >> "$GITHUB_STEP_SUMMARY"
+            echo "$preview_url" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Preview URL not found in Firebase CLI output."
+          fi
+
       # --- PR → PREVIEW DEPLOY ---
       - name: Deploy PR preview
         if: github.event_name == 'pull_request' && github.event.action != 'closed'
         run: |
           CHANNEL="pr-${{ github.event.pull_request.number }}"
-          firebase hosting:channel:deploy "$CHANNEL" --project peko-tilastointi
+          output=$(firebase hosting:channel:deploy "$CHANNEL" --project peko-tilastointi 2>&1)
+          status=$?
+          echo "$output"
+          if [ $status -ne 0 ]; then
+            exit $status
+          fi
+
+          preview_url=$(echo "$output" | grep -Eo 'https://[^[:space:]]+' | grep -E 'web\.app|firebaseapp\.com' | head -n1 || true)
+          if [ -n "$preview_url" ]; then
+            echo "PR preview URL: $preview_url"
+            echo "### PR Preview ($CHANNEL)" >> "$GITHUB_STEP_SUMMARY"
+            echo "$preview_url" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Preview URL not found in Firebase CLI output."
+          fi

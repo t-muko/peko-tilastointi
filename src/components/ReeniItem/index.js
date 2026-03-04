@@ -25,7 +25,7 @@ import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import fiLocale from 'date-fns/locale/fi';
 
 
-import * as moment from 'moment';
+import moment from 'moment';
 import 'moment/locale/fi';
 moment.locale('fi')
 

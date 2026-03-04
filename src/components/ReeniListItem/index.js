@@ -10,7 +10,7 @@ import Typography from '@mui/material/Typography';
 import ReeniItem from '../ReeniItem';
 import { makeObservable, observable, action } from 'mobx';
 
-import * as moment from 'moment';
+import moment from 'moment';
 import 'moment/locale/fi';
 // import { timelineClasses } from '@mui/lab';
 moment.locale('fi')

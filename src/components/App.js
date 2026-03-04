@@ -35,7 +35,7 @@ import Reenit from './Reenit';
 import Tilasto from './Tilasto';
 import Info from './Info'
 
-import * as moment from 'moment';
+import moment from 'moment';
 
 
 // import { useStores } from '../hooks/use-stores'
@@ -131,7 +131,7 @@ class App extends Component {
 								<div style={styles.container}>
 									<div style={styles.header}>
 										<div style={styles.headerRow}>
-											<img src='../tilasto128.png' alt='logo' style={styles.logo} />
+											<img src='/tilasto128.png' alt='logo' style={styles.logo} />
 											<h1 style={styles.h1}>Peko-toimintapäiväkirja</h1>
 										</div>
 									</div>

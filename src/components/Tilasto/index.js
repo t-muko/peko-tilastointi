@@ -28,7 +28,7 @@ import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 
-import * as moment from 'moment';
+import moment from 'moment';
 import 'moment/locale/fi';
 // import { VolumeUpOutlined } from '@mui/icons-material';
 moment.locale('fi')

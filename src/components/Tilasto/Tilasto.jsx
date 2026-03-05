@@ -1,12 +1,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { makeObservable, observable, action } from 'mobx';
-
-// import { makeObservable, observable, action, computed } from 'mobx';
 import { FirebaseContext } from '../Firebase';
-
-// import { reenit } from '../../stores/reeniStore';
-// import { tilastot } from '../../stores/tilastoFirebase'
 import { Collection, Document } from 'firestorter';
 import { CircularProgress } from "@mui/material";
 import Typography from '@mui/material/Typography';
@@ -30,43 +25,7 @@ import MenuItem from '@mui/material/MenuItem';
 
 import moment from 'moment';
 import 'moment/locale/fi';
-// import { VolumeUpOutlined } from '@mui/icons-material';
 moment.locale('fi')
-
-/*
-const styles = {
-	container: {
-		flex: 1,
-		display: 'flex',
-		flexDirection: 'column',
-		position: 'relative'
-	},
-	loader: {
-		position: 'absolute',
-		left: 0,
-		right: 0,
-		top: 0,
-		bottom: 0,
-		display: 'flex',
-		flexDirection: 'column',
-		justifyContent: 'center',
-		alignItems: 'center'
-	},
-	header: {
-		padding: 16,
-		display: 'flex',
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		borderBottom: '1px solid #DDD'
-	},
-	content: {
-		flex: 1,
-		overflowY: 'scroll'
-	}
-};
-*/
-
-
 
 const jasenjarjestot = [
 	{ label: '' },
@@ -381,13 +340,6 @@ const Tilasto = observer(class Tilasto extends Component {
 				</div>
 			);
 		} else {
-
-			// const context = this.context
-			// this.reenit = context.rootStore.reeniFirestore.reenit
-			// const reenit = this.reenit
-
-			// this.tilastot = this.context.rootStore.tilastoFirestore.tilastot
-			// const tilastot = this.tilastot
 			const yksikko = this.yksikko
 			const tilastoVuosi = this.tilastoVuosi
 
@@ -397,29 +349,18 @@ const Tilasto = observer(class Tilasto extends Component {
 			const vuodet = range(2021, kuluvaVuosi + 1, 1)
 
 			const { docs: tilastoDocs, isLoading: isTilastoLoading } = this.tilastotColl;
-			// console.debug("Tilastodocs ", tilastoDocs)
-			// const kaikki_yhteensa = tilastoDocs.map((tilasto) => tilasto.data.totalH || 0).reduce((a, b) => a + b, 0)
 			const tilastoVuodenKaikkiTilastot = tilastoDocs
 			.filter((tilasto) => tilasto.data[tilastoVuosi]).map((tilasto) => tilasto.data[tilastoVuosi])
 			.filter((tilasto) => tilasto.sumH > 0)
-			// console.debug("tilastovuoden kaikki", tilastoVuodenKaikkiTilastot)
 			const tilastovuoden_tunnit_yhteensa = tilastoVuodenKaikkiTilastot.map((tilasto) => tilasto.sumH || 0).reduce((a, b) => a + b, 0)
-			// console.debug("Tilastovuoden tunnit yhteensä", tilastovuoden_tunnit_yhteensa)
 			const tilastovuoden_paivat_yhteensa = tilastoVuodenKaikkiTilastot.map((tilasto) => tilasto.sumD || 0).reduce((a, b) => a + b, 0)
-			// console.debug("Tilastovuoden paivat yhteensä", tilastovuoden_paivat_yhteensa)
-			// const tilastovuoden_merkinnat_yhteensa = tilastoVuodenKaikkiTilastot.map((tilasto) => tilasto.sumX || 0).reduce((a, b) => a + b, 0)
-			// console.debug("Tilastovuoden merkinnat yhteensä", tilastovuoden_merkinnat_yhteensa)
-			// console.debug("Tilastovuoden käyttäjät yhteensä", tilastoVuodenKaikkiTilastot.length)
 
 
 			const yhdistyksenTilastoDocs = tilastoDocs.filter((row) => (row.data.yhd || '') === this.tilastoDokumentti.data.yhd)
 			const yhdistys_yhteensa = yhdistyksenTilastoDocs.map((tilasto) => tilasto.data[tilastoVuosi] ? tilasto.data[tilastoVuosi].sumH : 0).reduce((a, b) => a + b, 0)
-			// const reenejaViikossaSum = tilastoDocs.map((tilasto) => tilasto.data[tilastoVuosi].sumD/moment().dayOfYear()*7 || 0).reduce((a, b) => a + b, 0)
 			const kuluvanVuodenTilastot = yhdistyksenTilastoDocs.filter((tilasto) => tilasto.data[tilastoVuosi]).map((tilasto) => tilasto.data[tilastoVuosi]).filter((tilasto) => tilasto.sumH > 0)
-			// console.debug("kuluvanVuodenTilastot", kuluvanVuodenTilastot)
 
 			const yhdistykset = new Set()
-			// tilastoDocs.map((tilasto) => yhdistykset.add(tilasto.data.yhd))
 			tilastoDocs.filter((tilasto) => tilasto.data[tilastoVuosi] !== undefined).map((tilasto) => yhdistykset.add(tilasto.data.yhd))
 
 			if (kuluvanVuodenTilastot.length > 1) {
@@ -430,16 +371,13 @@ const Tilasto = observer(class Tilasto extends Component {
 					.reduce((p, c) => p + c, 0)
 				)
 
-				// console.debug("By Kategoria", byCat)
-				var chartDataYhd = [["Kategoria", "Kerrat"]]
+				var chartDataYhd = [['Kategoria', 'Kerrat']]
 				chartDataYhd = chartDataYhd.concat(Object.entries(byCat).map(([key, value]) => ([key, Math.round(value)])))
 				
 			}
 			else {
-				var chartDataYhd = [["Kategoria", "Kerrat"]]
+				var chartDataYhd = [['Kategoria', 'Kerrat']]
 			}
-
-			// console.debug("By Kategoria yhd", chartDataYhd)
 			
 
 			if (tilastoDocs.length > 1) {
@@ -452,10 +390,8 @@ const Tilasto = observer(class Tilasto extends Component {
 					.reduce((p, c) => p + c, 0)
 				)
 
-				// console.debug("By Kategoria", byCat)
-				var chartDataAll = [["Kategoria", "Kerrat"]]
+				var chartDataAll = [['Kategoria', 'Kerrat']]
 				chartDataAll = chartDataAll.concat(Object.entries(byCat).map(([key, value]) => ([key, Math.round(value)])))
-				// console.debug("By Kategoria all", chartDataAll)
 
 			}
 
@@ -470,27 +406,17 @@ const Tilasto = observer(class Tilasto extends Component {
 					.reduce((p, c) => p + c, 0)
 				)
 
-				// console.debug("By Kategoria", byCat)
-				var chartDataMy = [["Kategoria", "Kerrat"]]
+				var chartDataMy = [['Kategoria', 'Kerrat']]
 				chartDataMy = chartDataMy.concat(Object.entries(byCat).map(([key, value]) => ([key, value])))
-				// console.debug("By Kategoria my", chartDataMy)
 
 			}
-			// const kuluvanVuodenKoirareenit = kuluvanVuodenTilastot.filter((tilasto) => (tilasto.koira == "Ykköskoira" || tilasto.koira == "Kakkoskoira"))
 			var reenejaViikossa = 0
 			if (kuluvanVuodenTilastot.length > 1) {
 				reenejaViikossa = kuluvanVuodenTilastot
 					.filter((tilasto) => (tilasto.sumD > 0))
 					.map((tilasto) => (tilasto.sumD))
 					.reduce((p, c) => p + c, 0) / kuluvanVuodenTilastot.length / (tilastoVuosi == kuluvaVuosi ? (moment().dayOfYear()/7) : 365 / 7)
-				// console.debug("Reenejä viikossa", reenejaViikossa.toFixed(2), moment().dayOfYear())
 			}
-			// console.debug("Kaikki yhteensa", kaikki_yhteensa, tilastoDocs.length)
-
-			// const { docs, isLoading } = reenit
-			// console.debug("reenidocs path", reenit.path)
-
-			// const omat_yhteensa = docs.map((reeni) => reeni.data.tunnit || 0).reduce((a, b) => a + b, 0)
 			const yhdistys = this.tilastoDokumentti.data.yhd || 'PUUTTUU!'
 
 			return (
@@ -500,7 +426,6 @@ const Tilasto = observer(class Tilasto extends Component {
 					</div>
 					<Typography variant="body1" gutterBottom >Oma yhdistys: {yhdistys}
 						<IconButton
-							// style={styles.icon}
 							onClick={this.openYhdistysEdit} >
 							<EditIcon />
 						</IconButton>

@@ -1,18 +1,9 @@
-// import logo from '../logo.svg';
-
 import React, { Component } from 'react';
-// import ReactDOM from 'react-dom';
 import Button from '@mui/material/Button';
 import { FirebaseContext } from './Firebase';
-// import Todos from './Todos'
-// import { todos } from '../stores/todoStore';
-// import { reenit } from '../stores/reeniStore';
 
 import { observer } from "mobx-react";
 import { makeObservable, observable, action } from 'mobx';
-
-
-// import { createTheme } from '@mui/material/styles'; // v1.x
 
 import FloatingActionButton from '@mui/material/Fab';
 import ContentAddIcon from '@mui/icons-material/Add';
@@ -36,10 +27,6 @@ import Tilasto from './Tilasto';
 import Info from './Info'
 
 import moment from 'moment';
-
-
-// import { useStores } from '../hooks/use-stores'
-
 
 
 const styles = {
@@ -94,10 +81,6 @@ const styles = {
 	}
 };
 
-// const muiTheme = getMuiTheme(lightBaseTheme);
-// const muiTheme = createTheme()
-
-// function App() {
 class App extends Component {
 	static contextType = FirebaseContext
 
@@ -118,9 +101,8 @@ class App extends Component {
 	}
 
 	render() {
+		// Reading showInfo is necessary to trigger MobX re-render when it changes
 		const showInfo = this.showInfo
-		// tää pitää olla, muuten ei re-render herää
-		// console.debug("App render user", this.context.rootStore.sessionStore.authUser)
 		const userEmail = this.context.rootStore.sessionStore.authUser ? this.context.rootStore.sessionStore.authUser.email : "nobody"
 
 		return (
@@ -197,29 +179,21 @@ class App extends Component {
 
 	componentDidMount() {
 		const context = this.context;
-		//It will get the data from context, and put it into the state.
-		// this.setState({ profile: context.profile });
 		this.uid = context.rootStore.sessionStore.authUser ? context.rootStore.sessionStore.authUser.uid : null
-		// console.debug("uid", this.uid)
 	}
 
 	onPressAdd = async () => {
 		try {
-			console.debug("lisataan", this.context.rootStore.reeniFirestore.reenit.path)
 			await this.context.rootStore.reeniFirestore.reenit.add({
-				// pvm: (new Date()).getFullYear() + '-' + ((new Date()).getMonth() + 1) + '-' + (new Date()).getDate(),
 				pvm: moment(new Date()).format("YYYY-MM-DD"),
 				tunnit: 0,
 				kommentti: '',
 				kategoria: '',
 				koira: 'Ei koiraa',
-				// uid: this.context.rootStore.sessionStore.authUser.uid
 			});
 		}
 		catch (err) {
-			// TODO
-
-			console.debug("Virhe lisäyksessä", err)
+			console.error("Virhe lisäyksessä", err)
 		}
 	};
 }

@@ -3,12 +3,7 @@ import { observer } from 'mobx-react';
 import { makeObservable, observable, reaction, action } from 'mobx';
 import { FirebaseContext } from '../Firebase';
 
-// import { reenit } from '../../stores/reeniStore';
-// import { tilastot } from '../../stores/tilastoFirebase'
 import { Document } from 'firestorter';
-
-
-// import FlipMove from 'react-flip-move';
 import { CircularProgress, Checkbox } from "@mui/material";
 import ReeniListItem from '../ReeniListItem';
 
@@ -26,7 +21,6 @@ import Typography from '@mui/material/Typography';
 
 import moment from 'moment';
 import 'moment/locale/fi';
-// import { timelineClasses } from '@mui/lab';
 moment.locale('fi')
 
 
@@ -57,18 +51,14 @@ const styles = {
 	},
 	content: {
 		flex: 1,
-		// overflowY: 'scroll'
 	}
 };
 
+// Builds a regex that matches all search words in any order (AND logic).
+// Each word becomes a lookahead, e.g. "vespa lumi" → "(?=.*vespa)(?=.*lumi)"
 function escapeRegExp(value) {
-	//	return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
-	// value.replace(/[-[\]{}()*+?.,\\^$|#]/g, '\\$&').replace(/[\s]/g, '.*');
-	// ^(?=.*\bSidney\b)(?=.*\bAlice\b)(?=.*\bPeter\b).*$
-	var searchRe = value.replace(/[-[\]{}()*+?.,\\^$|#]/g, '\\$&').split(" ")
-	searchRe = searchRe.map((wrd) => "(?=.*" + wrd + ")").join("")
-	// return "(?=.*vespa)(?=.*lumi)"
-	return searchRe
+	const searchRe = value.replace(/[-[\]{}()*+?.,\\^$|#]/g, '\\$&').split(" ")
+	return searchRe.map((wrd) => "(?=.*" + wrd + ")").join("")
 }
 
 const Reenit = observer(class Reenit extends Component {
@@ -79,7 +69,6 @@ const Reenit = observer(class Reenit extends Component {
 	reenit = null
 	tilastoRecord = Object()
 	searchValue = ""
-	// filteredRows = null
 
 	static contextType = FirebaseContext
 
@@ -94,26 +83,15 @@ const Reenit = observer(class Reenit extends Component {
 			yhteensa: observable,
 			setTilastoRecord: action
 		})
-
-		/*this.state = {
-			disabled: false
-		};*/
-
-
 	}
-
 
 
 	componentDidMount() {
 		const context = this.context;
-		//It will get the data from context, and put it into the state.
-		// this.setState({ profile: context.profile });
 		this.uid = context.rootStore.sessionStore.authUser.uid
-		// console.debug("uid", this.uid)
-		// this.filteredRows = this.context.rootStore.reeniFirestore.reenit.docs
-
 		this.tilastoDokumentti = new Document('tilastot/' + this.uid);
 
+		// Update tilasto document whenever the computed tilastoRecord changes (debounced)
 		reaction(
 			() => this.tilastoRecord,
 			() => this.onAddTilasto(),
@@ -137,50 +115,22 @@ const Reenit = observer(class Reenit extends Component {
 	}
 
 
-	/*
-	requestSearch = (searchValue) => {
-		console.debug("Searching", searchValue)
-		this.searchValue = searchValue;
-		const searchRegex = new RegExp(escapeRegExp(searchValue), 'i');
-		this.filteredRows = this.reenit.docs.filter((row) => {
-		  return Object.keys(row.data).some((field) => {
-			return searchRegex.test(row.data[field].toString());
-		  });
-		});
-		
-	  };
-
-*/
-
 	setTilastoRecord = (tilasto) => {
 		this.tilastoRecord = tilasto
 	}
 
 	render() {
-		// console.debug("Collection path", this.context.rootStore.reeniFirestore.reenit.path)
-		// const { disabled } = this.state;
 		const context = this.context
-		// this.reenit  = context.rootStore.reeniFirestore.reenit
-		// this.reenit = context.rootStore.reeniFirestore.reenit
-
-		// this.requestSearch(this.searchValue)
-		// console.debug("Regexp", escapeRegExp(this.searchValue))
 		const searchRegex = new RegExp(escapeRegExp(this.searchValue), 'i');
-		const filteredRows = context.rootStore.reeniFirestore.reenit.docs.filter((row) => {
-			// return Object.keys(row.data).some((field) => {
-			//	console.debug("rowdata", field)
-			//	return searchRegex.test(field == "pvm" ? moment(row.data[field]).format("D.M.YYYY dddd").toString() || '' : row.data[field].toString());
-			// });
 
-			// Haku toimii niin, että regexp etsii hakusanoja missä tahansa järjestyksessä stringistä. Luodaan string, jossa on kaikki halutut kentät formatoituna
-			// console.debug("rowdata", row.data)
+		// Search concatenates date (Finnish locale), koira, kategoria and kommentti
+		// so all words match in any order across those fields
+		const filteredRows = context.rootStore.reeniFirestore.reenit.docs.filter((row) => {
 			const concatenoituString = (moment(row.data['pvm']).format("D.M.YYYY dddd MMMM").toString() || '')
 				+ ' ' + row.data['koira'].toString()
 				+ ' ' + row.data['kategoria'].toString()
 				+ ' ' + row.data['kommentti'].toString().replace(/(\r\n|\n|\r)/gm, "")
-			// console.debug("concatenoituString", concatenoituString, searchRegex)
 			return searchRegex.test(concatenoituString);
-
 		});
 
 		if (!context.rootStore.sessionStore.userOk) {
@@ -195,7 +145,6 @@ const Reenit = observer(class Reenit extends Component {
 			);
 		} else {
 			const { docs, isLoading } = context.rootStore.reeniFirestore.reenit;
-			// const children = docs.map((reeni) => <ReeniListItem key={reeni.id} item={reeni} expand={this._expand} />);
 			const children = filteredRows.map((reeni) => <ReeniListItem key={reeni.id} item={reeni} expand={this._expand} />);
 			this.yhteensa = docs.map((reeni) => reeni.data.tunnit || 0).reduce((a, b) => a + b, 0)
 			this.suodatetut = filteredRows.map((reeni) => reeni.data.tunnit || 0).reduce((a, b) => a + b, 0)
@@ -216,7 +165,6 @@ const Reenit = observer(class Reenit extends Component {
 				const vuodet = range(2021, kuluvaVuosi + 1, 1)
 
 				// console.log("Vuodet", vuodet)
-				// const foo = [2021, 2022].map((vuosi) => {
 				vuodet.map((vuosi) => {
 					const vuodenReenit = docs.filter((rivi) => rivi.data.pvm.includes(vuosi))
 					const reenipaivat = new Set()
@@ -226,7 +174,6 @@ const Reenit = observer(class Reenit extends Component {
 						sumX: vuodenReenit.length,
 						sumD: reenipaivat.size
 					}
-					// console.debug("set", reenipaivat)
 
 					const cat = ['Jälki', 'Partsa', 'Ilmavainu', 'Tottis', 'Muu reeni', 'Ei kategoriaa', 'Muu y-toiminta']
 					cat.map((kategoria) => {
@@ -238,16 +185,8 @@ const Reenit = observer(class Reenit extends Component {
 					})
 				}
 				)
-				console.debug("vuositilasto", vt)
-				// this.tilastoRecord = vt
 				this.setTilastoRecord(vt)
 			}
-			// this.onAddTilasto()
-			// console.debug("Docs: ", children)
-			// console.debug("Yhteensä", this.yhteensa)
-
-			// const { isLoading } = this.reenit;
-			// console.log('Reenit.render, isLoading: ', isLoading);
 			return (
 				<div style={styles.container}>
 					<Box sx={{
@@ -276,7 +215,7 @@ const Reenit = observer(class Reenit extends Component {
 						<TextField
 							variant="standard"
 							value={this.searchValue}
-							// onChange={(e) => this.requestSearch(e.target.value)}
+
 							onChange={(e) => this.searchValue = e.target.value}
 							placeholder="Hae esim. '2022 ilmaisu'..."
 							InputProps={{
@@ -287,7 +226,7 @@ const Reenit = observer(class Reenit extends Component {
 										aria-label="Clear"
 										size="small"
 										style={{ visibility: this.searchValue ? 'visible' : 'hidden' }}
-										// onClick={(e) => this.requestSearch('')}
+
 										onClick={(e) => this.searchValue = ''}
 									>
 										<ClearIcon fontSize="small" />
@@ -321,6 +260,9 @@ const Reenit = observer(class Reenit extends Component {
 		}
 	}
 
+	/*
+	 * Dead method - no UI trigger. Left for reference only.
+	 */
 	onCheckShowOnlyUnfinished = () => {
 		if (this.reenit.query) {
 			this.reenit.query = undefined;
@@ -330,38 +272,20 @@ const Reenit = observer(class Reenit extends Component {
 		}
 	};
 
-	/*onCheckDisable = () => {
-		this.setState({
-			disabled: !this.state.disabled
-		});
-	}*/
-
 	onCheckExpand = () => {
 		this._expand = !this._expand
 	}
 
 	onAddTilasto = async () => {
-		console.debug("Päivitetään tilasto")
 		if (this.uid && (this.tilastoRecord['totalD'] || 0) > 0) {
 			try {
-				//const tilastoDokumentti = new Document('tilastot/' + this.uid);
-				// console.debug("doc with customid tilasto", docWithCustomId)
-				this.tilastoDokumentti.set(
-					this.tilastoRecord
-					/*{
-					totalH: this.yhteensa,
-					yhd: 'PPK',
-					2021: { totalH: 123, partsaH: 12, jälkiH: 13, partsaX: 2 },
-				}*/
-					,
-					{ merge: true });
+				this.tilastoDokumentti.set(this.tilastoRecord, { merge: true });
 			}
 			catch (err) {
-				console.error("Virhe", err)
-				// TODO
+				console.error("Virhe tilastoa päivitettäessä", err)
 			}
 		} else {
-			console.error("Ei ole uid:ta, tai tilastopäiviä on nolla")
+			console.error("Ei ole uid:ta, tai tilastopaiviä on nolla")
 		}
 	};
 

@@ -4,57 +4,14 @@ import Typography from '@mui/material/Typography';
 import { Paper, Dialog } from '@mui/material';
 
 
-/*
-const styles = {
-	container: {
-		flex: 1,
-		display: 'flex',
-		flexDirection: 'column',
-		position: 'relative'
-	},
-	loader: {
-		position: 'absolute',
-		left: 0,
-		right: 0,
-		top: 0,
-		bottom: 0,
-		display: 'flex',
-		flexDirection: 'column',
-		justifyContent: 'center',
-		alignItems: 'center'
-	},
-	header: {
-		padding: 16,
-		display: 'flex',
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		borderBottom: '1px solid #DDD'
-	},
-	content: {
-		flex: 1,
-		overflowY: 'scroll'
-	}
-};
-*/
-
-
-
 class Info extends Component {
 
 	constructor(props) {
-		console.debug("Help construct")
 		super(props);
-
-		/*		makeObservable(this, {
-					editYhdistys: observable
-				})
-		*/
-
 	}
 
 
 	render() {
-		console.debug("Render Help")
 		return (
 			<Dialog open={true} onClose={() => {
 				this.props.toggleShowInfoF();

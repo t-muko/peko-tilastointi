@@ -69,7 +69,6 @@ class ReeniListItem extends Component {
 			this.openEdit()
 		}
 
-		// console.log('ReeniItem.render: ', item.path, pvm, kategoria, tunnit);
 		return (
 			<div>
 				{this._editing && <ReeniItem key={item.id + 'edit'} item={item} closeF={this.onClose} />}
@@ -120,19 +119,9 @@ class ReeniListItem extends Component {
 		this._editing = true
 	}
 
-	onPressEdit = async () => {
-		console.debug("Edit mode", this)
-		// const { item } = this.props;
+	onPressEdit = () => {
 		if (this._editing) return;
-		//this._editing = true;
 		this.openEdit()
-		/*try {
-			// await todo.delete();
-			this._editing = false;
-		}
-		catch (err) {
-			this._editing = false;
-		}*/
 	};
 
 }

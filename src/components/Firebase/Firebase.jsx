@@ -1,6 +1,6 @@
 import FirebaseContext from './context';
-import Firebase from './firebase';
-// import todos from './firebase';
+import Firebase from './firebaseService';
+// import todos from './firebaseService';
 
 export default Firebase;
 

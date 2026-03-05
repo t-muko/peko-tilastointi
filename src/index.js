@@ -4,11 +4,11 @@ import './index.css';
 import './App.css';
 // import { Provider } from 'mobx-react';
 
-import rootStore from './stores';
+import rootStore from '@stores';
 
-import App from './components/App';
-// import Firebase, { FirebaseContext } from './components/Firebase';
-import { FirebaseContext } from './components/Firebase';
+import App from '@components/App';
+// import Firebase, { FirebaseContext } from '@components/Firebase/Firebase';
+import { FirebaseContext } from '@components/Firebase/Firebase';
 
 // if (!new class { x }().hasOwnProperty('x')) throw new Error('Transpiler is not configured correctly');
 

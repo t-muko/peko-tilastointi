@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import {observer} from 'mobx-react';
-import {todos} from '../../stores/todoStore';
+import {todos} from '@stores/todoStore';
 // import FlipMove from 'react-flip-move';
 import CircularProgress from 'material-ui/CircularProgress';
 // import Checkbox from 'material-ui/Checkbox';
-import TodoItem from '../TodoItem';
+import TodoItem from '@components/TodoItem/TodoItem';
 
 const styles = {
 	container: {

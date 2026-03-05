@@ -2,7 +2,7 @@ import SessionStore from './sessionStore';
 import UserStore from './userStore';
 import MessageStore from './messageStore';
 import React from 'react'
-import Firebase from '../components/Firebase';
+import Firebase from '@components/Firebase/Firebase';
 import ReeniFireStorter from './reeniStore';
 import TilastoFireStorter from './tilastoFirebase';
 

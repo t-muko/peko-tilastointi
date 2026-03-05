@@ -33,7 +33,7 @@ class Firebase {
         onAuthStateChanged(this.auth, user => {
             this.rootStore.sessionStore.setAuthUser(user)
             const uid = this.rootStore.sessionStore.authUser ? this.rootStore.sessionStore.authUser.uid : "anonyymi"
-            this.rootStore.reeniFirestore.changePath("reenit/"+uid+"/reenit")
+            this.rootStore.reeniFirestore.changePath("reenit/" + uid + "/reenit")
         });
     }
 

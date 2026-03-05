@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { makeObservable, observable, reaction, action } from 'mobx';
-import { FirebaseContext } from '../Firebase';
+import { FirebaseContext } from '@components/Firebase/Firebase';
 
 import { Document } from 'firestorter';
 import { CircularProgress, Checkbox } from "@mui/material";
-import ReeniListItem from '../ReeniListItem';
+import ReeniListItem from '@components/ReeniListItem/ReeniListItem';
 
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';

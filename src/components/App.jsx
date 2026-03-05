@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Button from '@mui/material/Button';
-import { FirebaseContext } from './Firebase';
+import { FirebaseContext } from '@components/Firebase/Firebase';
 
 import { observer } from "mobx-react";
 import { makeObservable, observable, action } from 'mobx';
@@ -22,9 +22,9 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 
 
-import Reenit from './Reenit';
-import Tilasto from './Tilasto';
-import Info from './Info'
+import Reenit from '@components/Reenit/Reenit';
+import Tilasto from '@components/Tilasto/Tilasto';
+import Info from '@components/Info/Info'
 
 import moment from 'moment';
 

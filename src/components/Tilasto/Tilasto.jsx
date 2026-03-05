@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { makeObservable, observable, action } from 'mobx';
-import { FirebaseContext } from '../Firebase';
+import { FirebaseContext } from '@components/Firebase/Firebase';
 import { Collection, Document } from 'firestorter';
 import { CircularProgress } from "@mui/material";
 import Typography from '@mui/material/Typography';
@@ -350,8 +350,8 @@ const Tilasto = observer(class Tilasto extends Component {
 
 			const { docs: tilastoDocs, isLoading: isTilastoLoading } = this.tilastotColl;
 			const tilastoVuodenKaikkiTilastot = tilastoDocs
-			.filter((tilasto) => tilasto.data[tilastoVuosi]).map((tilasto) => tilasto.data[tilastoVuosi])
-			.filter((tilasto) => tilasto.sumH > 0)
+				.filter((tilasto) => tilasto.data[tilastoVuosi]).map((tilasto) => tilasto.data[tilastoVuosi])
+				.filter((tilasto) => tilasto.sumH > 0)
 			const tilastovuoden_tunnit_yhteensa = tilastoVuodenKaikkiTilastot.map((tilasto) => tilasto.sumH || 0).reduce((a, b) => a + b, 0)
 			const tilastovuoden_paivat_yhteensa = tilastoVuodenKaikkiTilastot.map((tilasto) => tilasto.sumD || 0).reduce((a, b) => a + b, 0)
 
@@ -373,12 +373,12 @@ const Tilasto = observer(class Tilasto extends Component {
 
 				var chartDataYhd = [['Kategoria', 'Kerrat']]
 				chartDataYhd = chartDataYhd.concat(Object.entries(byCat).map(([key, value]) => ([key, Math.round(value)])))
-				
+
 			}
 			else {
 				var chartDataYhd = [['Kategoria', 'Kerrat']]
 			}
-			
+
 
 			if (tilastoDocs.length > 1) {
 				const byCat = new Object()
@@ -415,7 +415,7 @@ const Tilasto = observer(class Tilasto extends Component {
 				reenejaViikossa = kuluvanVuodenTilastot
 					.filter((tilasto) => (tilasto.sumD > 0))
 					.map((tilasto) => (tilasto.sumD))
-					.reduce((p, c) => p + c, 0) / kuluvanVuodenTilastot.length / (tilastoVuosi == kuluvaVuosi ? (moment().dayOfYear()/7) : 365 / 7)
+					.reduce((p, c) => p + c, 0) / kuluvanVuodenTilastot.length / (tilastoVuosi == kuluvaVuosi ? (moment().dayOfYear() / 7) : 365 / 7)
 			}
 			const yhdistys = this.tilastoDokumentti.data.yhd || 'PUUTTUU!'
 
@@ -430,7 +430,7 @@ const Tilasto = observer(class Tilasto extends Component {
 							<EditIcon />
 						</IconButton>
 					</Typography>
-					<Dialog onClose={this.closeYhdistysEdit	} open={this.editYhdistys}>
+					<Dialog onClose={this.closeYhdistysEdit} open={this.editYhdistys}>
 						<Paper sx={{ m: 2, p: 2 }}>
 							<Autocomplete
 								options={jasenjarjestot.map((option) => option.label)}
@@ -453,18 +453,18 @@ const Tilasto = observer(class Tilasto extends Component {
 					</Dialog>
 
 					<FormControl >
-					<InputLabel id="vuosi-select-label">Vuosi</InputLabel>
-					<Select
-						labelId="vuosi-select-label"
-						id="vuosi-select"
-						value={tilastoVuosi}
-						label="Vuosi"
-						onChange={this.vaihdaVuosi}
-					>
-						{
-							vuodet.map((vuosi) =>  <MenuItem value={vuosi} key={vuosi}>{vuosi}</MenuItem>)
-						}
-					</Select>
+						<InputLabel id="vuosi-select-label">Vuosi</InputLabel>
+						<Select
+							labelId="vuosi-select-label"
+							id="vuosi-select"
+							value={tilastoVuosi}
+							label="Vuosi"
+							onChange={this.vaihdaVuosi}
+						>
+							{
+								vuodet.map((vuosi) => <MenuItem value={vuosi} key={vuosi}>{vuosi}</MenuItem>)
+							}
+						</Select>
 					</FormControl>
 
 
@@ -521,12 +521,12 @@ const Tilasto = observer(class Tilasto extends Component {
 					/>
 
 					<Typography variant="body1" gutterBottom >Tilastovuoden käyttäjien merkinnät
-						yhteensä {tilastovuoden_tunnit_yhteensa} h, 
-						hyvinvointia edistävää harrastamista keskimäärin {(tilastovuoden_paivat_yhteensa 
-						/ tilastoVuodenKaikkiTilastot.length 
-						/ (tilastoVuosi == kuluvaVuosi ? (moment().dayOfYear()) : 365 )
-						* 7
-						).toFixed(2)} päivänä viikossa 
+						yhteensä {tilastovuoden_tunnit_yhteensa} h,
+						hyvinvointia edistävää harrastamista keskimäärin {(tilastovuoden_paivat_yhteensa
+							/ tilastoVuodenKaikkiTilastot.length
+							/ (tilastoVuosi == kuluvaVuosi ? (moment().dayOfYear()) : 365)
+							* 7
+						).toFixed(2)} päivänä viikossa
 						({tilastoVuodenKaikkiTilastot.length} käyttäjää, {yhdistykset.size} yhdistystä)</Typography>
 
 

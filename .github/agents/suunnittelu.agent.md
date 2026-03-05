@@ -3,7 +3,7 @@ description: 'Edit and provide feedback on implementation details written in a .
 tools: ['vscode', 'read', 'edit', 'search', 'todo']
 handoffs:
   - label: Start planning the tests
-    agent: testisuunnittelija
+    agent: testitavoitesuunnittelija
     prompt: Create a testing plan based on implementation detail in .md file.
     send: false
 model: Claude Sonnet 4.6 (copilot)

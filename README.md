@@ -32,3 +32,11 @@ Functions live under `functions/` and have their own dependencies:
 yarn --cwd functions install
 yarn --cwd functions lint
 ```
+
+## Dokumentaatio ja ohjeistus
+
+/docs-kansiossa on dokumentaatiota liittyen sovelluksen eri osien toteutukseen,
+arkkitehtuuriin ja testaukseen liittyen.
+
+.github/instructions.md sisältää ohjeet tekoälyavustalle. Siinä on myös lyhyt
+yhteenveto sovelluksesta ja sen arkkitehtuurista.

@@ -1,10 +1,12 @@
 import { makeObservable, observable, action } from 'mobx';
+import type { User } from 'firebase/auth';
+import type { RootStore } from './index';
 
 class SessionStore {
-  // @observable
-  authUser = null;
+  authUser: User | null = null;
+  rootStore: RootStore;
 
-  constructor(rootStore) {
+  constructor(rootStore: RootStore) {
     makeObservable(this, {
       authUser: observable,
       setAuthUser: action
@@ -12,16 +14,13 @@ class SessionStore {
     this.rootStore = rootStore;
   }
 
-  //@action 
-  setAuthUser = authUser => {
+  setAuthUser = (authUser: User | null) => {
     this.authUser = authUser;
   };
-  
-  get userOk() {
-    return (this.authUser && this.authUser.uid && this.rootStore.reeniFirestore.path !== "reenit/anonyymi/reenit") 
+
+  get userOk(): boolean {
+    return !!(this.authUser && this.authUser.uid && this.rootStore.reeniFirestore.path !== "reenit/anonyymi/reenit");
   }
-
-
 }
 
 export default SessionStore;

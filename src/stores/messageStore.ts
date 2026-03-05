@@ -1,10 +1,16 @@
 import { makeObservable, observable, action, computed } from 'mobx';
+import type { RootStore } from './index';
+
+interface Messages {
+  [key: string]: Record<string, unknown>;
+}
 
 class MessageStore {
-  messages = null;
+  messages: Messages | null = null;
   limit = 5;
+  rootStore: RootStore;
 
-  constructor(rootStore) {
+  constructor(rootStore: RootStore) {
     makeObservable(this, {
       messages: observable,
       limit: observable,
@@ -15,20 +21,17 @@ class MessageStore {
     this.rootStore = rootStore;
   }
 
-  //@action 
-  setMessages = messages => {
+  setMessages = (messages: Messages | null) => {
     this.messages = messages;
   };
 
-  //@action 
-  setLimit = limit => {
+  setLimit = (limit: number) => {
     this.limit = limit;
   };
 
-  // @computed 
   get messageList() {
     return Object.keys(this.messages || {}).map(key => ({
-      ...this.messages[key],
+      ...(this.messages as Messages)[key],
       uid: key,
     }));
   }

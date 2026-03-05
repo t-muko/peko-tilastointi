@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import {observer} from 'mobx-react';
-// import Checkbox from 'material-ui/Checkbox';
-import TextField from 'material-ui/TextField';
+import { observer } from 'mobx-react';
+import Checkbox from '@mui/material/Checkbox';
+import TextField from '@mui/material/TextField';
 
-// KESKEN!
-import Divider from 'material-ui/Divider';
+import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Paper from '@mui/material/Paper';
@@ -30,16 +28,18 @@ const styles = {
 	icon: {
 		marginRight: 6
 	}
-};
+} as const;
 
-class TodoItem extends Component {
-	static propTypes = {
-		todo: PropTypes.any
-	};
+interface TodoItemProps {
+	todo: any;
+}
+
+class TodoItem extends Component<TodoItemProps> {
+	_deleting = false;
 
 	render() {
-		const {todo} = this.props;
-		const {finished, text} = todo.data;
+		const { todo } = this.props;
+		const { finished, text } = todo.data;
 
 		console.log('TodoItem.render: ', todo.path, ', text: ', text);
 		return (
@@ -47,20 +47,19 @@ class TodoItem extends Component {
 				<div style={styles.row}>
 					<Checkbox
 						style={styles.checkbox}
-						onCheck={this.onPressCheck}
+						onChange={this.onPressCheck}
 						checked={finished} />
 					<TextField
 						id={todo.id}
 						style={styles.input}
-						underlineShow={false}
-						hintText={text ? undefined : 'What needs to be done?'}
+						placeholder={text ? undefined : 'What needs to be done?'}
 						onChange={this.onTextChange}
 						value={text || ''} />
 					<IconButton
 						style={styles.icon}
 						onClick={this.onPressDelete} >
 						<DeleteIcon />
-						</IconButton>
+					</IconButton>
 				</div>
 				<Divider />
 			</Paper>
@@ -68,7 +67,7 @@ class TodoItem extends Component {
 	}
 
 	onPressDelete = async () => {
-		const {todo} = this.props;
+		const { todo } = this.props;
 		if (this._deleting) return;
 		this._deleting = true;
 		try {
@@ -81,16 +80,16 @@ class TodoItem extends Component {
 	};
 
 	onPressCheck = async () => {
-		const {todo} = this.props;
+		const { todo } = this.props;
 		await todo.update({
 			finished: !todo.data.finished
 		});
 	};
 
-	onTextChange = async (event, newValue) => {
-		const {todo} = this.props;
+	onTextChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+		const { todo } = this.props;
 		await todo.update({
-			text: newValue
+			text: event.target.value
 		});
 	};
 }

@@ -1,4 +1,7 @@
 import React from 'react'
-import storesContext from '@stores'
+import rootStore from '@stores'
 
-export const useStores = () => React.useContext(storesContext)
+export const useStores = () => {
+    const store = React.useContext(rootStore as any);
+    return store;
+}

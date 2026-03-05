@@ -3,13 +3,11 @@ import { observer } from 'mobx-react';
 import Typography from '@mui/material/Typography';
 import { Paper, Dialog } from '@mui/material';
 
+interface InfoProps {
+	toggleShowInfoF: () => void;
+}
 
-class Info extends Component {
-
-	constructor(props) {
-		super(props);
-	}
-
+class Info extends Component<InfoProps> {
 
 	render() {
 		return (

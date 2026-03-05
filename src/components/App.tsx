@@ -20,14 +20,15 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-
-
 import Reenit from '@components/Reenit/Reenit';
 import Tilasto from '@components/Tilasto/Tilasto';
 import Info from '@components/Info/Info'
 
 import moment from 'moment';
 
+interface AppContext {
+	rootStore: any;
+}
 
 const styles = {
 	container: {
@@ -79,14 +80,16 @@ const styles = {
 		top: '1em',
 		right: '3em'
 	}
-};
+} as const;
 
 class App extends Component {
 	static contextType = FirebaseContext
+	declare context: AppContext;
 
 	showInfo = false;
+	uid: string | null = null;
 
-	constructor(props) {
+	constructor(props: any) {
 		super(props)
 
 		makeObservable(this, {

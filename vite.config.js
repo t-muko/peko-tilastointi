@@ -13,19 +13,6 @@ export default defineConfig({
       '@hooks': path.resolve(__dirname, './src/hooks'),
     }
   },
-  esbuild: {
-    loader: 'jsx',
-    include: /src\/.*\.(js|jsx)$/,
-    exclude: []
-  },
-  optimizeDeps: {
-    esbuildOptions: {
-      loader: {
-        '.js': 'jsx',
-        '.jsx': 'jsx'
-      }
-    }
-  },
   build: {
     outDir: 'build'
   }

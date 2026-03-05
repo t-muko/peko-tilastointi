@@ -3,14 +3,15 @@ import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 import 'firebase/firestore';
 
-
-import { initFirestorter } from 'firestorter';
-import { Collection, Document } from 'firestorter';
+import { initFirestorter, Collection, Document } from 'firestorter';
+import type { RootStore } from './index';
 
 class TilastoFireStorter {
-    // @observable
+    rootStore: RootStore;
+    collectionPath: string;
+    tilastot!: Collection;
 
-    constructor(rootStore) {
+    constructor(rootStore: RootStore) {
         this.rootStore = rootStore;
         this.collectionPath = "tilastot"
 

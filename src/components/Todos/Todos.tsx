@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import {observer} from 'mobx-react';
-import {todos} from '@stores/todoStore';
-// import FlipMove from 'react-flip-move';
-import CircularProgress from 'material-ui/CircularProgress';
-// import Checkbox from 'material-ui/Checkbox';
+import { observer } from 'mobx-react';
+import { todos } from '@stores/todoStore';
+import CircularProgress from '@mui/material/CircularProgress';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import TodoItem from '@components/TodoItem/TodoItem';
 
 const styles = {
@@ -35,10 +35,14 @@ const styles = {
 		flex: 1,
 		overflowY: 'scroll'
 	}
-};
+} as const;
 
-const Todos = observer(class Todos extends Component {
-	constructor(props) {
+interface TodosState {
+	disabled: boolean;
+}
+
+const Todos = observer(class Todos extends Component<{}, TodosState> {
+	constructor(props: {}) {
 		super(props);
 		this.state = {
 			disabled: false
@@ -46,42 +50,39 @@ const Todos = observer(class Todos extends Component {
 	}
 
 	render() {
-		const {disabled} = this.state;
+		const { disabled } = this.state;
 		if (disabled) {
 			console.log('Todos.render, disabled');
 			return (
 				<div>
 					<div style={styles.header}>
 						<div />
-						<Checkbox
-							label='Disable observe'
-							checked={disabled}
-							onCheck={this.onCheckDisable} />
+						<FormControlLabel
+							control={<Checkbox checked={disabled} onChange={this.onCheckDisable} />}
+							label='Disable observe' />
 					</div>
 				</div>
 			);
 		}
-		const {docs, query} = todos;
+		const { docs, query } = todos;
 		const children = docs.map((todo) => <TodoItem key={todo.id} todo={todo} />);
 		// console.debug("Docs: ", children)
-		const {isLoading} = todos;
+		const { isLoading } = todos;
 		console.log('Todos.render, isLoading: ', isLoading);
 		return (
 			<div style={styles.container}>
 				<div style={styles.header}>
-					<Checkbox
-						label='Hide finished'
-						checked={query ? true : false}
-						onCheck={this.onCheckShowOnlyUnfinished} />
-					{/* <Checkbox
-						label='Disable observe'
-						checked={disabled}
-						onCheck={this.onCheckDisable} />*/}
+					<FormControlLabel
+						control={<Checkbox checked={query ? true : false} onChange={this.onCheckShowOnlyUnfinished} />}
+						label='Hide finished' />
+					{/* <FormControlLabel
+						control={<Checkbox checked={disabled} onChange={this.onCheckDisable} />}
+						label='Disable observe' />*/}
 				</div>
 				<div style={styles.content} className='mobile-margins'>
-					
-						{children}
-					
+
+					{children}
+
 				</div>
 				{isLoading ? <div style={styles.loader}><CircularProgress /></div> : undefined}
 			</div>

@@ -4,9 +4,10 @@ import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 import 'firebase/firestore';
 
-import { getAuth, onAuthStateChanged, GoogleAuthProvider } from "firebase/auth";
+import { getAuth, onAuthStateChanged, GoogleAuthProvider, Auth } from "firebase/auth";
 import { signInWithPopup, signOut } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, Firestore } from "firebase/firestore";
+import type { RootStore } from '@stores/index';
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -19,10 +20,15 @@ const firebaseConfig = {
     measurementId: "G-PL4VL06TTN"
 };
 firebase.initializeApp(firebaseConfig);
-// initFirestorter({ firebase });
 
 class Firebase {
-    constructor(rootStore) {
+    app: any;
+    provider: GoogleAuthProvider;
+    auth: Auth;
+    rootStore: RootStore;
+    db?: Firestore;
+
+    constructor(rootStore: RootStore) {
         this.app = firebase.initializeApp(firebaseConfig);
         this.provider = new GoogleAuthProvider();
         this.auth = getAuth(this.app);
@@ -31,35 +37,33 @@ class Firebase {
 
         // Switch the Firestorter collection path when auth state changes
         onAuthStateChanged(this.auth, user => {
-            this.rootStore.sessionStore.setAuthUser(user)
-            const uid = this.rootStore.sessionStore.authUser ? this.rootStore.sessionStore.authUser.uid : "anonyymi"
-            this.rootStore.reeniFirestore.changePath("reenit/" + uid + "/reenit")
+            this.rootStore.sessionStore.setAuthUser(user);
+            const uid = this.rootStore.sessionStore.authUser ? this.rootStore.sessionStore.authUser.uid : "anonyymi";
+            this.rootStore.reeniFirestore.changePath("reenit/" + uid + "/reenit");
         });
     }
-
 
     autentikoi() {
         signInWithPopup(this.auth, this.provider)
             .then((result) => {
                 const user = result.user;
-                console.debug("User logged in:", user)
+                console.debug("User logged in:", user);
                 this.db = getFirestore();
             }).catch((error) => {
                 const errorMessage = error.message;
-                const email = error.email;
-                console.error("User auth error", email, errorMessage)
+                const email = (error as any).email;
+                console.error("User auth error", email, errorMessage);
             });
     }
 
     logout() {
-        signOut(this.auth)
-        this.rootStore.reeniFirestore.changePath("reenit/anonyymi/reenit")
+        signOut(this.auth);
+        this.rootStore.reeniFirestore.changePath("reenit/anonyymi/reenit");
     }
 
     async haeYhdistykset() {
         // Not currently implemented
     }
 }
-
 
 export default Firebase;

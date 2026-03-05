@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { observer } from 'mobx-react';
 import { TextField } from "@mui/material";
 import IconButton from '@mui/material/IconButton';
@@ -49,12 +48,15 @@ const styles = {
 	icon: {
 		marginRight: 6
 	}
-};
+} as const;
 
-class ReeniItem extends Component {
-	static propTypes = {
-		reeni: PropTypes.any
-	};
+interface ReeniItemProps {
+	item: any;
+	closeF: () => void;
+}
+
+class ReeniItem extends Component<ReeniItemProps> {
+	_deleting = false;
 
 	render() {
 		const { item } = this.props;
@@ -82,16 +84,14 @@ class ReeniItem extends Component {
 								<InputLabel id="date-label">Päivämäärä</InputLabel>
 
 								<MobileDatePicker
-									labelId="date-label"
 									format="dd.MM.yyyy"
 									value={pvm ? new Date(pvm) : null}
 									minDate={new Date("12/01/2021")}
 									maxDate={new Date("12/31/2031")}
 									onChange={(e) => {
-										// console.log("Date to send", moment(e).format('YYYY-MM-DD'));
 										this.onPvmChange(moment(e).format('YYYY-MM-DD'))
 									}}
-									slotProps={{ textField: { id: this.id + "foo" } }}
+									slotProps={{ textField: { id: this.props.item.id + "foo" } }}
 								/>
 							</Grid>
 
@@ -99,7 +99,7 @@ class ReeniItem extends Component {
 								<InputLabel id="demo-simple-select-label">Kesto</InputLabel>
 								<Select
 									labelId="demo-simple-select-label"
-									id={this.id + "demo-simple-select"}
+									id={this.props.item.id + "demo-simple-select"}
 									value={tunnit}
 									label="Kesto"
 									fullWidth
@@ -128,7 +128,7 @@ class ReeniItem extends Component {
 								<InputLabel id="kategoria-label">Kategoria</InputLabel>
 								<Select
 									labelId="kategoria-label"
-									id={this.id + "kategoria-select"}
+									id={this.props.item.id + "kategoria-select"}
 									value={kategoria || "Ei kategoriaa"}
 									label="Kategoria"
 									fullWidth
@@ -149,7 +149,7 @@ class ReeniItem extends Component {
 								<InputLabel id="koira-label">Koira</InputLabel>
 								<Select
 									labelId="koira-label"
-									id={this.id + "koira-select"}
+									id={this.props.item.id + "koira-select"}
 									value={koira || "Ei koiraa"}
 									label="Koira"
 									fullWidth
@@ -230,7 +230,7 @@ class ReeniItem extends Component {
 		});
 	};
 
-	onPvmChange = async (event) => {
+	onPvmChange = async (event: string) => {
 		const { item } = this.props;
 		await item.update({
 			pvm: event

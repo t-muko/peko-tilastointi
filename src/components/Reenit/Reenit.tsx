@@ -52,7 +52,7 @@ const styles = {
 	content: {
 		flex: 1,
 	}
-};
+} as const;
 
 // Builds a regex that matches all search words in any order (AND logic).
 // Each word becomes a lookahead, e.g. "vespa lumi" → "(?=.*vespa)(?=.*lumi)"
@@ -63,17 +63,20 @@ function escapeRegExp(value) {
 
 const Reenit = observer(class Reenit extends Component {
 
-	_expand = false
-	yhteensa = null
-	suodatetut = 0
-	reenit = null
-	tilastoRecord = Object()
-	searchValue = ""
+	_expand = false;
+	yhteensa: number | null = null;
+	suodatetut = 0;
+	reenit: any = null;
+	tilastoRecord: Record<string, any> = {};
+	searchValue = "";
+	uid!: string;
+	tilastoDokumentti: any;
 
-	static contextType = FirebaseContext
+	static contextType = FirebaseContext;
+	declare context: any;
 
 
-	constructor(props) {
+	constructor(props: any) {
 		super(props);
 		makeObservable(this, {
 			_expand: observable,

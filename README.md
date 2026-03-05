@@ -24,10 +24,11 @@ yarn firebase deploy --only hosting
 
 ## Cloud Functions
 
+- Functions are not used at the moment *
+
 Functions live under `functions/` and have their own dependencies:
 
 ```bash
 yarn --cwd functions install
 yarn --cwd functions lint
 ```
-

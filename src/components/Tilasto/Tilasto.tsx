@@ -284,14 +284,18 @@ const jasenjarjestot = [
 
 const Tilasto = observer(class Tilasto extends Component {
 
-	yhteensa = null
-	editYhdistys = false
-	yksikko = "X"
-	tilastoVuosi = (new Date()).getFullYear()
+	yhteensa: number | null = null;
+	editYhdistys = false;
+	yksikko = "X";
+	tilastoVuosi = (new Date()).getFullYear();
+	tilastotColl!: Collection;
+	tilastoDokumentti!: Document;
+	uid!: string;
 
-	static contextType = FirebaseContext
+	static contextType = FirebaseContext;
+	declare context: any;
 
-	constructor(props) {
+	constructor(props: any) {
 		super(props);
 
 		makeObservable(this, {
@@ -315,19 +319,19 @@ const Tilasto = observer(class Tilasto extends Component {
 
 	}
 
-	vaihdaYksikko = (event) => {
+	vaihdaYksikko = (event: any) => {
 		this.yksikko = event.target.value
 	}
 
-	vaihdaVuosi = (event) => {
+	vaihdaVuosi = (event: any) => {
 		this.tilastoVuosi = event.target.value
 	}
 
-	openYhdistysEdit = (event) => {
+	openYhdistysEdit = (_event?: any) => {
 		this.editYhdistys = true
 	}
 
-	closeYhdistysEdit = (event) => {
+	closeYhdistysEdit = (_event?: any) => {
 		this.editYhdistys = false
 	}
 
@@ -371,12 +375,12 @@ const Tilasto = observer(class Tilasto extends Component {
 					.reduce((p, c) => p + c, 0)
 				)
 
-				var chartDataYhd = [['Kategoria', 'Kerrat']]
+				var chartDataYhd: (string | number)[][] = [['Kategoria', 'Kerrat']]
 				chartDataYhd = chartDataYhd.concat(Object.entries(byCat).map(([key, value]) => ([key, Math.round(value)])))
 
 			}
 			else {
-				var chartDataYhd = [['Kategoria', 'Kerrat']]
+				var chartDataYhd: (string | number)[][] = [['Kategoria', 'Kerrat']]
 			}
 
 
@@ -390,7 +394,7 @@ const Tilasto = observer(class Tilasto extends Component {
 					.reduce((p, c) => p + c, 0)
 				)
 
-				var chartDataAll = [['Kategoria', 'Kerrat']]
+				var chartDataAll: (string | number)[][] = [['Kategoria', 'Kerrat']]
 				chartDataAll = chartDataAll.concat(Object.entries(byCat).map(([key, value]) => ([key, Math.round(value)])))
 
 			}
@@ -406,7 +410,7 @@ const Tilasto = observer(class Tilasto extends Component {
 					.reduce((p, c) => p + c, 0)
 				)
 
-				var chartDataMy = [['Kategoria', 'Kerrat']]
+				var chartDataMy: (string | number)[][] = [['Kategoria', 'Kerrat']]
 				chartDataMy = chartDataMy.concat(Object.entries(byCat).map(([key, value]) => ([key, value])))
 
 			}

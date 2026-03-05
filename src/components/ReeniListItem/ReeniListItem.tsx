@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { observer } from 'mobx-react';
 import { Paper, Divider } from '@mui/material';
 
@@ -13,7 +12,7 @@ import { makeObservable, observable, action } from 'mobx';
 import moment from 'moment';
 
 const fiFiWeekdays = ['su', 'ma', 'ti', 'ke', 'to', 'pe', 'la'];
-const formatPvm = (pvm) => {
+const formatPvm = (pvm: string): string => {
 	const m = moment(pvm);
 	return m.isValid() ? `${m.format('D.M.YYYY')} ${fiFiWeekdays[m.day()]}` : '';
 }
@@ -42,16 +41,17 @@ const styles = {
 	icon: {
 		marginRight: 6
 	}
-};
+} as const;
 
-class ReeniListItem extends Component {
-	static propTypes = {
-		reeni: PropTypes.any
-	};
+interface ReeniListItemProps {
+	item: any;
+	expand?: boolean;
+}
 
-	_editing = false
+class ReeniListItem extends Component<ReeniListItemProps> {
+	_editing = false;
 
-	constructor(props) {
+	constructor(props: ReeniListItemProps) {
 		super(props)
 		makeObservable(this, {
 			_editing: observable,

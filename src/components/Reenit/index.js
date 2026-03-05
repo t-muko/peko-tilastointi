@@ -28,9 +28,6 @@ import moment from 'moment';
 import 'moment/locale/fi';
 // import { timelineClasses } from '@mui/lab';
 moment.locale('fi')
-moment.updateLocale('fi', {
-    weekdaysShort : String["su", "ma", "ti", "ke", "to", "pe", "la"]
-});
 
 
 const styles = {
@@ -65,13 +62,13 @@ const styles = {
 };
 
 function escapeRegExp(value) {
-//	return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
-// value.replace(/[-[\]{}()*+?.,\\^$|#]/g, '\\$&').replace(/[\s]/g, '.*');
-// ^(?=.*\bSidney\b)(?=.*\bAlice\b)(?=.*\bPeter\b).*$
+	//	return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+	// value.replace(/[-[\]{}()*+?.,\\^$|#]/g, '\\$&').replace(/[\s]/g, '.*');
+	// ^(?=.*\bSidney\b)(?=.*\bAlice\b)(?=.*\bPeter\b).*$
 	var searchRe = value.replace(/[-[\]{}()*+?.,\\^$|#]/g, '\\$&').split(" ")
-	searchRe = searchRe.map((wrd) => "(?=.*"+wrd+")" ).join("")
-// return "(?=.*vespa)(?=.*lumi)"
-return searchRe
+	searchRe = searchRe.map((wrd) => "(?=.*" + wrd + ")").join("")
+	// return "(?=.*vespa)(?=.*lumi)"
+	return searchRe
 }
 
 const Reenit = observer(class Reenit extends Component {
@@ -134,7 +131,7 @@ const Reenit = observer(class Reenit extends Component {
 				else {
 					console.debug("User nulled, null tilastoDokumentti")
 					this.tilastoDokumentti = null;
-			}
+				}
 			}
 		)
 	}
@@ -177,13 +174,13 @@ const Reenit = observer(class Reenit extends Component {
 
 			// Haku toimii niin, että regexp etsii hakusanoja missä tahansa järjestyksessä stringistä. Luodaan string, jossa on kaikki halutut kentät formatoituna
 			// console.debug("rowdata", row.data)
-			const concatenoituString = (moment(row.data['pvm']).format("D.M.YYYY dddd MMMM").toString() || '') 
-			+ ' ' + row.data['koira'].toString()
-			+ ' ' + row.data['kategoria'].toString()
-			+ ' ' + row.data['kommentti'].toString().replace(/(\r\n|\n|\r)/gm, "")
+			const concatenoituString = (moment(row.data['pvm']).format("D.M.YYYY dddd MMMM").toString() || '')
+				+ ' ' + row.data['koira'].toString()
+				+ ' ' + row.data['kategoria'].toString()
+				+ ' ' + row.data['kommentti'].toString().replace(/(\r\n|\n|\r)/gm, "")
 			// console.debug("concatenoituString", concatenoituString, searchRegex)
 			return searchRegex.test(concatenoituString);
-			
+
 		});
 
 		if (!context.rootStore.sessionStore.userOk) {
@@ -203,48 +200,48 @@ const Reenit = observer(class Reenit extends Component {
 			this.yhteensa = docs.map((reeni) => reeni.data.tunnit || 0).reduce((a, b) => a + b, 0)
 			this.suodatetut = filteredRows.map((reeni) => reeni.data.tunnit || 0).reduce((a, b) => a + b, 0)
 
-			if (!isLoading) { 
-			const vt = new Object()
-			const reenipaivat = new Set()
-			docs.map((reeni) => reenipaivat.add(reeni.data.pvm))
-
-			// vt['yhd'] = 'PPK'
-			vt['totalH'] = docs.map((reeni) => reeni.data.tunnit || 0).reduce((a, b) => a + b, 0)
-			vt['totalD'] = reenipaivat.size
-			
-			const kuluvaVuosi = (new Date()).getFullYear()
-
-			const range = (start, stop, step = 1) =>
-			  Array(Math.ceil((stop - start) / step)).fill(start).map((x, y) => x + y * step)
-			const vuodet = range(2021, kuluvaVuosi+1, 1)
-
-			// console.log("Vuodet", vuodet)
-			// const foo = [2021, 2022].map((vuosi) => {
-			vuodet.map((vuosi) => {
-				const vuodenReenit = docs.filter((rivi) => rivi.data.pvm.includes(vuosi))
+			if (!isLoading) {
+				const vt = new Object()
 				const reenipaivat = new Set()
-				vuodenReenit.map((reeni) => reenipaivat.add(reeni.data.pvm))
-				vt[vuosi] = {
-					sumH: vuodenReenit.map((reeni) => reeni.data.tunnit || 0).reduce((a, b) => a + b, 0),
-					sumX: vuodenReenit.length,
-					sumD: reenipaivat.size
-				}
-				// console.debug("set", reenipaivat)
-				
-				const cat = ['Jälki', 'Partsa', 'Ilmavainu', 'Tottis', 'Muu reeni', 'Ei kategoriaa', 'Muu y-toiminta']
-				cat.map((kategoria) =>{
-					const kategorianReenit = vuodenReenit.filter((rivi) => rivi.data.kategoria.includes(kategoria))
-					vt[vuosi][kategoria] = {
-						H: kategorianReenit.map((reeni) => reeni.data.tunnit || 0).reduce((a, b) => a + b, 0),
-						X: kategorianReenit.length
+				docs.map((reeni) => reenipaivat.add(reeni.data.pvm))
+
+				// vt['yhd'] = 'PPK'
+				vt['totalH'] = docs.map((reeni) => reeni.data.tunnit || 0).reduce((a, b) => a + b, 0)
+				vt['totalD'] = reenipaivat.size
+
+				const kuluvaVuosi = (new Date()).getFullYear()
+
+				const range = (start, stop, step = 1) =>
+					Array(Math.ceil((stop - start) / step)).fill(start).map((x, y) => x + y * step)
+				const vuodet = range(2021, kuluvaVuosi + 1, 1)
+
+				// console.log("Vuodet", vuodet)
+				// const foo = [2021, 2022].map((vuosi) => {
+				vuodet.map((vuosi) => {
+					const vuodenReenit = docs.filter((rivi) => rivi.data.pvm.includes(vuosi))
+					const reenipaivat = new Set()
+					vuodenReenit.map((reeni) => reenipaivat.add(reeni.data.pvm))
+					vt[vuosi] = {
+						sumH: vuodenReenit.map((reeni) => reeni.data.tunnit || 0).reduce((a, b) => a + b, 0),
+						sumX: vuodenReenit.length,
+						sumD: reenipaivat.size
 					}
-				})
+					// console.debug("set", reenipaivat)
+
+					const cat = ['Jälki', 'Partsa', 'Ilmavainu', 'Tottis', 'Muu reeni', 'Ei kategoriaa', 'Muu y-toiminta']
+					cat.map((kategoria) => {
+						const kategorianReenit = vuodenReenit.filter((rivi) => rivi.data.kategoria.includes(kategoria))
+						vt[vuosi][kategoria] = {
+							H: kategorianReenit.map((reeni) => reeni.data.tunnit || 0).reduce((a, b) => a + b, 0),
+							X: kategorianReenit.length
+						}
+					})
+				}
+				)
+				console.debug("vuositilasto", vt)
+				// this.tilastoRecord = vt
+				this.setTilastoRecord(vt)
 			}
-			)
-			console.debug("vuositilasto", vt)
-			// this.tilastoRecord = vt
-			this.setTilastoRecord(vt)
-}
 			// this.onAddTilasto()
 			// console.debug("Docs: ", children)
 			// console.debug("Yhteensä", this.yhteensa)
@@ -271,10 +268,10 @@ const Reenit = observer(class Reenit extends Component {
 								label='Näytä muistiinpanot' />
 						</FormGroup>
 
-							<Typography sx={{ color: 'black', verticalAlign: 'middle', p: 1 }}>
-								{filteredRows.length}x, yht.{this.suodatetut} h
-							</Typography>
-							
+						<Typography sx={{ color: 'black', verticalAlign: 'middle', p: 1 }}>
+							{filteredRows.length}x, yht.{this.suodatetut} h
+						</Typography>
+
 
 						<TextField
 							variant="standard"
@@ -345,7 +342,7 @@ const Reenit = observer(class Reenit extends Component {
 
 	onAddTilasto = async () => {
 		console.debug("Päivitetään tilasto")
-		if (this.uid && (this.tilastoRecord['totalD'] || 0) >0 ) {
+		if (this.uid && (this.tilastoRecord['totalD'] || 0) > 0) {
 			try {
 				//const tilastoDokumentti = new Document('tilastot/' + this.uid);
 				// console.debug("doc with customid tilasto", docWithCustomId)
@@ -356,16 +353,16 @@ const Reenit = observer(class Reenit extends Component {
 					yhd: 'PPK',
 					2021: { totalH: 123, partsaH: 12, jälkiH: 13, partsaX: 2 },
 				}*/
-				,
-				{merge: true});
+					,
+					{ merge: true });
 			}
 			catch (err) {
-	console.error("Virhe", err)
-	// TODO
-}
+				console.error("Virhe", err)
+				// TODO
+			}
 		} else {
-	console.error("Ei ole uid:ta, tai tilastopäiviä on nolla")
-}
+			console.error("Ei ole uid:ta, tai tilastopäiviä on nolla")
+		}
 	};
 
 });

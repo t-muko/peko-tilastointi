@@ -8,7 +8,7 @@ import { FirebaseContext } from './Firebase';
 // import { todos } from '../stores/todoStore';
 // import { reenit } from '../stores/reeniStore';
 
-import {observer} from "mobx-react";
+import { observer } from "mobx-react";
 import { makeObservable, observable, action } from 'mobx';
 
 
@@ -85,7 +85,7 @@ const styles = {
 	logout: {
 		position: 'absolute',
 		top: '1em',
-		right: '1em' 
+		right: '1em'
 	},
 	info: {
 		position: 'absolute',
@@ -100,18 +100,18 @@ const styles = {
 // function App() {
 class App extends Component {
 	static contextType = FirebaseContext
-	
+
 	showInfo = false;
-	
+
 	constructor(props) {
 		super(props)
-        
+
 		makeObservable(this, {
 			showInfo: observable,
 			toggleShowInfo: action
 		})
 
-    }
+	}
 
 	toggleShowInfo = () => {
 		this.showInfo = !this.showInfo
@@ -124,75 +124,73 @@ class App extends Component {
 		const userEmail = this.context.rootStore.sessionStore.authUser ? this.context.rootStore.sessionStore.authUser.email : "nobody"
 
 		return (
-				<FirebaseContext.Consumer>
-					{context => {
-						return <div className="App">
-							<header className="App-header">
-								<div style={styles.container}>
-									<div style={styles.header}>
-										<div style={styles.headerRow}>
-											<img src='/tilasto128.png' alt='logo' style={styles.logo} />
-											<h1 style={styles.h1}>Peko-toimintapäiväkirja</h1>
-										</div>
+			<FirebaseContext.Consumer>
+				{context => {
+					return <div className="App">
+						<header className="App-header">
+							<div style={styles.container}>
+								<div style={styles.header}>
+									<div style={styles.headerRow}>
+										<img src='/tilasto128.png' alt='logo' style={styles.logo} />
+										<h1 style={styles.h1}>Peko-toimintapäiväkirja</h1>
 									</div>
-									{context.rootStore.sessionStore.userOk && <div>
-										<h3>{userEmail}</h3>
-										
-										{ showInfo && <Info toggleShowInfoF={this.toggleShowInfo} />}
-
-										<Accordion TransitionProps={{ mountOnEnter: true }}>
-						<AccordionSummary
-							expandIcon={<ExpandMoreIcon />}
-							aria-controls="panel1a-content"
-							id="panel1a-header"
-						>
-							<Typography variant="body1" gutterBottom  >Tilastot</Typography>
-
-						</AccordionSummary>
-						<AccordionDetails>
-										<Tilasto /> 
-										</AccordionDetails>
-										</Accordion>
-
-										<Reenit />
-										
-										<Box sx={{p:'40px' }}></Box>
-
-										<FloatingActionButton style={styles.add} onClick={this.onPressAdd}>
-											<ContentAddIcon />
-										</FloatingActionButton>
-									</div>}
-
-									
 								</div>
-								{!context.rootStore.sessionStore.userOk && <Box style={styles.login}><Button variant="contained" onClick={() => {
-										context.rootStore.firebase.autentikoi();
-									}}
-									>Login</Button>
-									<Box sx={{mt: '5em', fontSize: 10}}>
-										Jos login ei onnistu, voit kokeilla ensin logata Googlen palveluista kokonaan ulos ja sitten kokeilla kirjautumista uudelleen.<br />
-										Voit joutua navigoimaan uudelleen peko-tilastointisivulle.<br />
-										<a href="https://accounts.google.com/Logout" target="_blank" rel="noopener noreferrer"><LogoutIcon sx={{color: 'white'}} /></a></Box>
-									</Box>}
+								{context.rootStore.sessionStore.userOk && <div>
+									<h3>{userEmail}</h3>
 
-								
-								{context.rootStore.sessionStore.userOk && <Tooltip title="Info">
-									<IconButton color="primary" aria-label="info" component="span" style={styles.info} variant="contained" 
-									onClick={() => {
-										this.toggleShowInfo();
-									}}
-									><InfoIcon /></IconButton></Tooltip>}
+									{showInfo && <Info toggleShowInfoF={this.toggleShowInfo} />}
 
-								{context.rootStore.sessionStore.userOk && <Tooltip title="Kirjaudu ulos"><IconButton color="primary" aria-label="logout" component="span" style={styles.logout} variant="contained" onClick={() => {
-										context.rootStore.firebase.logout();
-									}}
-									><LogoutIcon /></IconButton></Tooltip>}
+									<Accordion slotProps={{ transition: { mountOnEnter: true } }}>
+										<AccordionSummary
+											expandIcon={<ExpandMoreIcon />}
+											aria-controls="panel1a-content"
+											id="panel1a-header"
+										>
+											<Typography variant="body1" gutterBottom  >Tilastot</Typography>
 
-							</header>
+										</AccordionSummary>
+										<AccordionDetails>
+											<Tilasto />
+										</AccordionDetails>
+									</Accordion>
 
-						</div>
-					}}
-				</FirebaseContext.Consumer>
+									<Reenit />
+
+									<Box sx={{ p: '40px' }}></Box>
+
+									<FloatingActionButton style={styles.add} onClick={this.onPressAdd}>
+										<ContentAddIcon />
+									</FloatingActionButton>
+								</div>}
+
+
+							</div>
+							{!context.rootStore.sessionStore.userOk && <Box style={styles.login}><Button variant="contained" onClick={() => {
+								context.rootStore.firebase.autentikoi();
+							}}
+							>Login</Button>
+								<Box sx={{ mt: '5em', fontSize: 10 }}>
+									Jos login ei onnistu, voit kokeilla ensin logata Googlen palveluista kokonaan ulos ja sitten kokeilla kirjautumista uudelleen.<br />
+									Voit joutua navigoimaan uudelleen peko-tilastointisivulle.<br />
+									<a href="https://accounts.google.com/Logout" target="_blank" rel="noopener noreferrer"><LogoutIcon sx={{ color: 'white' }} /></a></Box>
+							</Box>}
+
+
+							{context.rootStore.sessionStore.userOk && <Tooltip title="Info">
+								<IconButton color="primary" aria-label="info" style={styles.info}
+									onClick={() => { this.toggleShowInfo(); }}
+								><InfoIcon /></IconButton></Tooltip>}
+
+							{context.rootStore.sessionStore.userOk && <Tooltip title="Kirjaudu ulos"><IconButton color="primary" aria-label="logout" style={styles.logout} onClick={() => {
+								context.rootStore.firebase.logout();
+							}}
+							><LogoutIcon /></IconButton></Tooltip>}
+
+						</header>
+
+					</div>
+				}}
+			</FirebaseContext.Consumer>
 
 		);
 	}

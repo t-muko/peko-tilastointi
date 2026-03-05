@@ -14,9 +14,6 @@ import moment from 'moment';
 import 'moment/locale/fi';
 // import { timelineClasses } from '@mui/lab';
 moment.locale('fi')
-moment.updateLocale('fi', {
-    weekdaysShort : String["su", "ma", "ti", "ke", "to", "pe", "la"]
-});
 
 const styles = {
 	container: {
@@ -76,9 +73,9 @@ class ReeniListItem extends Component {
 				<Paper>
 					<div style={styles.row}>
 						<div style={styles.input}>
-							{moment(pvm).format("D.M.YYYY dd") || ''}
+							{moment(pvm).locale('fi').format("D.M.YYYY dd") || ''}
 						</div>
-						
+
 						<div style={styles.input}>
 							{tunnit ? tunnit + ' h' : ''}
 						</div>
@@ -88,21 +85,21 @@ class ReeniListItem extends Component {
 						<IconButton
 							style={styles.icon}
 							onClick={this.onPressEdit} >
-								<EditIcon />
-								</IconButton>
+							<EditIcon />
+						</IconButton>
 
 					</div>
 
 					{expand && <div style={styles.row}>
-						
-						<Typography  gutterBottom  style={styles.input}>
+
+						<Typography gutterBottom style={styles.input}>
 							{koira || ''}
 						</Typography>
-					
-						<Typography align="left"  gutterBottom style={styles.preline} >
+
+						<Typography align="left" gutterBottom style={styles.preline} >
 							{kommentti || ''}
 						</Typography>
-	
+
 
 					</div>}
 
@@ -118,7 +115,7 @@ class ReeniListItem extends Component {
 
 	openEdit = () => {
 		this._editing = true
-	} 
+	}
 
 	onPressEdit = async () => {
 		console.debug("Edit mode", this)

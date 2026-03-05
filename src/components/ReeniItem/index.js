@@ -18,7 +18,7 @@ import Dialog from '@mui/material/Dialog';
 
 // import DateAdapter from '@mui/lab/AdapterMoment';
 // import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV2';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 
@@ -75,129 +75,130 @@ class ReeniItem extends Component {
 				}} open={true}>
 
 					<Box sx={{ flexGrow: 1 }}>
-						<Grid 
-						container 
-						justifyContent="space-between"
-						spacing={3} 
-						p={2} 
-						minHeight='200px'>
-							<Grid item xs={6} md={3}>
-							<InputLabel id="date-label">Päivämäärä</InputLabel>
+						<Grid
+							container
+							justifyContent="space-between"
+							spacing={3}
+							p={2}
+							minHeight='200px'
+							columns={12}>
+							<Grid size={{ xs: 6, md: 3 }}>
+								<InputLabel id="date-label">Päivämäärä</InputLabel>
 
 								<MobileDatePicker
 									labelId="date-label"
-									inputFormat="dd.MM.yyyy"
-									value={pvm}
+									format="dd.MM.yyyy"
+									value={pvm ? new Date(pvm) : null}
 									minDate={new Date("12/01/2021")}
-									maxDate={new Date("12/31/2031")}									
+									maxDate={new Date("12/31/2031")}
 									onChange={(e) => {
 										// console.log("Date to send", moment(e).format('YYYY-MM-DD'));
 										this.onPvmChange(moment(e).format('YYYY-MM-DD'))
 									}}
-									renderInput={(params) => <TextField id={this.id + "foo"} {...params} />}
+									slotProps={{ textField: { id: this.id + "foo" } }}
 								/>
 							</Grid>
 
-							<Grid item xs={6} md={3}>
-									<InputLabel id="demo-simple-select-label">Kesto</InputLabel>
-									<Select
-										labelId="demo-simple-select-label"
-										id={this.id +"demo-simple-select"}
-										value={tunnit }
-										label="Kesto"
-										fullWidth
-										onChange={this.onKestoChange}
-									>
-										<MenuItem value={0}> </MenuItem>
-										<MenuItem value={0.25}>lyhyt</MenuItem>
-										<MenuItem value={0.5}>0,5 h</MenuItem>
-										<MenuItem value={1}>1 h</MenuItem>
-										<MenuItem value={1.5}>1,5 h</MenuItem>
-										<MenuItem value={2}>2 h</MenuItem>
-										<MenuItem value={2.5}>2,5 h</MenuItem>
-										<MenuItem value={3}>3 h</MenuItem>
-										<MenuItem value={4}>4 h</MenuItem>
-										<MenuItem value={5}>5 h</MenuItem>
-										<MenuItem value={6}>6 h</MenuItem>
-										<MenuItem value={7}>7 h</MenuItem>
-										<MenuItem value={8}>8 h</MenuItem>
-										<MenuItem value={9}>9 h</MenuItem>
-										<MenuItem value={10}>10 h</MenuItem>
+							<Grid size={{ xs: 6, md: 3 }}>
+								<InputLabel id="demo-simple-select-label">Kesto</InputLabel>
+								<Select
+									labelId="demo-simple-select-label"
+									id={this.id + "demo-simple-select"}
+									value={tunnit}
+									label="Kesto"
+									fullWidth
+									onChange={this.onKestoChange}
+								>
+									<MenuItem value={0}> </MenuItem>
+									<MenuItem value={0.25}>lyhyt</MenuItem>
+									<MenuItem value={0.5}>0,5 h</MenuItem>
+									<MenuItem value={1}>1 h</MenuItem>
+									<MenuItem value={1.5}>1,5 h</MenuItem>
+									<MenuItem value={2}>2 h</MenuItem>
+									<MenuItem value={2.5}>2,5 h</MenuItem>
+									<MenuItem value={3}>3 h</MenuItem>
+									<MenuItem value={4}>4 h</MenuItem>
+									<MenuItem value={5}>5 h</MenuItem>
+									<MenuItem value={6}>6 h</MenuItem>
+									<MenuItem value={7}>7 h</MenuItem>
+									<MenuItem value={8}>8 h</MenuItem>
+									<MenuItem value={9}>9 h</MenuItem>
+									<MenuItem value={10}>10 h</MenuItem>
 
-									</Select>
+								</Select>
 							</Grid>
 
-							<Grid item xs={6} md={3}>
-									<InputLabel id="kategoria-label">Kategoria</InputLabel>
-									<Select
-										labelId="kategoria-label"
-										id={this.id +"kategoria-select"}
-										value={kategoria || "Ei kategoriaa"}
-										label="Kategoria"
-										fullWidth
-										onChange={this.onKategoriaChange}
-									>
-										<MenuItem value={'Ei kategoriaa'}>	Ei kategoriaa</MenuItem>
-										<MenuItem value={'Jälki'}>			Jälki</MenuItem>
-										<MenuItem value={'Partsa'}>			Partsa</MenuItem>
-										<MenuItem value={'Ilmavainu'}>		Ilmavainu</MenuItem>
-										<MenuItem value={'Tottis'}>			Tottis</MenuItem>
-										<MenuItem value={'Muu reeni'}>		Muu reeni</MenuItem>
-										<MenuItem value={'Muu y-toiminta'}>	Muu y-toiminta</MenuItem>
-										
-									</Select>
+							<Grid size={{ xs: 6, md: 3 }}>
+								<InputLabel id="kategoria-label">Kategoria</InputLabel>
+								<Select
+									labelId="kategoria-label"
+									id={this.id + "kategoria-select"}
+									value={kategoria || "Ei kategoriaa"}
+									label="Kategoria"
+									fullWidth
+									onChange={this.onKategoriaChange}
+								>
+									<MenuItem value={'Ei kategoriaa'}>	Ei kategoriaa</MenuItem>
+									<MenuItem value={'Jälki'}>			Jälki</MenuItem>
+									<MenuItem value={'Partsa'}>			Partsa</MenuItem>
+									<MenuItem value={'Ilmavainu'}>		Ilmavainu</MenuItem>
+									<MenuItem value={'Tottis'}>			Tottis</MenuItem>
+									<MenuItem value={'Muu reeni'}>		Muu reeni</MenuItem>
+									<MenuItem value={'Muu y-toiminta'}>	Muu y-toiminta</MenuItem>
+
+								</Select>
 							</Grid>
 
-							<Grid item xs={6} md={3}>
-									<InputLabel id="koira-label">Koira</InputLabel>
-									<Select
-										labelId="koira-label"
-										id={this.id +"koira-select"}
-										value={koira || "Ei koiraa" }
-										label="Koira"
-										fullWidth
-										onChange={this.onKoiraChange}
-									>
-										<MenuItem value={'Ei koiraa'}>Ei koiraa</MenuItem>
-										<MenuItem value={'Ykköskoira'}>Ykköskoira</MenuItem>
-										<MenuItem value={'Kakkoskoira'}>Kakkoskoira</MenuItem>
-										<MenuItem value={'Kolmoskoira'}>Kolmoskoira</MenuItem>
-										<MenuItem value={'Joku muu'}>Joku muu</MenuItem>
-										
-									</Select>
+							<Grid size={{ xs: 6, md: 3 }}>
+								<InputLabel id="koira-label">Koira</InputLabel>
+								<Select
+									labelId="koira-label"
+									id={this.id + "koira-select"}
+									value={koira || "Ei koiraa"}
+									label="Koira"
+									fullWidth
+									onChange={this.onKoiraChange}
+								>
+									<MenuItem value={'Ei koiraa'}>Ei koiraa</MenuItem>
+									<MenuItem value={'Ykköskoira'}>Ykköskoira</MenuItem>
+									<MenuItem value={'Kakkoskoira'}>Kakkoskoira</MenuItem>
+									<MenuItem value={'Kolmoskoira'}>Kolmoskoira</MenuItem>
+									<MenuItem value={'Joku muu'}>Joku muu</MenuItem>
+
+								</Select>
 							</Grid>
 
-							<Grid item xs={12}>
+							<Grid size={12}>
 								<TextField
-									id={item.id+"textfield"}
+									id={item.id + "textfield"}
 									style={styles.input}
 									multiline
 									fullWidth
 									label={"Muistiinpanot"}
-          							rows={5}
+									rows={5}
 									variant={"filled"}
 									onBlur={this.onTextChange}
 									defaultValue={kommentti || ''} />
 							</Grid>
 
-							<Grid ml={1} item xs={1}>
+							<Grid ml={1} size={1}>
 								<IconButton
 									style={styles.icon}
 									onClick={this.onPressDelete} >
-										<DeleteIcon />
-										</IconButton>
+									<DeleteIcon />
+								</IconButton>
 							</Grid>
 
-							<Grid mr={3} item xs={1}>
+							<Grid mr={3} size={1}>
 								<IconButton
-									
+
 									style={styles.icon}
 									onClick={() => {
 										// console.debug("Closing");
 										this.props.closeF()
 									}} >
-										<CheckIcon />
-										</IconButton>
+									<CheckIcon />
+								</IconButton>
 							</Grid>
 						</Grid>
 					</Box>

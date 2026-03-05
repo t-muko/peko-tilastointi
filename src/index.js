@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import './index.css';
 import './App.css';
 // import { Provider } from 'mobx-react';
@@ -12,15 +12,10 @@ import { FirebaseContext } from './components/Firebase';
 
 // if (!new class { x }().hasOwnProperty('x')) throw new Error('Transpiler is not configured correctly');
 
-ReactDOM.render(
-  
+createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-
-    <FirebaseContext.Provider value={{ rootStore: rootStore}}>
-    <App />
+    <FirebaseContext.Provider value={{ rootStore: rootStore }}>
+      <App />
     </FirebaseContext.Provider>
-
   </React.StrictMode>
-  ,
-  document.getElementById('root')
 );

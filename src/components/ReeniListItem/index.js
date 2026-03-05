@@ -11,9 +11,12 @@ import ReeniItem from '../ReeniItem';
 import { makeObservable, observable, action } from 'mobx';
 
 import moment from 'moment';
-import 'moment/locale/fi';
-// import { timelineClasses } from '@mui/lab';
-moment.locale('fi')
+
+const fiFiWeekdays = ['su', 'ma', 'ti', 'ke', 'to', 'pe', 'la'];
+const formatPvm = (pvm) => {
+	const m = moment(pvm);
+	return m.isValid() ? `${m.format('D.M.YYYY')} ${fiFiWeekdays[m.day()]}` : '';
+}
 
 const styles = {
 	container: {
@@ -73,7 +76,7 @@ class ReeniListItem extends Component {
 				<Paper>
 					<div style={styles.row}>
 						<div style={styles.input}>
-							{moment(pvm).locale('fi').format("D.M.YYYY dd") || ''}
+							{formatPvm(pvm)}
 						</div>
 
 						<div style={styles.input}>

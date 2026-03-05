@@ -6,7 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import Typography from '@mui/material/Typography';
 
-import ReeniItem from '@components/ReeniItem/ReeniItem';
+import ReeniItem from '@components/ReeniItem';
 import { makeObservable, observable, action } from 'mobx';
 
 import moment from 'moment';

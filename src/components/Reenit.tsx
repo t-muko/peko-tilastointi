@@ -5,7 +5,7 @@ import { FirebaseContext } from '@components/Firebase/Firebase';
 
 import { Document } from 'firestorter';
 import { CircularProgress, Checkbox } from "@mui/material";
-import ReeniListItem from '@components/ReeniListItem/ReeniListItem';
+import ReeniListItem from '@components/ReeniListItem';
 
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';

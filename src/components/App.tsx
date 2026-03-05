@@ -20,9 +20,9 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-import Reenit from '@components/Reenit/Reenit';
-import Tilasto from '@components/Tilasto/Tilasto';
-import Info from '@components/Info/Info'
+import Reenit from '@components/Reenit';
+import Tilasto from '@components/Tilasto';
+import Info from '@components/Info';
 
 import moment from 'moment';
 

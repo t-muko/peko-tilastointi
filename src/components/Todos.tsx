@@ -4,7 +4,7 @@ import { todos } from '@stores/todoStore';
 import CircularProgress from '@mui/material/CircularProgress';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import TodoItem from '@components/TodoItem/TodoItem';
+import TodoItem from '@components/TodoItem';
 
 const styles = {
 	container: {

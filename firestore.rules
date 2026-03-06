@@ -2,22 +2,60 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    // Validoi reeni-dokumentin sisältö.
+    // request.resource.data sisältää aina täyden dokumentin tilan (myös partial update -tilanteessa),
+    // joten voidaan tarkistaa koko dokumentti jokaisessa kirjoituksessa.
+    function isValidReeni(data) {
+      return
+        // Vain tunnetut kentät sallitaan — ei satunnaista dataa
+        data.keys().hasOnly(['pvm', 'tunnit', 'kategoria', 'koira', 'kommentti', 'yhdistys', 'finished'])
+        // Pakolliset kentät ja tyypit
+        && data.pvm is string
+        && data.pvm.size() == 10          // muoto YYYY-MM-DD
+        && data.tunnit is number
+        && data.tunnit >= 0
+        && data.tunnit <= 24              // max harjoitustunteja päivässä
+        && data.kategoria is string
+        && data.kategoria.size() <= 30
+        && data.koira is string
+        && data.koira.size() <= 30
+        // Valinnaiset kentät — tarkistetaan vain jos läsnä
+        && (!('kommentti' in data) || (data.kommentti is string && data.kommentti.size() <= 2000))
+        && (!('yhdistys' in data)  || (data.yhdistys is string  && data.yhdistys.size()  <= 200))
+        && (!('finished' in data)  || data.finished is bool);
+    }
+
     match /reenit/{userId} {
         allow get: if request.auth != null && request.auth.uid == userId;
         allow list: if false;
         allow write: if request.auth != null && request.auth.uid == userId;
 
-      // Sisäkkäinen match ei peri ylätason ehtoja — ne evaluoidaan itsenäisesti. userId-muuttuja on saatavilla, 
-      match /reenit/{doc} {  
-        allow read: if request.auth != null && request.auth.uid == userId;
-        allow write: if request.auth != null && request.auth.uid == userId;
+      // Huom: Sisäkkäinen match ei peri ehtoja, vaan täytyy tarkistaa itsenäisesti. userId muuttuja on saatavilla.
+      match /reenit/{doc} {
+        allow read:   if request.auth != null && request.auth.uid == userId;
+        allow write:  if request.auth != null && request.auth.uid == userId
+                      && isValidReeni(request.resource.data);
       }
+    }
+
+    // Validoi tilasto-dokumentin skalaarikentät.
+    // Vuosipohjaiset map-kentät (esim. "2024": { sumH, sumX, sumD, Jälki: {...} })
+    // ovat dynaamisia eikä niiden sisäistä rakennetta voi tarkistaa Firestore-säännöillä —
+    // siksi rajoitetaan vain tunnetut top-level skalaarit ja kenttien kokonaismäärä.
+    function isValidTilasto(data) {
+      return
+        // Kenttien kokonaismäärä rajoitettu: totalH + totalD + yhd + ~35 vuotta = max 40
+        data.keys().size() <= 40
+        && (!('totalH' in data) || (data.totalH is number && data.totalH >= 0))
+        && (!('totalD' in data) || (data.totalD is number && data.totalD >= 0))
+        && (!('yhd'    in data) || (data.yhd    is string && data.yhd.size() <= 200));
     }
 
     // read kattaa sekä get että list
     match /tilastot/{userId} {
-        allow read: if request.auth != null; 
-        allow write: if request.auth != null && request.auth.uid == userId;
+        allow read: if request.auth != null;
+        allow write: if request.auth != null && request.auth.uid == userId
+                     && isValidTilasto(request.resource.data);
     }
 
     match /reenit/anonyymi/{document=**} {

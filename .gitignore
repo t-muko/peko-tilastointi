@@ -31,3 +31,4 @@ test-results/
 /firebase/hosting*
 .firebase/hosting*
 .firebase/logs/vsce-debug.log
+*.log

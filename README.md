@@ -15,6 +15,9 @@ Tietokantana toimii Googlen Firestore, johon kukin käyttäjä tallentaa merkint
 - Vite
 - Firebase CLI (`yarn global add firebase-tools`)
 
+Asenna Node ja Yarn. Kloonaa repository ja anna komento `yarn install`
+Tämä asentaa kehitysympäristön ja tarvittavat kirjastot.
+
 ## Dev Scripts
 
 | Komento            | Kuvaus                                              |

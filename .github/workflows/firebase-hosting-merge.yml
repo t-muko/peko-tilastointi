@@ -56,14 +56,17 @@ jobs:
       - name: Deploy test branch preview
         if: github.event_name == 'push' && github.ref == 'refs/heads/test'
         run: |
-          output=$(firebase hosting:channel:deploy test --project peko-tilastointi 2>&1)
+          output=$(firebase hosting:channel:deploy "test" --project peko-tilastointi --expires 30d 2>&1)
           status=$?
           echo "$output"
           if [ $status -ne 0 ]; then
             exit $status
           fi
 
-          preview_url=$(echo "$output" | grep -Eo 'https://[^[:space:]]+' | grep -E 'web\.app|firebaseapp\.com' | head -n1 || true)
+          preview_url=$(echo "$output" | sed -nE 's/.*Channel URL \([^)]*\): (https:\/\/[^[:space:]]+).*/\1/p' | tail -n1)
+          if [ -z "$preview_url" ]; then
+            preview_url=$(echo "$output" | grep -Eo 'https://[^[:space:]]+' | grep -E 'web\.app|firebaseapp\.com' | tail -n1 || true)
+          fi
           if [ -n "$preview_url" ]; then
             echo "Test preview URL: $preview_url"
             echo "### Test Preview" >> "$GITHUB_STEP_SUMMARY"
@@ -77,14 +80,17 @@ jobs:
         if: github.event_name == 'pull_request' && github.event.action != 'closed'
         run: |
           CHANNEL="pr-${{ github.event.pull_request.number }}"
-          output=$(firebase hosting:channel:deploy "$CHANNEL" --project peko-tilastointi 2>&1)
+          output=$(firebase hosting:channel:deploy "$CHANNEL" --project peko-tilastointi --expires 30d 2>&1)
           status=$?
           echo "$output"
           if [ $status -ne 0 ]; then
             exit $status
           fi
 
-          preview_url=$(echo "$output" | grep -Eo 'https://[^[:space:]]+' | grep -E 'web\.app|firebaseapp\.com' | head -n1 || true)
+          preview_url=$(echo "$output" | sed -nE 's/.*Channel URL \([^)]*\): (https:\/\/[^[:space:]]+).*/\1/p' | tail -n1)
+          if [ -z "$preview_url" ]; then
+            preview_url=$(echo "$output" | grep -Eo 'https://[^[:space:]]+' | grep -E 'web\.app|firebaseapp\.com' | tail -n1 || true)
+          fi
           if [ -n "$preview_url" ]; then
             echo "PR preview URL: $preview_url"
             echo "### PR Preview ($CHANNEL)" >> "$GITHUB_STEP_SUMMARY"

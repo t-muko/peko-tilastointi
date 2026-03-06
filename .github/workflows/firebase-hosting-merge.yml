@@ -19,7 +19,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'yarn'
+          cache: "yarn"
 
       - name: Install dependencies and build
         run: |
@@ -44,9 +44,9 @@ jobs:
           firebase hosting:channel:delete "$CHANNEL" --project peko-tilastointi --force
 
       # --- MAIN BRANCH → LIVE DEPLOY ---
-      - name: Deploy Firestore rules (main)
-        if: github.ref == 'refs/heads/main'
-        run: firebase deploy --only firestore:rules --project peko-tilastointi
+      # - name: Deploy Firestore rules (main)
+      #   if: github.ref == 'refs/heads/main'
+      #   run: firebase deploy --only firestore:rules --project peko-tilastointi
 
       - name: Deploy Hosting to live
         if: github.ref == 'refs/heads/main'

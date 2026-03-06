@@ -41,10 +41,15 @@ class Firebase {
             connectFirestoreEmulator(db, 'localhost', 8080);
         }
 
-        // Switch the Firestorter collection path when auth state changes
-        onAuthStateChanged(this.auth, user => {
+        // Switch the Firestorter collection path when auth state changes.
+        // getIdToken() ensures the auth token is propagated to Firestore before
+        // firestorter starts listening, preventing a transient permissions error.
+        onAuthStateChanged(this.auth, async user => {
             this.rootStore.sessionStore.setAuthUser(user);
-            const uid = this.rootStore.sessionStore.authUser ? this.rootStore.sessionStore.authUser.uid : "anonyymi";
+            if (user) {
+                await user.getIdToken();
+            }
+            const uid = user ? user.uid : "anonyymi";
             this.rootStore.reeniFirestore.changePath("reenit/" + uid + "/reenit");
         });
     }

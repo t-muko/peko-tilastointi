@@ -4,9 +4,9 @@ import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 import 'firebase/firestore';
 
-import { getAuth, onAuthStateChanged, GoogleAuthProvider, Auth } from "firebase/auth";
-import { signInWithPopup, signOut } from "firebase/auth";
-import { getFirestore, Firestore } from "firebase/firestore";
+import { getAuth, onAuthStateChanged, GoogleAuthProvider, Auth, signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithPopup, signOut, connectAuthEmulator } from "firebase/auth";
+import { getFirestore, Firestore, connectFirestoreEmulator } from "firebase/firestore";
 import type { RootStore } from '@stores/index';
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -34,6 +34,12 @@ class Firebase {
         this.auth = getAuth(this.app);
         this.auth.languageCode = 'fi';
         this.rootStore = rootStore;
+
+        if (import.meta.env.VITE_USE_EMULATOR === 'true') {
+            connectAuthEmulator(this.auth, 'http://localhost:9099', { disableWarnings: true });
+            const db = getFirestore(this.app);
+            connectFirestoreEmulator(db, 'localhost', 8080);
+        }
 
         // Switch the Firestorter collection path when auth state changes
         onAuthStateChanged(this.auth, user => {
@@ -63,6 +69,13 @@ class Firebase {
 
     async haeYhdistykset() {
         // Not currently implemented
+    }
+
+    async autentikoiTestissa(email: string, password: string) {
+        if (import.meta.env.VITE_USE_EMULATOR !== 'true') {
+            throw new Error('autentikoiTestissa() on käytettävissä vain emulaattori-tilassa');
+        }
+        return signInWithEmailAndPassword(this.auth, email, password);
     }
 }
 

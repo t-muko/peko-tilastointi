@@ -198,41 +198,9 @@ npx vitest run src/components/__tests__/ReeniListItem.test.tsx
 
 ---
 
-### E2E-testit (Playwright)
-
-E2E-testit vaativat, että **Firebase-emulaattori on käynnissä** ennen testejä:
-
-```bash
-# Terminaali 1 — käynnistä emulaattori
-firebase emulators:start --only firestore,auth
-
-# Terminaali 2 — aja E2E-testit (käynnistää dev-serverin automaattisesti)
-npm run test:e2e
-```
-
-**Graafinen Playwright UI:**
-
-```bash
-npm run test:e2e:ui
-```
-
-**Yksittäinen E2E-testitiedosto:**
-
-```bash
-npx playwright test tests/e2e/auth.spec.ts
-```
-
-> **Huomio:** `npm run test:e2e` käynnistää `vite --mode test` -dev-serverin
-> automaattisesti ennen testejä (`playwright.config.ts` `webServer`-asetus).
-> Emulaattori täytyy kuitenkin käynnistää erikseen.
-
----
-
 ### Olemassa olevat testitiedostot
 
 | Tiedosto                                          | Testejä | Mitä testataan                                                       |
 | ------------------------------------------------- | ------- | -------------------------------------------------------------------- |
 | `src/components/__tests__/ReeniListItem.test.tsx` | 6       | Päivämäärän formatointi, tuntien näyttö, kategoria, expand-tila      |
 | `src/components/__tests__/Reenit.test.tsx`        | 7       | Hakusuodatus (kategoria, koira, AND-logiikka, vuosi), tyhjennysnappi |
-| `tests/e2e/auth.spec.ts`                          | 3       | Kirjautumaton näkymä, kirjautuminen, uloskirjautuminen               |
-| `tests/e2e/reenit.spec.ts`                        | 9       | Lista renderöityy, päivämäärät, hakusuodatus, tyhjennysnappi         |

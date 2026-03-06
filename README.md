@@ -76,7 +76,7 @@ yarn test:e2e:ui          # graafinen Playwright UI
 `/docs`-kansiossa on dokumentaatiota liittyen sovelluksen eri osien
 toteutukseen, arkkitehtuuriin ja testaukseen.
 
-`.github/instructions.md` sisältää ohjeet tekoälyavustajalle. Siitä löytyy myös lyhyt
+`.github/copilot-instructions.md` sisältää ohjeet tekoälyavustajalle. Siitä löytyy myös lyhyt
 yhteenveto sovelluksesta ja sen arkkitehtuurista.
 
 ## Korjattavat poikkeamat ennen uusia ominaisuuksia

@@ -1,11 +1,18 @@
 # PEKO Tilastointi
 
-Frontend is built with Vite and deployed to Firebase Hosting.
+Koiraharjoituspäivkirjasovellus yksityiseen ja yhteiseen käyttöön. Päiväkirjan merkinnät ovat yksityisiä, mutta jokainen käyttäjä jakaa yhteiseen käyttöön tilastoyhteenvetoja merkinnöistään.
 
-## Requirements
+## Rakennuspalikat 
+
+Sovellus on rakennettu React ja Material UI kirjastoja hyädyntäen. 
+Tilan hallintaan käytetään MobX-kirjastoa.
+Tietokantana toimii Googlen Firestore, johon kukin käyttäjä tallentaa merkintönsä Google-tunnuksella kirjautuneena.
+
+## Kehitysympäristö
 
 - Node.js 22+
-- npm 10+
+- Yarn
+- Vite
 - Firebase CLI (`npm install -g firebase-tools`)
 
 ## Dev Scripts
@@ -28,16 +35,7 @@ firebase deploy --only hosting
 firebase deploy --only firestore:rules
 ```
 
-## Cloud Functions
-
-Functions live under `functions/` and have their own dependencies:
-
-```bash
-npm --prefix functions install
-npm --prefix functions run lint
-```
-
-## Testaus
+## Testausautomaatio
 
 Projektissa on kaksi testaustasoa. Katso tarkempi dokumentaatio:
 
@@ -75,5 +73,5 @@ npm run test:e2e:ui       # graafinen Playwright UI
 `/docs`-kansiossa on dokumentaatiota liittyen sovelluksen eri osien
 toteutukseen, arkkitehtuuriin ja testaukseen.
 
-`.github/instructions.md` sisältää ohjeet tekoälyavustalle. Siinä on myös lyhyt
+`.github/instructions.md` sisältää ohjeet tekoälyavustajalle. Siitä löytyy myös lyhyt
 yhteenveto sovelluksesta ja sen arkkitehtuurista.

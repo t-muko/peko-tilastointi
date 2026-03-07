@@ -16,7 +16,7 @@ THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR I
 
 ## Additional Copyright / License Notices
 
-The application icon located in [public/tilasto*] is not covered by the MIT License.
+The application icon located in public folder (tilasto*.png and favicon*.png) is not covered by the MIT License.
 
 Copyright (c) 2021 Kaisa Kuisma.  
 All rights reserved.

@@ -63,7 +63,6 @@ class ReeniItem extends Component<ReeniItemProps> {
 		// const { pvm, kategoria, tunnit, alakategoria, kommentti, koira } = item.data;
 		const { pvm, kategoria, tunnit, kommentti, koira } = item.data;
 
-		// console.log('TodoItem.render: ', item.path, ', kommentti: ', kommentti);
 		return (
 			<LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={fiLocale}>
 

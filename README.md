@@ -6,30 +6,33 @@ Koiraharjoituspäivkirjasovellus yksityiseen ja yhteiseen käyttöön. Päiväki
 
 Sovellus on rakennettu React ja Material UI kirjastoja hyädyntäen. 
 Tilan hallintaan käytetään MobX-kirjastoa.
-Tietokantana toimii Googlen Firestore, johon kukin käyttäjä tallentaa merkintönsä Google-tunnuksella kirjautuneena.
+Tietokantana toimii Googlen Firestore, johon kukin käyttäjä tallentaa merkintönsä Google-tunnuksella kirjautuneena. Firebasen tietomalleja käytetään Firestorter-bindingin avulla.
 
 ## Kehitysympäristö
 
 - Node.js 22+
 - Yarn
 - Vite
-- Firebase CLI (`npm install -g firebase-tools`)
+- Firebase CLI (`yarn global add firebase-tools`)
+
+Asenna Node ja Yarn. Kloonaa repository ja anna komento `yarn install`
+Tämä asentaa kehitysympäristön ja tarvittavat kirjastot.
 
 ## Dev Scripts
 
 | Komento            | Kuvaus                                              |
 | ------------------ | --------------------------------------------------- |
-| `npm run dev`      | Käynnistä paikallinen Vite dev-serveri              |
-| `npm run build`    | Tuotantobuild → `build/`                            |
-| `npm run preview`  | Esikatsele valmis build paikallisesti               |
-| `npm run dev:test` | Dev-serveri testitilassa (`VITE_USE_EMULATOR=true`) |
+| `yarn dev`         | Käynnistä paikallinen Vite dev-serveri              |
+| `yarn build`       | Tuotantobuild → `build/`                            |
+| `yarn preview`     | Esikatsele valmis build paikallisesti               |
+| `yarn dev:test`    | Dev-serveri testitilassa (`VITE_USE_EMULATOR=true`) |
 
 ## Deploy Hosting
 
 Build and deploy hosting:
 
 ```bash
-npm run build
+yarn build
 firebase deploy --only hosting
 
 firebase deploy --only firestore:rules
@@ -46,9 +49,9 @@ Projektissa on kaksi testaustasoa. Katso tarkempi dokumentaatio:
 ### Yksikkötestit (Vitest)
 
 ```bash
-npm test                  # aja kaikki kerran
-npm run test:watch        # watch-tila
-npm run test:ui           # graafinen Vitest UI selaimessa
+yarn test                 # aja kaikki kerran
+yarn test:watch           # watch-tila
+yarn test:ui              # graafinen Vitest UI selaimessa
 ```
 
 ### E2E-testit (Playwright)
@@ -64,8 +67,8 @@ firebase login:use teemu@pirkanmaanpelastuskoirat.fi
 firebase projects:list
 
 # Terminaali 2 — aja E2E-testit
-npm run test:e2e          # headless
-npm run test:e2e:ui       # graafinen Playwright UI
+yarn test:e2e             # headless
+yarn test:e2e:ui          # graafinen Playwright UI
 ```
 
 ## Dokumentaatio ja ohjeistus
@@ -73,5 +76,12 @@ npm run test:e2e:ui       # graafinen Playwright UI
 `/docs`-kansiossa on dokumentaatiota liittyen sovelluksen eri osien
 toteutukseen, arkkitehtuuriin ja testaukseen.
 
-`.github/instructions.md` sisältää ohjeet tekoälyavustajalle. Siitä löytyy myös lyhyt
+`.github/copilot-instructions.md` sisältää ohjeet tekoälyavustajalle. Siitä löytyy myös lyhyt
 yhteenveto sovelluksesta ja sen arkkitehtuurista.
+
+## Korjattavat poikkeamat ennen uusia ominaisuuksia
+
+- Firebase-initialisointi on useassa paikassa (`firebaseService.ts` ja `reeniStore.ts`); keskitetään yhteen toteutukseen.
+- UI kutsuu osin suoraan infraa (`App.tsx` -> `rootStore.reeniFirestore.reenit.add(...)`); siirretään store-komentojen taakse.
+- Store- ja infra-vastuut sekoittuvat (`reeniStore` sisältää Firestorter/Firebase-kytkennän); erotetaan repository/service-kerros.
+- `use-stores.ts` ei käytä React-kontekstia tavanomaisella tavalla; selkeytetään yksi virallinen tapa käyttää storeja.

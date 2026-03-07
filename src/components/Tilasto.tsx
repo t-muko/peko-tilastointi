@@ -22,6 +22,7 @@ import FormLabel from '@mui/material/FormLabel';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import { useTheme, type Theme } from '@mui/material/styles';
 import { buildHashtagStats, type ReeniForHashtagStats } from '../utils/hashtagStats';
 
 import moment from 'moment';
@@ -283,7 +284,11 @@ const jasenjarjestot = [
 	pieSliceText: "value"
 };*/
 
-const Tilasto = observer(class Tilasto extends Component {
+interface TilastoProps {
+	theme: Theme;
+}
+
+const Tilasto = observer(class Tilasto extends Component<TilastoProps> {
 
 	yhteensa: number | null = null;
 	editYhdistys = false;
@@ -348,10 +353,11 @@ const Tilasto = observer(class Tilasto extends Component {
 			const yksikko = this.yksikko
 			const tilastoVuosi = this.tilastoVuosi
 			const isMobileView = typeof window !== 'undefined' && window.matchMedia('(max-width: 600px)').matches;
-			const isDarkMode = typeof document !== 'undefined' && document.documentElement.dataset.colorMode === 'dark';
+			const isDarkMode = this.props.theme.palette.mode === 'dark';
 			const chartBackground = isDarkMode ? '#1f1f1f' : '#ffffff';
 			const chartAreaBackground = isDarkMode ? '#242424' : '#ffffff';
 			const chartTextColor = isDarkMode ? '#e6e6e6' : '#1f1f1f';
+			const chartThemeKey = isDarkMode ? 'dark' : 'light';
 
 			const getPieChartOptions = (title: string) => ({
 				title,
@@ -576,6 +582,7 @@ const Tilasto = observer(class Tilasto extends Component {
 
 					</FormControl>
 					<Chart
+						key={`my-${chartThemeKey}`}
 						chartType="PieChart"
 						data={chartDataMy}
 						options={getPieChartOptions("Omien merkintöjen " + (yksikko == 'X' ? "" : "tunti") + "jakauma")}
@@ -583,6 +590,7 @@ const Tilasto = observer(class Tilasto extends Component {
 						height={"300px"}
 					/>
 					<Chart
+						key={`yhd-${chartThemeKey}`}
 						chartType="PieChart"
 						data={chartDataYhd}
 						options={getPieChartOptions("Merkintöjen " + (yksikko == 'X' ? "" : "tunti") + "jakauma yhdistyksessä")}
@@ -590,6 +598,7 @@ const Tilasto = observer(class Tilasto extends Component {
 						height={"300px"}
 					/>
 					<Chart
+						key={`all-${chartThemeKey}`}
 						chartType="PieChart"
 						data={chartDataAll}
 						options={getPieChartOptions("Merkintöjen " + (yksikko == 'X' ? "" : "tunti") + "jakauma, kaikki käyttäjät")}
@@ -599,6 +608,7 @@ const Tilasto = observer(class Tilasto extends Component {
 
 					{hashtagChartData ? (
 						<Chart
+							key={`hashtag-${chartThemeKey}`}
 							chartType="PieChart"
 							data={hashtagChartData}
 							options={getPieChartOptions("Hashtagien " + (yksikko == 'X' ? "merkintä" : "tunti") + "jakauma omissa reeneissä")}
@@ -630,4 +640,9 @@ const Tilasto = observer(class Tilasto extends Component {
 
 });
 
-export default Tilasto;
+const TilastoWithTheme = () => {
+	const theme = useTheme();
+	return <Tilasto theme={theme} />;
+};
+
+export default TilastoWithTheme;

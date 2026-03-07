@@ -266,18 +266,6 @@ const Reenit = observer(class Reenit extends Component {
 		}
 	}
 
-	/*
-	 * Dead method - no UI trigger. Left for reference only.
-	 */
-	onCheckShowOnlyUnfinished = () => {
-		if (this.reenit.query) {
-			this.reenit.query = undefined;
-		}
-		else {
-			this.reenit.query = this.reenit.ref.where('finished', '==', false).limit(10);
-		}
-	};
-
 	onCheckExpand = () => {
 		this._expand = !this._expand
 	}

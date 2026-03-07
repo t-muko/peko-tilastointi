@@ -8,19 +8,11 @@ import { getAuth, onAuthStateChanged, GoogleAuthProvider, Auth, signInWithEmailA
 import { signInWithPopup, signOut, connectAuthEmulator } from "firebase/auth";
 import { getFirestore, Firestore, connectFirestoreEmulator } from "firebase/firestore";
 import type { RootStore } from '@stores/index';
+import { getOrCreateFirebaseApp } from './firebaseApp';
 
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-    apiKey: "AIzaSyCd5Cg_EC7k2dEM2v2AYH72q5JQqq-6Oxw",
-    authDomain: "peko-tilastointi.firebaseapp.com",
-    projectId: "peko-tilastointi",
-    storageBucket: "peko-tilastointi.appspot.com",
-    messagingSenderId: "1051905962064",
-    appId: "1:1051905962064:web:e69f8452dc9e53d5e5a155",
-    measurementId: "G-PL4VL06TTN"
-};
-firebase.initializeApp(firebaseConfig);
-
+/**
+ * Firebase service for auth operations and auth-state wiring to stores.
+ */
 class Firebase {
     app: any;
     provider: GoogleAuthProvider;
@@ -29,7 +21,7 @@ class Firebase {
     db?: Firestore;
 
     constructor(rootStore: RootStore) {
-        this.app = firebase.initializeApp(firebaseConfig);
+        this.app = getOrCreateFirebaseApp();
         this.provider = new GoogleAuthProvider();
         this.auth = getAuth(this.app);
         this.auth.languageCode = 'fi';
@@ -47,7 +39,12 @@ class Firebase {
         onAuthStateChanged(this.auth, async user => {
             this.rootStore.sessionStore.setAuthUser(user);
             if (user) {
-                await user.getIdToken();
+                try {
+                    await user.getIdToken();
+                }
+                catch (error) {
+                    console.warn('Unable to refresh auth token before path switch', error);
+                }
             }
             const uid = user ? user.uid : "anonyymi";
             this.rootStore.reeniFirestore.changePath("reenit/" + uid + "/reenit");
@@ -57,8 +54,6 @@ class Firebase {
     autentikoi() {
         signInWithPopup(this.auth, this.provider)
             .then((result) => {
-                const user = result.user;
-                console.debug("User logged in:", user);
                 this.db = getFirestore();
             }).catch((error) => {
                 const errorMessage = error.message;

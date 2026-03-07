@@ -3,7 +3,7 @@ description: 'The agent implements testing implementation using TDD methodology'
 tools: ['vscode', 'execute', 'read', 'edit', 'search', 'agent', 'todo']
 handoffs:
   - label: To green phase
-    agent: testitoteuttaja-vihrea
+    agent: toteuta
     prompt: Implement needed changes to make tests pass.
     send: false
 ---

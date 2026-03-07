@@ -3,8 +3,8 @@ description: 'The agent implements implementation using TDD methodology'
 tools: ['vscode', 'execute', 'read', 'edit', 'search', 'agent', 'todo']
 handoffs:
   - label: Review Changes
-    agent: reviewer
-    prompt: Check that code changes meet quality standards before committing and update the original plan file with implementation status.
+    agent: katselmoi
+    prompt: Review changes for security, architecture, and correctness before committing.
     send: false
 ---
 

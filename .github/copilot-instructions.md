@@ -16,36 +16,45 @@ Tavoitetila ei ole täysi Clean Architecture, vaan kevyt ja käytännöllinen "c
 `src/stores/index.ts` kokoaa storet yhteen `RootStore`-luokaksi.
 
 Käytössä olevat keskeiset storet:
-- `sessionStore`: säilyttää kirjautuneen käyttäjän (`authUser`) ja tarjoaa `userOk`-tilan.
+- `sessionStore`: säilyttää kirjautuneen käyttäjän (`authUser`) ja tarjoaa `userOk`-tilan (riippuu vain auth-tilasta).
 - `messageStore`: yleinen viestitila ja listamuunnos (`messageList`).
-- `reeniFirestore` (`ReeniFireStorter`): Firestorter-kokoelma harjoitusmerkinnöille.
+- `reeniFirestore` (`ReeniFireStorter`): store, joka kayttaa `ReeniRepository`-rajapintaa harjoitusmerkintojen lukuun ja kirjoitukseen.
 - `firebase`: Firebase-palveluluokka autentikointiin ja auth-tilan seurantaan.
 
 Nykyinen datavirta:
-1. `Firebase` kuuntelee auth-tilaa (`onAuthStateChanged`).
-2. `sessionStore.setAuthUser(...)` päivittää kirjautumisen tilan.
-3. `reeniFirestore.changePath(...)` vaihtaa Firestore-polun käyttäjän UID:n mukaan.
-4. UI (`App.tsx` ja muut komponentit) renderöi näkymän MobX-observablen tilan perusteella.
+1. `RootStore` alustaa `reeniFirestore`-storen ennen `firebase`-servicea, jotta auth-callbackissa tarvittava store on valmiina.
+2. `Firebase` kuuntelee auth-tilaa (`onAuthStateChanged`).
+3. `sessionStore.setAuthUser(...)` paivittaa kirjautumisen tilan.
+4. Jos kayttaja on kirjautunut, `user.getIdToken()` kutsutaan `try/catch`-lohkon sisalla ennen polun vaihtoa.
+5. `reeniFirestore.changePath(...)` vaihtaa Firestore-polun aina: `reenit/{uid}/reenit` tai uloskirjautuneena `reenit/anonyymi/reenit`.
+6. UI (`App.tsx` ja muut komponentit) renderoi nakyman `sessionStore.userOk`-tilan perusteella.
 
 ### Firebase autentikointi
 Autentikointi toteutetaan tiedostossa `src/components/Firebase/firebaseService.ts`.
 
 Toteutuksen pääkohdat:
+- Firebase-app alustetaan keskitetysti tiedoston `src/components/Firebase/firebaseApp.ts` funktion `getOrCreateFirebaseApp()` kautta.
 - Google-kirjautuminen: `signInWithPopup(this.auth, this.provider)`.
 - Uloskirjautuminen: `signOut(this.auth)`.
 - Auth-tilan kuuntelu: `onAuthStateChanged(...)`.
+- Auth-callbackissa `user.getIdToken()` on suojattu `try/catch`-lohkoon, ja Firestore-polku vaihdetaan myos virhetilanteessa.
 - Testi/emulaattorituki:
 - `VITE_USE_EMULATOR === 'true'` kytkee Auth- ja Firestore-emulaattorit.
 - `autentikoiTestissa(email, password)` on tarkoitettu vain emulaattoritilaan.
 
 ### Firebase käyttö (Firestore)
-Firestorea käytetään pääosin Firestorter-kirjaston kautta (`src/stores/reeniStore.ts`).
+Firestorea kaytetaan Firestorter-kirjaston kautta repository-kerroksessa.
+
+Keskeiset tiedostot:
+- `src/stores/repositories/reeniRepository.ts` (rajapinta)
+- `src/stores/repositories/firestorterReeniRepository.ts` (Firestorter-toteutus)
+- `src/stores/reeniStore.ts` (store, joka delegoi repositorylle)
 
 Pääperiaate:
 - Oletuspolku on anonyymi: `reenit/anonyymi/reenit`.
-- Kirjautumisen jälkeen polku vaihtuu muotoon `reenit/{uid}/reenit`.
-- Kyselyt järjestetään kentän `pvm` mukaan laskevasti.
-- Uusia merkintöjä lisätään UI:sta `reenit.add(...)`-kutsulla.
+- Kirjautumisen jalkeen polku vaihtuu muotoon `reenit/{uid}/reenit`.
+- Kyselyt jarjestetaan kentan `pvm` mukaan laskevasti.
+- Uusia merkintoja lisataan store-komentojen kautta (`addReeni`, `addDefaultReeni`).
 
 ## Kevyt arkkitehtuurimalli (clean enough)
 
@@ -68,9 +77,9 @@ Tavoite on erottaa vastuut ilman raskasta kerrosrakennetta.
 - UI ei tee suoria Firebase-kutsuja.
 
 ### 3) Minimi ports and adapters
-- Määritä tarvittaessa kevyet rajapinnat, kuten `AuthRepository` ja `ReeniRepository`.
-- Toteuta Firebase-pohjaiset adapterit repository-kerrokseen.
-- Injektoi toteutus storeen konstruktorissa tai RootStore-kokoonpanossa.
+- `ReeniRepository` on kaytossa rajapintana (`src/stores/repositories/reeniRepository.ts`).
+- Firebase/Firestorter-pohjainen adapteri on `FirestorterReeniRepository`.
+- Toteutus injektoidaan `ReeniFireStorter`-storeen konstruktorissa (oletuksena Firestorter-adapteri).
 
 ### 4) MobX tämän projektin mallissa
 - Store toimii presenter/view-model -roolissa.
@@ -78,9 +87,9 @@ Tavoite on erottaa vastuut ilman raskasta kerrosrakennetta.
 - Observable-tila pidetään UI:lle sopivana (`items`, `loading`, `error`, `authUser`).
 
 ### 5) Firebase-integraation rajaus
-- Kaikki suorat Firebase-kutsut pidetään yhdessä paikassa per vastuualue.
-- Auth-tilan muutoksista välitetään storeille vain tarvittava tieto (`uid`, `email`).
-- Firestore-polkujen muodostus keskitetään, jotta virheet vähenevät.
+- Firebase-appin alustus pidetaan keskitettyna `firebaseApp.ts`-tiedostossa.
+- Auth-tilan muutoksista valitetaan storeille vain tarvittava tieto (`authUser`) ja polunvaihto tehdan palvelukerroksessa.
+- Firestore-polun muodostus keskitetaan auth-callbackiin (`uid` tai `anonyymi`).
 
 ### 6) Testattavuus
 - Store-logiikka testataan ilman oikeaa Firebasea mockatuilla repositoryilla.
@@ -90,7 +99,7 @@ Tavoite on erottaa vastuut ilman raskasta kerrosrakennetta.
 ### 7) Käytännön säännöt tähän repositorioon
 - Uusi ominaisuus tehdään järjestyksessä: repository -> store -> UI.
 - Komponentit pidetään mahdollisimman tyhminä: ei Firestore-kyselyitä komponenteissa.
-- Storeihin lisätään pienet komennot (esim. `loadReenit`, `addReeni`, `logout`) sen sijaan että UI kutsuu infraa suoraan.
+- Storeihin lisataan pienet komennot (esim. `addReeni`, `addDefaultReeni`, `changePath`) sen sijaan etta UI kutsuu infraa suoraan.
 - Yksi moduuli, yksi päävastuu.
 
 ### 8) Mitä ei tavoitella

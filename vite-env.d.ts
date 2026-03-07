@@ -2,6 +2,7 @@
 
 interface ImportMetaEnv {
     readonly VITE_USE_EMULATOR?: string;
+    readonly VITE_FIREBASE_API_KEY?: string;
 }
 
 interface ImportMeta {

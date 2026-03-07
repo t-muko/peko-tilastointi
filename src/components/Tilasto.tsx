@@ -347,6 +347,41 @@ const Tilasto = observer(class Tilasto extends Component {
 		} else {
 			const yksikko = this.yksikko
 			const tilastoVuosi = this.tilastoVuosi
+			const isMobileView = typeof window !== 'undefined' && window.matchMedia('(max-width: 600px)').matches;
+
+			const getPieChartOptions = (title: string) => ({
+				title,
+				pieSliceText: 'value',
+				legend: isMobileView
+					? {
+						position: 'bottom',
+						alignment: 'center',
+						maxLines: 5,
+						textStyle: { fontSize: 12 }
+					}
+					: {
+						position: 'right',
+						alignment: 'center',
+						textStyle: { fontSize: 13 }
+					},
+				chartArea: isMobileView
+					? {
+						left: 8,
+						right: 8,
+						top: 48,
+						bottom: 80,
+						width: '100%',
+						height: '70%'
+					}
+					: {
+						left: 16,
+						right: 16,
+						top: 56,
+						bottom: 24,
+						width: '100%',
+						height: '74%'
+					}
+			});
 
 			/**
 			 * Builds pie chart rows from local hashtag statistics and merges overflow into "Muut".
@@ -566,10 +601,8 @@ const Tilasto = observer(class Tilasto extends Component {
 						<Chart
 							chartType="PieChart"
 							data={hashtagChartData}
-							options={{
-								title: "Hashtagien " + (yksikko == 'X' ? "merkintä" : "tunti") + "jakauma omissa reeneissä",
-								pieSliceText: "value"
-							}}
+							options={getPieChartOptions("Hashtagien " + (yksikko == 'X' ? "merkintä" : "tunti") + "jakauma omissa reeneissä")}
+							style={{ width: '100%', maxWidth: '100%' }}
 							width={"100%"}
 							height={"300px"}
 						/>
@@ -579,7 +612,7 @@ const Tilasto = observer(class Tilasto extends Component {
 						</Typography>
 					)}
 
-					<Typography variant="body1" gutterBottom >Tilastovuoden käyttäjien merkinnät
+					<Typography variant="body1" gutterBottom >Tilastovuoden {tilastoVuosi} käyttäjien merkinnät
 						yhteensä {tilastovuoden_tunnit_yhteensa} h,
 						hyvinvointia edistävää harrastamista keskimäärin {(tilastovuoden_paivat_yhteensa
 							/ tilastoVuodenKaikkiTilastot.length

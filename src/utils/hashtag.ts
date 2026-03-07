@@ -1,5 +1,6 @@
 const URL_REGEX = /\bhttps?:\/\/[^\s]+/giu;
-const HASHTAG_REGEX = /(^|[^\p{L}\p{N}_-])#([\p{L}\p{N}](?:[\p{L}\p{N}-]{0,29}))(?![\p{L}\p{N}-])/gu;
+// Tag body: 1-30 chars, hyphen allowed only in the middle (not as last char).
+const HASHTAG_REGEX = /(^|[^\p{L}\p{N}_-])#([\p{L}\p{N}](?:[\p{L}\p{N}-]{0,28}[\p{L}\p{N}])?)(?![\p{L}\p{N}-])/gu;
 
 /**
  * Parses hashtags from free-form comment text.

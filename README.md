@@ -29,6 +29,33 @@ Tietokantana toimii Googlen Firestore, johon kukin kayttaja tallentaa merkintans
 Asenna Node ja Yarn. Kloonaa repository ja aja komento `yarn install`.
 Tämä asentaa kehitysympäristön ja tarvittavat kirjastot.
 
+## Environment Variables
+
+Projektissa kaytetaan Vite-ymparistomuuttujia. Malli loytyy tiedostosta `.env.example`.
+
+Luo paikallinen ymparistotiedosto esimerkiksi:
+
+```bash
+cp .env.example .env.local
+```
+
+Pakolliset muuttujat:
+
+- `VITE_FIREBASE_API_KEY`: Firebase Web API key
+
+Muut muuttujat:
+
+- `VITE_USE_EMULATOR`: aseta `true`, kun ajat sovellusta emulaattoria vasten
+
+### GitHub Actions Secret
+
+CI-buildissa API key annetaan GitHub Actions -salaisuutena:
+
+- Secret name: `VITE_FIREBASE_API_KEY`
+- Kayttopaikka: `.github/workflows/firebase-hosting-merge.yml`
+
+Lisays GitHubissa: `Settings` -> `Secrets and variables` -> `Actions` -> `New repository secret`.
+
 ## Tekoälyagenttipohjainen kehittäminen
 
 1. Kayta VS Codea tai GitHub Codespaces -kehitysymparistoa.

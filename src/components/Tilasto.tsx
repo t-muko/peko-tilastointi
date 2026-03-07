@@ -22,6 +22,7 @@ import FormLabel from '@mui/material/FormLabel';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import { buildHashtagStats, type ReeniForHashtagStats } from '../utils/hashtagStats';
 
 import moment from 'moment';
 import 'moment/locale/fi';
@@ -347,6 +348,43 @@ const Tilasto = observer(class Tilasto extends Component {
 			const yksikko = this.yksikko
 			const tilastoVuosi = this.tilastoVuosi
 
+			/**
+			 * Builds pie chart rows from local hashtag statistics and merges overflow into "Muut".
+			 */
+			const createHashtagChartData = () => {
+				const hashtagStats = buildHashtagStats(
+					context.rootStore.reeniFirestore.reenit.docs as ReeniForHashtagStats[],
+					tilastoVuosi
+				);
+				const unitKey = yksikko as 'H' | 'X';
+				const topLimit = 8;
+
+				const sortedRows = Object.entries(hashtagStats)
+					.map(([tag, values]) => ({ tag, value: values[unitKey] }))
+					.filter((row) => row.value > 0)
+					.sort((a, b) => b.value - a.value || a.tag.localeCompare(b.tag, 'fi'));
+
+				if (sortedRows.length === 0) {
+					return null;
+				}
+
+				const topRows = sortedRows.slice(0, topLimit);
+				const othersValue = sortedRows.slice(topLimit).reduce((sum, row) => sum + row.value, 0);
+
+				const chartRows: (string | number)[][] = topRows.map((row) => [
+					`#${row.tag}`,
+					Math.round(row.value * 100) / 100,
+				]);
+
+				if (othersValue > 0) {
+					chartRows.push(['Muut', Math.round(othersValue * 100) / 100]);
+				}
+
+				return [['Hashtag', 'Arvo'], ...chartRows];
+			};
+
+			const hashtagChartData = createHashtagChartData();
+
 			const kuluvaVuosi = (new Date()).getFullYear()
 			const range = (start, stop, step = 1) =>
 				Array(Math.ceil((stop - start) / step)).fill(start).map((x, y) => x + y * step)
@@ -523,6 +561,23 @@ const Tilasto = observer(class Tilasto extends Component {
 						width={"100%"}
 						height={"300px"}
 					/>
+
+					{hashtagChartData ? (
+						<Chart
+							chartType="PieChart"
+							data={hashtagChartData}
+							options={{
+								title: "Hashtagien " + (yksikko == 'X' ? "merkintä" : "tunti") + "jakauma omissa reeneissä",
+								pieSliceText: "value"
+							}}
+							width={"100%"}
+							height={"300px"}
+						/>
+					) : (
+						<Typography variant="body1" gutterBottom>
+							Ei hashtag-merkintöjä vuodelle {tilastoVuosi}
+						</Typography>
+					)}
 
 					<Typography variant="body1" gutterBottom >Tilastovuoden käyttäjien merkinnät
 						yhteensä {tilastovuoden_tunnit_yhteensa} h,

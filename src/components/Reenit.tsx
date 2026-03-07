@@ -201,16 +201,19 @@ const Reenit = observer(class Reenit extends Component {
 						justifyContent: 'space-between',
 						display: 'flex',
 						alignItems: 'flex-start',
-						flexWrap: 'wrap', backgroundColor: '#f0f0f0'
+						flexWrap: 'wrap',
+						backgroundColor: 'action.hover',
+						borderBottom: 1,
+						borderColor: 'divider'
 					}}>
 						<FormGroup>
-							<FormControlLabel sx={{ color: 'black' }} control={<Checkbox
+							<FormControlLabel control={<Checkbox
 								checked={this._expand}
 								onChange={this.onCheckExpand} />}
 								label='Näytä muistiinpanot' />
 						</FormGroup>
 
-						<Typography sx={{ color: 'black', verticalAlign: 'middle', p: 1 }}>
+						<Typography sx={{ verticalAlign: 'middle', p: 1 }}>
 							{filteredRows.length}x, yht.{this.suodatetut} h
 						</Typography>
 

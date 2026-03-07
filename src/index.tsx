@@ -18,6 +18,10 @@ function AppThemeProvider({ children }: { children: React.ReactNode }) {
 
   const mode = manualMode ?? (prefersDarkMode ? 'dark' : 'light');
 
+  React.useEffect(() => {
+    document.documentElement.dataset.colorMode = mode;
+  }, [mode]);
+
   const theme = React.useMemo(
     () =>
       createTheme({

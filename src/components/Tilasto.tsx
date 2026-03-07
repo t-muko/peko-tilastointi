@@ -348,21 +348,28 @@ const Tilasto = observer(class Tilasto extends Component {
 			const yksikko = this.yksikko
 			const tilastoVuosi = this.tilastoVuosi
 			const isMobileView = typeof window !== 'undefined' && window.matchMedia('(max-width: 600px)').matches;
+			const isDarkMode = typeof document !== 'undefined' && document.documentElement.dataset.colorMode === 'dark';
+			const chartBackground = isDarkMode ? '#1f1f1f' : '#ffffff';
+			const chartAreaBackground = isDarkMode ? '#242424' : '#ffffff';
+			const chartTextColor = isDarkMode ? '#e6e6e6' : '#1f1f1f';
 
 			const getPieChartOptions = (title: string) => ({
 				title,
 				pieSliceText: 'value',
+				backgroundColor: chartBackground,
+				titleTextStyle: { color: chartTextColor },
+				pieSliceTextStyle: { color: chartTextColor },
 				legend: isMobileView
 					? {
 						position: 'bottom',
 						alignment: 'center',
 						maxLines: 5,
-						textStyle: { fontSize: 12 }
+						textStyle: { fontSize: 12, color: chartTextColor }
 					}
 					: {
 						position: 'right',
 						alignment: 'center',
-						textStyle: { fontSize: 13 }
+						textStyle: { fontSize: 13, color: chartTextColor }
 					},
 				chartArea: isMobileView
 					? {
@@ -371,7 +378,8 @@ const Tilasto = observer(class Tilasto extends Component {
 						top: 48,
 						bottom: 80,
 						width: '100%',
-						height: '70%'
+						height: '70%',
+						backgroundColor: chartAreaBackground
 					}
 					: {
 						left: 16,
@@ -379,7 +387,8 @@ const Tilasto = observer(class Tilasto extends Component {
 						top: 56,
 						bottom: 24,
 						width: '100%',
-						height: '74%'
+						height: '74%',
+						backgroundColor: chartAreaBackground
 					}
 			});
 
@@ -569,30 +578,21 @@ const Tilasto = observer(class Tilasto extends Component {
 					<Chart
 						chartType="PieChart"
 						data={chartDataMy}
-						options={{
-							title: "Omien merkintöjen " + (yksikko == 'X' ? "" : "tunti") + "jakauma",
-							pieSliceText: "value"
-						}}
+						options={getPieChartOptions("Omien merkintöjen " + (yksikko == 'X' ? "" : "tunti") + "jakauma")}
 						width={"100%"}
 						height={"300px"}
 					/>
 					<Chart
 						chartType="PieChart"
 						data={chartDataYhd}
-						options={{
-							title: "Merkintöjen " + (yksikko == 'X' ? "" : "tunti") + "jakauma yhdistyksessä",
-							pieSliceText: "value"
-						}}
+						options={getPieChartOptions("Merkintöjen " + (yksikko == 'X' ? "" : "tunti") + "jakauma yhdistyksessä")}
 						width={"100%"}
 						height={"300px"}
 					/>
 					<Chart
 						chartType="PieChart"
 						data={chartDataAll}
-						options={{
-							title: "Merkintöjen " + (yksikko == 'X' ? "" : "tunti") + "jakauma, kaikki käyttäjät",
-							pieSliceText: "value"
-						}}
+						options={getPieChartOptions("Merkintöjen " + (yksikko == 'X' ? "" : "tunti") + "jakauma, kaikki käyttäjät")}
 						width={"100%"}
 						height={"300px"}
 					/>

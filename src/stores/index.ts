@@ -16,8 +16,8 @@ class RootStore {
     this.sessionStore = new SessionStore(this);
     // this.userStore = new UserStore(this);
     this.messageStore = new MessageStore(this);
-    this.firebase = new Firebase(this);
     this.reeniFirestore = new ReeniFireStorter(this);
+    this.firebase = new Firebase(this);
     // this.tilastoFirestore = new TilastoFireStorter(this);
   }
 }

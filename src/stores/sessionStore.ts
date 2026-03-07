@@ -19,7 +19,7 @@ class SessionStore {
   };
 
   get userOk(): boolean {
-    return !!(this.authUser && this.authUser.uid && this.rootStore.reeniFirestore.path !== "reenit/anonyymi/reenit");
+    return !!(this.authUser && this.authUser.uid);
   }
 }
 

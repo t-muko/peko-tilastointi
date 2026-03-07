@@ -1,48 +1,42 @@
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
-import 'firebase/compat/firestore';
-import 'firebase/firestore';
-
-import { initFirestorter, Collection, Document } from 'firestorter';
 import type { RootStore } from './index';
+import FirestorterReeniRepository from './repositories/firestorterReeniRepository';
+import type { ReeniData, ReeniRepository } from './repositories/reeniRepository';
+import moment from 'moment';
 
+/**
+ * Firestorter wrapper for training entries collection and path switching.
+ */
 class ReeniFireStorter {
     rootStore: RootStore;
-    firebase: any;
-    collectionPath: string;
-    reenit!: Collection;
+    repository: ReeniRepository;
     path!: string;
+    reenit: any;
 
-    constructor(rootStore: RootStore) {
+    constructor(rootStore: RootStore, repository: ReeniRepository = new FirestorterReeniRepository()) {
         this.rootStore = rootStore;
-        this.firebase = this.rootStore.firebase;
-        this.collectionPath = "reenit/anonyymi/reenit";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyCd5Cg_EC7k2dEM2v2AYH72q5JQqq-6Oxw",
-            authDomain: "peko-tilastointi.firebaseapp.com",
-            projectId: "peko-tilastointi",
-            storageBucket: "peko-tilastointi.appspot.com",
-            messagingSenderId: "1051905962064",
-            appId: "1:1051905962064:web:e69f8452dc9e53d5e5a155",
-            measurementId: "G-PL4VL06TTN"
-        };
-        firebase.initializeApp(firebaseConfig);
-        initFirestorter({ firebase });
-
-        this.initCollection();
+        this.repository = repository;
+        this.path = 'reenit/anonyymi/reenit';
+        this.reenit = this.repository.getCollection();
     }
 
     changePath(path: string) {
-        this.collectionPath = path;
-        this.initCollection();
+        this.path = path;
+        this.repository.setPath(path);
+        this.reenit = this.repository.getCollection();
     }
 
-    initCollection() {
-        this.reenit = new Collection(this.collectionPath, {
-            createDocument: (source: any, options: any) => new Document(source, options)
+    addReeni(data: ReeniData) {
+        return this.repository.add(data);
+    }
+
+    addDefaultReeni() {
+        return this.addReeni({
+            pvm: moment(new Date()).format('YYYY-MM-DD'),
+            tunnit: 0,
+            kommentti: '',
+            kategoria: '',
+            koira: 'Ei koiraa',
         });
-        this.reenit.query = (ref: any) => ref.orderBy('pvm', 'desc');
     }
 }
 

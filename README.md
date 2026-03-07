@@ -1,12 +1,23 @@
 # PEKO Tilastointi
 
-Koiraharjoituspäivkirjasovellus yksityiseen ja yhteiseen käyttöön. Päiväkirjan merkinnät ovat yksityisiä, mutta jokainen käyttäjä jakaa yhteiseen käyttöön tilastoyhteenvetoja merkinnöistään.
+Koiraharjoituspaivakirjasovellus yksityiseen ja yhteiseen kayttoon. Paivakirjan merkinnat ovat yksityisia, mutta jokainen kayttaja jakaa yhteiseen kayttoon tilastoyhteenvetoja merkinnnoistaan.
 
-## Rakennuspalikat 
+## Rakennuspalikat
 
-Sovellus on rakennettu React ja Material UI kirjastoja hyädyntäen. 
+Sovellus on rakennettu React- ja Material UI -kirjastoja hyodyntaen.
 Tilan hallintaan käytetään MobX-kirjastoa.
-Tietokantana toimii Googlen Firestore, johon kukin käyttäjä tallentaa merkintönsä Google-tunnuksella kirjautuneena. Firebasen tietomalleja käytetään Firestorter-bindingin avulla.
+Tietokantana toimii Googlen Firestore, johon kukin kayttaja tallentaa merkintansa Google-tunnuksella kirjautuneena. Firebasen tietomalleja kaytetaan Firestorter-bindingin avulla.
+
+## Arkkitehtuuri (nykytila)
+
+- Firebase-init on keskitetty tiedostoon `src/components/Firebase/firebaseApp.ts`.
+- Kaikki Firebase-appin alustus kulkee funktion `getOrCreateFirebaseApp()` kautta.
+- `RootStore` alustaa `reeniFirestore`-storen ennen `firebase`-servicea tiedostossa `src/stores/index.ts`.
+- Auth-callback (`onAuthStateChanged`) paivittaa aina ensin `sessionStore`n ja vaihtaa sen jalkeen Firestore-polun.
+- Jos `user.getIdToken()` epaonnistuu, polun vaihto tehdan silti (fallback kayttajan UID:lla).
+- `sessionStore.userOk` riippuu vain `authUser`-tilasta (`authUser && authUser.uid`).
+- UI:n lisaystoiminto (`App.tsx`) kutsuu storen komentoa `addDefaultReeni()` eika kirjoita suoraan `reenit.add(...)`-kokoelmaan.
+- Reenidatan kirjoitus kulkee repository-abstraktion kautta: `ReeniRepository` + `FirestorterReeniRepository`.
 
 ## Kehitysympäristö
 
@@ -15,8 +26,22 @@ Tietokantana toimii Googlen Firestore, johon kukin käyttäjä tallentaa merkint
 - Vite
 - Firebase CLI (`yarn global add firebase-tools`)
 
-Asenna Node ja Yarn. Kloonaa repository ja anna komento `yarn install`
+Asenna Node ja Yarn. Kloonaa repository ja aja komento `yarn install`.
 Tämä asentaa kehitysympäristön ja tarvittavat kirjastot.
+
+## Tekoälyagenttipohjainen kehittäminen
+
+1. Kayta VS Codea tai GitHub Codespaces -kehitysymparistoa.
+2. Luo uusi Markdown-dokumentti `docs/`-kansioon ja kuvaa lyhyesti tavoite. Tee yksi kokonaisuus kerrallaan.
+3. Pida dokumentti auki ja kaynnista suunnittelu komennolla `/suunnittelu`.
+4. Lue suunnitelma lapi ja tee tarvittavat korjaukset.
+5. Kaynnista testivaihe komennolla `/testitavoite`.
+6. Kaynnista toteutus komennolla `/toteuta`.
+7. Jos suunnitelmassa on useita vaiheita, kayta tarkennusta, esim. `/toteuta vaihe 2`.
+8. Testaa muutokset myos manuaalisesti.
+9. Komenna seuraavaksi `/katselmoi`.
+10. Tee tarvittaessa korjaukset komennolla `/toteuta`.
+11. Paivita dokumentaatio komennolla `/dokumentoi`.
 
 ## Dev Scripts
 
@@ -79,9 +104,11 @@ toteutukseen, arkkitehtuuriin ja testaukseen.
 `.github/copilot-instructions.md` sisältää ohjeet tekoälyavustajalle. Siitä löytyy myös lyhyt
 yhteenveto sovelluksesta ja sen arkkitehtuurista.
 
-## Korjattavat poikkeamat ennen uusia ominaisuuksia
+## Toteutetut arkkitehtuurikorjaukset
 
-- Firebase-initialisointi on useassa paikassa (`firebaseService.ts` ja `reeniStore.ts`); keskitetään yhteen toteutukseen.
-- UI kutsuu osin suoraan infraa (`App.tsx` -> `rootStore.reeniFirestore.reenit.add(...)`); siirretään store-komentojen taakse.
-- Store- ja infra-vastuut sekoittuvat (`reeniStore` sisältää Firestorter/Firebase-kytkennän); erotetaan repository/service-kerros.
-- `use-stores.ts` ei käytä React-kontekstia tavanomaisella tavalla; selkeytetään yksi virallinen tapa käyttää storeja.
+Seuraavat aiemmin dokumentoidut poikkeamat on korjattu toteutukseen:
+
+- Firebase-initialisointi ei ole enaa hajautettu useaan paikkaan, vaan kayttaa keskitettya `getOrCreateFirebaseApp()`-toteutusta.
+- UI ei lisaa reeneja suoraan Firestorter-kokoelmaan, vaan kutsuu store-komentoa `addDefaultReeni()`.
+- `reeniStore` ei sisalla suoria Firebase-init-kutsuja, vaan kayttaa repository-rajapintaa (`ReeniRepository`).
+- `use-stores.ts` lukee storen `FirebaseContext`in kautta ja heittaa virheen, jos provider puuttuu.

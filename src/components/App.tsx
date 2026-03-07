@@ -24,8 +24,6 @@ import Reenit from '@components/Reenit';
 import Tilasto from '@components/Tilasto';
 import Info from '@components/Info';
 
-import moment from 'moment';
-
 interface AppContext {
 	rootStore: any;
 }
@@ -82,7 +80,7 @@ const styles = {
 	}
 } as const;
 
-class App extends Component {
+export class App extends Component {
 	static contextType = FirebaseContext
 	declare context: AppContext;
 
@@ -104,78 +102,75 @@ class App extends Component {
 	}
 
 	render() {
+		const context = this.context;
 		// Reading showInfo is necessary to trigger MobX re-render when it changes
 		const showInfo = this.showInfo
-		const userEmail = this.context.rootStore.sessionStore.authUser ? this.context.rootStore.sessionStore.authUser.email : "nobody"
+		const userEmail = context.rootStore.sessionStore.authUser ? context.rootStore.sessionStore.authUser.email : "nobody"
 
 		return (
-			<FirebaseContext.Consumer>
-				{context => {
-					return <div className="App">
-						<header className="App-header">
-							<div style={styles.container}>
-								<div style={styles.header}>
-									<div style={styles.headerRow}>
-										<img src='/tilasto128.png' alt='logo' style={styles.logo} />
-										<h1 style={styles.h1}>Peko-toimintapäiväkirja</h1>
-									</div>
-								</div>
-								{context.rootStore.sessionStore.userOk && <div>
-									<h3>{userEmail}</h3>
-
-									{showInfo && <Info toggleShowInfoF={this.toggleShowInfo} />}
-
-									<Accordion slotProps={{ transition: { mountOnEnter: true } }}>
-										<AccordionSummary
-											expandIcon={<ExpandMoreIcon />}
-											aria-controls="panel1a-content"
-											id="panel1a-header"
-										>
-											<Typography variant="body1" gutterBottom  >Tilastot</Typography>
-
-										</AccordionSummary>
-										<AccordionDetails>
-											<Tilasto />
-										</AccordionDetails>
-									</Accordion>
-
-									<Reenit />
-
-									<Box sx={{ p: '40px' }}></Box>
-
-									<FloatingActionButton style={styles.add} onClick={this.onPressAdd}>
-										<ContentAddIcon />
-									</FloatingActionButton>
-								</div>}
-
-
+			<div className="App">
+				<header className="App-header">
+					<div style={styles.container}>
+						<div style={styles.header}>
+							<div style={styles.headerRow}>
+								<img src='/tilasto128.png' alt='logo' style={styles.logo} />
+								<h1 style={styles.h1}>Peko-toimintapäiväkirja</h1>
 							</div>
-							{!context.rootStore.sessionStore.userOk && <Box style={styles.login}><Button variant="contained" onClick={() => {
-								context.rootStore.firebase.autentikoi();
-							}}
-							>Login</Button>
-								<Box sx={{ mt: '5em', fontSize: 10 }}>
-									Jos login ei onnistu, voit kokeilla ensin logata Googlen palveluista kokonaan ulos ja sitten kokeilla kirjautumista uudelleen.<br />
-									Voit joutua navigoimaan uudelleen peko-tilastointisivulle.<br />
-									<a href="https://accounts.google.com/Logout" target="_blank" rel="noopener noreferrer"><LogoutIcon sx={{ color: 'white' }} /></a></Box>
-							</Box>}
+						</div>
+						{context.rootStore.sessionStore.userOk && <div>
+							<h3>{userEmail}</h3>
 
+							{showInfo && <Info toggleShowInfoF={this.toggleShowInfo} />}
 
-							{context.rootStore.sessionStore.userOk && <Tooltip title="Info">
-								<IconButton color="primary" aria-label="info" style={styles.info}
-									onClick={() => { this.toggleShowInfo(); }}
-								><InfoIcon /></IconButton></Tooltip>}
+							<Accordion slotProps={{ transition: { mountOnEnter: true } }}>
+								<AccordionSummary
+									expandIcon={<ExpandMoreIcon />}
+									aria-controls="panel1a-content"
+									id="panel1a-header"
+								>
+									<Typography variant="body1" gutterBottom  >Tilastot</Typography>
 
-							{context.rootStore.sessionStore.userOk && <Tooltip title="Kirjaudu ulos"><IconButton color="primary" aria-label="logout" style={styles.logout} onClick={() => {
-								context.rootStore.firebase.logout();
-							}}
-							><LogoutIcon /></IconButton></Tooltip>}
+								</AccordionSummary>
+								<AccordionDetails>
+									<Tilasto />
+								</AccordionDetails>
+							</Accordion>
 
-						</header>
+							<Reenit />
+
+							<Box sx={{ p: '40px' }}></Box>
+
+							<FloatingActionButton style={styles.add} onClick={this.onPressAdd}>
+								<ContentAddIcon />
+							</FloatingActionButton>
+						</div>}
+
 
 					</div>
-				}}
-			</FirebaseContext.Consumer>
+					{!context.rootStore.sessionStore.userOk && <Box style={styles.login}><Button variant="contained" onClick={() => {
+						context.rootStore.firebase.autentikoi();
+					}}
+					>Login</Button>
+						<Box sx={{ mt: '5em', fontSize: 10 }}>
+							Jos login ei onnistu, voit kokeilla ensin logata Googlen palveluista kokonaan ulos ja sitten kokeilla kirjautumista uudelleen.<br />
+							Voit joutua navigoimaan uudelleen peko-tilastointisivulle.<br />
+							<a href="https://accounts.google.com/Logout" target="_blank" rel="noopener noreferrer"><LogoutIcon sx={{ color: 'white' }} /></a></Box>
+					</Box>}
+
+
+					{context.rootStore.sessionStore.userOk && <Tooltip title="Info">
+						<IconButton color="primary" aria-label="info" style={styles.info}
+							onClick={() => { this.toggleShowInfo(); }}
+						><InfoIcon /></IconButton></Tooltip>}
+
+					{context.rootStore.sessionStore.userOk && <Tooltip title="Kirjaudu ulos"><IconButton color="primary" aria-label="logout" style={styles.logout} onClick={() => {
+						context.rootStore.firebase.logout();
+					}}
+					><LogoutIcon /></IconButton></Tooltip>}
+
+				</header>
+
+			</div>
 
 		);
 	}
@@ -187,13 +182,7 @@ class App extends Component {
 
 	onPressAdd = async () => {
 		try {
-			await this.context.rootStore.reeniFirestore.reenit.add({
-				pvm: moment(new Date()).format("YYYY-MM-DD"),
-				tunnit: 0,
-				kommentti: '',
-				kategoria: '',
-				koira: 'Ei koiraa',
-			});
+			await this.context.rootStore.reeniFirestore.addDefaultReeni();
 		}
 		catch (err) {
 			console.error("Virhe lisäyksessä", err)

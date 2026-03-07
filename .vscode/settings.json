@@ -1,5 +1,6 @@
 {
     "chat.tools.terminal.autoApprove": {
-        "yarn install": true
+        "yarn install": true,
+        "npx vitest": true
     }
 }

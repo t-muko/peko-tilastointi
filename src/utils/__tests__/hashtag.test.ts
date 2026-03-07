@@ -58,4 +58,26 @@ describe('New feature tests - parseHashtags', () => {
 
         expect(result).toEqual(['koe', 'toinen-tagi']);
     });
+
+    /**
+     * Given hashtags followed by a trailing hyphen at end or before punctuation
+     * When hashtags are parsed
+     * Then malformed trailing-hyphen tags are ignored.
+     */
+    it('given hashtag ending with hyphen when parsing then ignores malformed tags', () => {
+        const result = parseHashtags('Tapaukset #ok ja #foo- ja #bar-!');
+
+        expect(result).toEqual(['ok']);
+    });
+
+    /**
+     * Given malformed hashtag candidates ending with hyphen only
+     * When hashtags are parsed
+     * Then those malformed tags are ignored.
+     */
+    it('given only malformed trailing-hyphen tags when parsing then ignores them', () => {
+        const result = parseHashtags('Pelkat virheet #-- #a- #b-');
+
+        expect(result).toEqual([]);
+    });
 });

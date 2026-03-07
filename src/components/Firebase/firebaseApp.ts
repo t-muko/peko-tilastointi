@@ -4,7 +4,7 @@ import firebase from 'firebase/compat/app';
  * Shared Firebase configuration for compat-based initialization.
  */
 const firebaseConfig = {
-    apiKey: "AIzaSyCd5Cg_EC7k2dEM2v2AYH72q5JQqq-6Oxw",
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY ?? '',
     authDomain: "peko-tilastointi.firebaseapp.com",
     projectId: "peko-tilastointi",
     storageBucket: "peko-tilastointi.appspot.com",

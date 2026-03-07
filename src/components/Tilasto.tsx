@@ -612,7 +612,7 @@ const Tilasto = observer(class Tilasto extends Component {
 						</Typography>
 					)}
 
-					<Typography variant="body1" gutterBottom >Tilastovuoden käyttäjien merkinnät
+					<Typography variant="body1" gutterBottom >Tilastovuoden {tilastoVuosi} käyttäjien merkinnät
 						yhteensä {tilastovuoden_tunnit_yhteensa} h,
 						hyvinvointia edistävää harrastamista keskimäärin {(tilastovuoden_paivat_yhteensa
 							/ tilastoVuodenKaikkiTilastot.length

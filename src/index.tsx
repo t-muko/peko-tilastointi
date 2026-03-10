@@ -12,6 +12,14 @@ import rootStore from '@stores';
 import App from '@components/App';
 import { FirebaseContext } from '@components/Firebase/Firebase';
 
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch((error) => {
+      console.error('Service worker registration failed:', error);
+    });
+  });
+}
+
 function AppThemeProvider({ children }: { children: React.ReactNode }) {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)', { noSsr: true });
   const [manualMode, setManualMode] = React.useState<'light' | 'dark' | null>(null);

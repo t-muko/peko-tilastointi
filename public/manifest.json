@@ -1,4 +1,5 @@
 {
+  "id": "/",
   "short_name": "Reenipäiväkirja",
   "name": "Peko-reenipäiväkirja",
   "icons": [
@@ -23,8 +24,13 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": ".",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
+  "orientation": "portrait",
   "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "background_color": "#ffffff",
+  "lang": "fi",
+  "categories": ["health", "productivity"]
 }

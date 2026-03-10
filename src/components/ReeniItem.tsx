@@ -138,6 +138,9 @@ class ReeniItem extends Component<ReeniItemProps> {
 									<MenuItem value={'Partsa'}>			Partsa</MenuItem>
 									<MenuItem value={'Ilmavainu'}>		Ilmavainu</MenuItem>
 									<MenuItem value={'Tottis'}>			Tottis</MenuItem>
+									<MenuItem value={'Raunio'}>			Raunio</MenuItem>
+									<MenuItem value={'Rakennus'}>		Rakennus</MenuItem>
+									<MenuItem value={'Laviini'}>		LaViini</MenuItem>
 									<MenuItem value={'Muu reeni'}>		Muu reeni</MenuItem>
 									<MenuItem value={'Muu y-toiminta'}>	Muu y-toiminta</MenuItem>
 

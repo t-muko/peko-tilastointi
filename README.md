@@ -22,11 +22,11 @@ Tietokantana toimii Googlen Firestore, johon kukin kayttaja tallentaa merkintans
 ## Kehitysympäristö
 
 - Node.js 22+
-- Yarn
+- pnpm
 - Vite
-- Firebase CLI (`yarn global add firebase-tools`)
+- Firebase CLI (`pnpm add -g firebase-tools`)
 
-Asenna Node ja Yarn. Kloonaa repository ja aja komento `yarn install`.
+Asenna Node ja pnpm. Kloonaa repository ja aja komento `pnpm install`.
 Tämä asentaa kehitysympäristön ja tarvittavat kirjastot.
 
 ## Environment Variables
@@ -74,17 +74,17 @@ Lisays GitHubissa: `Settings` -> `Secrets and variables` -> `Actions` -> `New re
 
 | Komento            | Kuvaus                                              |
 | ------------------ | --------------------------------------------------- |
-| `yarn dev`         | Käynnistä paikallinen Vite dev-serveri              |
-| `yarn build`       | Tuotantobuild → `build/`                            |
-| `yarn preview`     | Esikatsele valmis build paikallisesti               |
-| `yarn dev:test`    | Dev-serveri testitilassa (`VITE_USE_EMULATOR=true`) |
+| `pnpm dev`         | Käynnistä paikallinen Vite dev-serveri              |
+| `pnpm build`       | Tuotantobuild → `build/`                            |
+| `pnpm preview`     | Esikatsele valmis build paikallisesti               |
+| `pnpm dev:test`    | Dev-serveri testitilassa (`VITE_USE_EMULATOR=true`) |
 
 ## Deploy Hosting
 
 Build and deploy hosting:
 
 ```bash
-yarn build
+pnpm build
 firebase deploy --only hosting
 
 firebase deploy --only firestore:rules
@@ -101,9 +101,9 @@ Projektissa on kaksi testaustasoa. Katso tarkempi dokumentaatio:
 ### Yksikkötestit (Vitest)
 
 ```bash
-yarn test                 # aja kaikki kerran
-yarn test:watch           # watch-tila
-yarn test:ui              # graafinen Vitest UI selaimessa
+pnpm test                 # aja kaikki kerran
+pnpm test:watch           # watch-tila
+pnpm test:ui              # graafinen Vitest UI selaimessa
 ```
 
 ### E2E-testit (Playwright)
@@ -119,8 +119,8 @@ firebase login:use teemu@pirkanmaanpelastuskoirat.fi
 firebase projects:list
 
 # Terminaali 2 — aja E2E-testit
-yarn test:e2e             # headless
-yarn test:e2e:ui          # graafinen Playwright UI
+pnpm test:e2e             # headless
+pnpm test:e2e:ui          # graafinen Playwright UI
 ```
 
 ## Dokumentaatio ja ohjeistus

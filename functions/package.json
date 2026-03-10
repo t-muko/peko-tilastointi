@@ -1,5 +1,6 @@
 {
   "name": "functions",
+  "packageManager": "pnpm@10.17.1",
   "description": "Cloud Functions for Firebase",
   "scripts": {
     "lint": "eslint .",

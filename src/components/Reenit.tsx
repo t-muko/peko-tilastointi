@@ -17,6 +17,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import Box from '@mui/material/Box';
 
 import Typography from '@mui/material/Typography';
+import { REENI_CATEGORIES } from '../constants/reeniCategories';
 
 
 import moment from 'moment';
@@ -178,8 +179,7 @@ const Reenit = observer(class Reenit extends Component {
 						sumD: reenipaivat.size
 					}
 
-					const cat = ['Jälki', 'Partsa', 'Ilmavainu', 'Tottis', 'Muu reeni', 'Ei kategoriaa', 'Muu y-toiminta']
-					cat.map((kategoria) => {
+					REENI_CATEGORIES.map((kategoria) => {
 						const kategorianReenit = vuodenReenit.filter((rivi) => rivi.data.kategoria.includes(kategoria))
 						vt[vuosi][kategoria] = {
 							H: kategorianReenit.map((reeni) => reeni.data.tunnit || 0).reduce((a, b) => a + b, 0),

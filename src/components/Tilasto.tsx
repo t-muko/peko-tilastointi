@@ -24,6 +24,7 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { useTheme, type Theme } from '@mui/material/styles';
 import { buildHashtagStats, type ReeniForHashtagStats } from '../utils/hashtagStats';
+import { REENI_CATEGORIES } from '../constants/reeniCategories';
 
 import moment from 'moment';
 import 'moment/locale/fi';
@@ -457,9 +458,8 @@ const Tilasto = observer(class Tilasto extends Component<TilastoProps> {
 
 			if (kuluvanVuodenTilastot.length > 1) {
 				const byCat = new Object()
-				const kategoriat = ['Jälki', 'Partsa', 'Ilmavainu', 'Tottis', 'Muu reeni', 'Ei kategoriaa', 'Muu y-toiminta']
-				kategoriat.forEach((cat) => byCat[cat] = kuluvanVuodenTilastot
-					.map((tilasto) => (tilasto[cat][yksikko]))
+				REENI_CATEGORIES.forEach((cat) => byCat[cat] = kuluvanVuodenTilastot
+					.map((tilasto) => (tilasto[cat]?.[yksikko] || 0))
 					.reduce((p, c) => p + c, 0)
 				)
 
@@ -474,11 +474,10 @@ const Tilasto = observer(class Tilasto extends Component<TilastoProps> {
 
 			if (tilastoDocs.length > 1) {
 				const byCat = new Object()
-				const kategoriat = ['Jälki', 'Partsa', 'Ilmavainu', 'Tottis', 'Muu reeni', 'Ei kategoriaa', 'Muu y-toiminta']
-				kategoriat.forEach((cat) => byCat[cat] = tilastoDocs
+				REENI_CATEGORIES.forEach((cat) => byCat[cat] = tilastoDocs
 					.filter((tilasto) => tilasto.data[tilastoVuosi])
 					.map((tilasto) => tilasto.data[tilastoVuosi])
-					.map((tilasto) => (tilasto[cat][yksikko]))
+					.map((tilasto) => (tilasto[cat]?.[yksikko] || 0))
 					.reduce((p, c) => p + c, 0)
 				)
 
@@ -489,12 +488,11 @@ const Tilasto = observer(class Tilasto extends Component<TilastoProps> {
 
 			if (tilastoDocs.length > 1) {
 				const byCat = new Object()
-				const kategoriat = ['Jälki', 'Partsa', 'Ilmavainu', 'Tottis', 'Muu reeni', 'Ei kategoriaa', 'Muu y-toiminta']
-				kategoriat.forEach((cat) => byCat[cat] = tilastoDocs
+				REENI_CATEGORIES.forEach((cat) => byCat[cat] = tilastoDocs
 					.filter((tilasto) => tilasto.id == this.uid)
 					.filter((tilasto) => tilasto.data[tilastoVuosi])
 					.map((tilasto) => tilasto.data[tilastoVuosi])
-					.map((tilasto) => (tilasto[cat][yksikko]))
+					.map((tilasto) => (tilasto[cat]?.[yksikko] || 0))
 					.reduce((p, c) => p + c, 0)
 				)
 

@@ -18,6 +18,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 
 import fiLocale from 'date-fns/locale/fi';
+import { DEFAULT_REENI_CATEGORY, REENI_CATEGORIES } from '../constants/reeniCategories';
 
 
 import moment from 'moment';
@@ -128,21 +129,14 @@ class ReeniItem extends Component<ReeniItemProps> {
 								<Select
 									labelId="kategoria-label"
 									id={this.props.item.id + "kategoria-select"}
-									value={kategoria || "Ei kategoriaa"}
+									value={kategoria || DEFAULT_REENI_CATEGORY}
 									label="Kategoria"
 									fullWidth
 									onChange={this.onKategoriaChange}
 								>
-									<MenuItem value={'Ei kategoriaa'}>	Ei kategoriaa</MenuItem>
-									<MenuItem value={'Jälki'}>			Jälki</MenuItem>
-									<MenuItem value={'Partsa'}>			Partsa</MenuItem>
-									<MenuItem value={'Ilmavainu'}>		Ilmavainu</MenuItem>
-									<MenuItem value={'Tottis'}>			Tottis</MenuItem>
-									<MenuItem value={'Raunio'}>			Raunio</MenuItem>
-									<MenuItem value={'Rakennus'}>		Rakennus</MenuItem>
-									<MenuItem value={'Laviini'}>		LaViini</MenuItem>
-									<MenuItem value={'Muu reeni'}>		Muu reeni</MenuItem>
-									<MenuItem value={'Muu y-toiminta'}>	Muu y-toiminta</MenuItem>
+									{REENI_CATEGORIES.map((category) => (
+										<MenuItem value={category} key={category}>{category}</MenuItem>
+									))}
 
 								</Select>
 							</Grid>

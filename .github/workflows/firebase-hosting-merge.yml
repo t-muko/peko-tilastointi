@@ -15,18 +15,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: "yarn"
+          cache: "pnpm"
 
       - name: Install dependencies and build
         env:
           VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
         run: |
-          yarn install --network-timeout=30000
-          yarn build
+          pnpm install --frozen-lockfile
+          pnpm build
 
       - name: Authenticate Firebase
         env:
@@ -79,7 +82,7 @@ jobs:
 
       # --- PR → PREVIEW DEPLOY ---
       - name: Deploy PR preview
-        if: github.event_name == 'pull_request' && github.event.action != 'closed'
+        if: false && github.event_name == 'pull_request' && github.event.action != 'closed'
         run: |
           CHANNEL="pr-${{ github.event.pull_request.number }}"
           output=$(firebase hosting:channel:deploy "$CHANNEL" --project peko-tilastointi --expires 30d 2>&1)

@@ -44,3 +44,17 @@
         display: none !important;
     }
 }
+
+.install-banner {
+  background: rgba(17, 24, 39, 0.95);
+  color: #fff;
+  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.28);
+}
+
+@media (max-width: 640px) {
+  .install-banner {
+    width: calc(100vw - 16px);
+    bottom: 8px;
+    padding: 10px 10px;
+  }
+}

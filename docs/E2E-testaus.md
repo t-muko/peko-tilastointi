@@ -41,7 +41,7 @@ mutta on täysin paikallinen ja nollataan testien välissä.
 ## Tarvittavat paketit
 
 ```bash
-npm install --save-dev @playwright/test
+pnpm add -D @playwright/test
 npx playwright install chromium
 ```
 

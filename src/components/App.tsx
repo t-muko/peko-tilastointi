@@ -28,6 +28,11 @@ interface AppContext {
 	rootStore: any;
 }
 
+interface BeforeInstallPromptEvent extends Event {
+	prompt: () => Promise<void>;
+	userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>;
+}
+
 const styles = {
 	container: {
 		position: 'absolute',
@@ -77,6 +82,20 @@ const styles = {
 		position: 'absolute',
 		top: '1em',
 		right: '3em'
+	},
+	installBanner: {
+		position: 'fixed',
+		left: '50%',
+		transform: 'translateX(-50%)',
+		bottom: 12,
+		zIndex: 1400,
+		padding: '8px 12px',
+		borderRadius: 8,
+		display: 'flex',
+		alignItems: 'center',
+		gap: 8,
+		fontSize: 14,
+		maxWidth: 'min(92vw, 520px)'
 	}
 } as const;
 
@@ -86,13 +105,24 @@ export class App extends Component {
 
 	showInfo = false;
 	uid: string | null = null;
+	deferredInstallPrompt: BeforeInstallPromptEvent | null = null;
+	showInstallPrompt = false;
+	showIosInstallHint = false;
 
 	constructor(props: any) {
 		super(props)
 
 		makeObservable(this, {
 			showInfo: observable,
-			toggleShowInfo: action
+			deferredInstallPrompt: observable.ref,
+			showInstallPrompt: observable,
+			showIosInstallHint: observable,
+			toggleShowInfo: action,
+			handleBeforeInstallPrompt: action.bound,
+			handleAppInstalled: action.bound,
+			showInstallHintsIfNeeded: action.bound,
+			hideInstallPrompt: action.bound,
+			onInstallClick: action.bound
 		})
 
 	}
@@ -101,10 +131,53 @@ export class App extends Component {
 		this.showInfo = !this.showInfo
 	}
 
+	handleBeforeInstallPrompt(event: Event) {
+		event.preventDefault();
+		this.deferredInstallPrompt = event as BeforeInstallPromptEvent;
+		this.showInstallPrompt = true;
+	}
+
+	handleAppInstalled() {
+		this.deferredInstallPrompt = null;
+		this.showInstallPrompt = false;
+		this.showIosInstallHint = false;
+	}
+
+	showInstallHintsIfNeeded() {
+		const ua = window.navigator.userAgent.toLowerCase();
+		const isIos = /iphone|ipad|ipod/.test(ua);
+		const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true;
+
+		if (isIos && !isStandalone) {
+			this.showIosInstallHint = true;
+		}
+	}
+
+	hideInstallPrompt() {
+		this.showInstallPrompt = false;
+		this.showIosInstallHint = false;
+	}
+
+	async onInstallClick() {
+		if (!this.deferredInstallPrompt) {
+			return;
+		}
+
+		await this.deferredInstallPrompt.prompt();
+		const choice = await this.deferredInstallPrompt.userChoice;
+
+		if (choice.outcome === 'accepted') {
+			this.deferredInstallPrompt = null;
+			this.showInstallPrompt = false;
+		}
+	}
+
 	render() {
 		const context = this.context;
 		// Reading showInfo is necessary to trigger MobX re-render when it changes
 		const showInfo = this.showInfo
+		const showInstallPrompt = this.showInstallPrompt
+		const showIosInstallHint = this.showIosInstallHint
 		const userEmail = context.rootStore.sessionStore.authUser ? context.rootStore.sessionStore.authUser.email : "nobody"
 
 		return (
@@ -168,6 +241,28 @@ export class App extends Component {
 					}}
 					><LogoutIcon /></IconButton></Tooltip>}
 
+					{(showInstallPrompt || showIosInstallHint) && (
+						<Box sx={styles.installBanner} className="install-banner">
+							{showInstallPrompt ? (
+								<>
+									<Typography variant="body2" sx={{ flexGrow: 1, textAlign: 'left' }}>
+										Asenna sovellus puhelimesi aloitusnaytolle nopeaa kayttoa varten.
+									</Typography>
+									<Button variant="contained" size="small" onClick={this.onInstallClick}>
+										Asenna
+									</Button>
+								</>
+							) : (
+								<Typography variant="body2" sx={{ flexGrow: 1, textAlign: 'left' }}>
+									iPhone/iPad: avaa Safari-valikko ja valitse Lisaa Koti-valikkoon.
+								</Typography>
+							)}
+							<Button variant="text" size="small" onClick={this.hideInstallPrompt}>
+								Sulje
+							</Button>
+						</Box>
+					)}
+
 				</header>
 
 			</div>
@@ -178,6 +273,14 @@ export class App extends Component {
 	componentDidMount() {
 		const context = this.context;
 		this.uid = context.rootStore.sessionStore.authUser ? context.rootStore.sessionStore.authUser.uid : null
+		window.addEventListener('beforeinstallprompt', this.handleBeforeInstallPrompt);
+		window.addEventListener('appinstalled', this.handleAppInstalled);
+		this.showInstallHintsIfNeeded();
+	}
+
+	componentWillUnmount() {
+		window.removeEventListener('beforeinstallprompt', this.handleBeforeInstallPrompt);
+		window.removeEventListener('appinstalled', this.handleAppInstalled);
 	}
 
 	onPressAdd = async () => {

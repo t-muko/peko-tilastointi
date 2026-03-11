@@ -131,7 +131,18 @@ export class App extends Component {
 		this.showInfo = !this.showInfo
 	}
 
+	isMobileDevice() {
+		const ua = window.navigator.userAgent.toLowerCase();
+		return /android|iphone|ipad|ipod|mobile/.test(ua);
+	}
+
 	handleBeforeInstallPrompt(event: Event) {
+		if (!this.isMobileDevice()) {
+			this.deferredInstallPrompt = null;
+			this.showInstallPrompt = false;
+			return;
+		}
+
 		event.preventDefault();
 		this.deferredInstallPrompt = event as BeforeInstallPromptEvent;
 		this.showInstallPrompt = true;
@@ -144,6 +155,11 @@ export class App extends Component {
 	}
 
 	showInstallHintsIfNeeded() {
+		if (!this.isMobileDevice()) {
+			this.showIosInstallHint = false;
+			return;
+		}
+
 		const ua = window.navigator.userAgent.toLowerCase();
 		const isIos = /iphone|ipad|ipod/.test(ua);
 		const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true;
@@ -178,6 +194,7 @@ export class App extends Component {
 		const showInfo = this.showInfo
 		const showInstallPrompt = this.showInstallPrompt
 		const showIosInstallHint = this.showIosInstallHint
+		const shouldShowInstallBanner = this.isMobileDevice() && (showInstallPrompt || showIosInstallHint)
 		const userEmail = context.rootStore.sessionStore.authUser ? context.rootStore.sessionStore.authUser.email : "nobody"
 
 		return (
@@ -241,7 +258,7 @@ export class App extends Component {
 					}}
 					><LogoutIcon /></IconButton></Tooltip>}
 
-					{(showInstallPrompt || showIosInstallHint) && (
+					{shouldShowInstallBanner && (
 						<Box sx={styles.installBanner} className="install-banner">
 							{showInstallPrompt ? (
 								<>

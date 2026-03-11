@@ -16,6 +16,7 @@ import Dialog from '@mui/material/Dialog';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV2';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
+import { FirebaseContext } from '@components/Firebase/Firebase';
 
 import fiLocale from 'date-fns/locale/fi';
 import { DEFAULT_REENI_CATEGORY, REENI_CATEGORIES } from '../constants/reeniCategories';
@@ -58,11 +59,13 @@ interface ReeniItemProps {
 
 class ReeniItem extends Component<ReeniItemProps> {
 	_deleting = false;
+	static contextType = FirebaseContext;
+	declare context: any;
 
 	render() {
 		const { item } = this.props;
 		// const { pvm, kategoria, tunnit, alakategoria, kommentti, koira } = item.data;
-		const { pvm, kategoria, tunnit, kommentti, koira } = item.data;
+		const { pvm, kategoria, tunnit, kommentti, koira, akm } = item.data;
 
 		return (
 			<LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={fiLocale}>
@@ -80,7 +83,7 @@ class ReeniItem extends Component<ReeniItemProps> {
 							p={2}
 							minHeight='200px'
 							columns={12}>
-							<Grid size={{ xs: 6, md: 3 }}>
+							<Grid size={{ xs: 6, sm: 4, md: 4 }}>
 								<InputLabel id="date-label">Päivämäärä</InputLabel>
 
 								<MobileDatePicker
@@ -95,7 +98,7 @@ class ReeniItem extends Component<ReeniItemProps> {
 								/>
 							</Grid>
 
-							<Grid size={{ xs: 6, md: 3 }}>
+							<Grid size={{ xs: 6, sm: 4, md: 4 }}>
 								<InputLabel id="demo-simple-select-label">Kesto</InputLabel>
 								<Select
 									labelId="demo-simple-select-label"
@@ -124,7 +127,21 @@ class ReeniItem extends Component<ReeniItemProps> {
 								</Select>
 							</Grid>
 
-							<Grid size={{ xs: 6, md: 3 }}>
+							<Grid size={{ xs: 6, sm: 4, md: 4 }}>
+								<InputLabel id="akm-label">Ajokilometrit</InputLabel>
+								<TextField
+									id={item.id + "akm"}
+									style={styles.input}
+									fullWidth
+									type="number"
+									aria-labelledby="akm-label"
+									variant={"outlined"}
+									inputProps={{ min: 0, step: 1, inputMode: 'numeric' }}
+									onBlur={this.onAkmChange}
+									defaultValue={Number.isInteger(akm) && akm > 0 ? akm : ''} />
+							</Grid>
+
+							<Grid size={{ xs: 6 }}>
 								<InputLabel id="kategoria-label">Kategoria</InputLabel>
 								<Select
 									labelId="kategoria-label"
@@ -141,7 +158,7 @@ class ReeniItem extends Component<ReeniItemProps> {
 								</Select>
 							</Grid>
 
-							<Grid size={{ xs: 6, md: 3 }}>
+							<Grid size={{ xs: 6 }}>
 								<InputLabel id="koira-label">Koira</InputLabel>
 								<Select
 									labelId="koira-label"
@@ -259,6 +276,11 @@ class ReeniItem extends Component<ReeniItemProps> {
 		await item.update({
 			kategoria: event.target.value
 		});
+	};
+
+	onAkmChange = async (event) => {
+		const { item } = this.props;
+		await this.context.rootStore.reeniFirestore.updateAkm(item, event.target.value);
 	};
 }
 

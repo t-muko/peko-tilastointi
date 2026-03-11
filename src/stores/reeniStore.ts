@@ -29,6 +29,10 @@ class ReeniFireStorter {
         return this.repository.add(data);
     }
 
+    updateAkm(item: any, rawValue: string) {
+        return this.repository.updateAkm(item, rawValue);
+    }
+
     addDefaultReeni() {
         return this.addReeni({
             pvm: moment(new Date()).format('YYYY-MM-DD'),

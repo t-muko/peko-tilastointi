@@ -11,4 +11,5 @@ export interface ReeniRepository {
   setPath(path: string): void;
   getCollection(): any;
   add(data: ReeniData): Promise<unknown>;
+  updateAkm(item: any, rawValue: string): Promise<void>;
 }

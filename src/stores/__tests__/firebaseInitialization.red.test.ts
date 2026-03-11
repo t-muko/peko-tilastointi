@@ -180,6 +180,155 @@ describe('Regression tests - Firebase emulator wiring', () => {
             expect(changePath).toHaveBeenCalledWith('reenit/uid-fallback/reenit');
         });
     });
+
+    /**
+     * Given a Firebase service instance with a logged-in session
+     * When logout is called
+     * Then it signs out and resets Firestore path to anonymous collection.
+     */
+    it('given firebase service when logging out then signs out and resets to anonymous path', async () => {
+        vi.stubEnv('VITE_USE_EMULATOR', 'false');
+
+        const signOut = vi.fn().mockResolvedValue(undefined);
+
+        vi.doMock('firebase/compat/app', () => ({
+            default: {
+                initializeApp: vi.fn(() => ({ name: '[DEFAULT]' })),
+                apps: [],
+            },
+        }));
+        vi.doMock('firebase/compat/auth', () => ({}));
+        vi.doMock('firebase/compat/firestore', () => ({}));
+        vi.doMock('firebase/firestore', () => ({
+            getFirestore: vi.fn(() => ({ id: 'firestore-instance' })),
+            connectFirestoreEmulator: vi.fn(),
+        }));
+        vi.doMock('firebase/auth', () => ({
+            getAuth: vi.fn(() => ({ languageCode: '' })),
+            onAuthStateChanged: vi.fn((_auth: unknown, cb: (authUser: MockUser | null) => void) => {
+                cb(null);
+                return vi.fn();
+            }),
+            GoogleAuthProvider: class {},
+            signInWithPopup: vi.fn(),
+            signOut,
+            signInWithEmailAndPassword: vi.fn(),
+            connectAuthEmulator: vi.fn(),
+        }));
+
+        const { default: Firebase } = await import('@components/Firebase/Firebase');
+
+        const changePath = vi.fn();
+        const rootStoreStub = {
+            sessionStore: { setAuthUser: vi.fn() },
+            reeniFirestore: { changePath },
+        };
+
+        const firebaseService = new Firebase(rootStoreStub as never);
+        firebaseService.logout();
+
+        expect(signOut).toHaveBeenCalledWith(firebaseService.auth);
+        expect(changePath).toHaveBeenCalledWith('reenit/anonyymi/reenit');
+    });
+
+    /**
+     * Given emulator mode is disabled
+     * When autentikoiTestissa is called
+     * Then method throws because test auth is emulator-only.
+     */
+    it('given non-emulator mode when calling autentikoiTestissa then throws emulator-only error', async () => {
+        vi.stubEnv('VITE_USE_EMULATOR', 'false');
+
+        const signInWithEmailAndPassword = vi.fn();
+
+        vi.doMock('firebase/compat/app', () => ({
+            default: {
+                initializeApp: vi.fn(() => ({ name: '[DEFAULT]' })),
+                apps: [],
+            },
+        }));
+        vi.doMock('firebase/compat/auth', () => ({}));
+        vi.doMock('firebase/compat/firestore', () => ({}));
+        vi.doMock('firebase/firestore', () => ({
+            getFirestore: vi.fn(() => ({ id: 'firestore-instance' })),
+            connectFirestoreEmulator: vi.fn(),
+        }));
+        vi.doMock('firebase/auth', () => ({
+            getAuth: vi.fn(() => ({ languageCode: '' })),
+            onAuthStateChanged: vi.fn((_auth: unknown, cb: (authUser: MockUser | null) => void) => {
+                cb(null);
+                return vi.fn();
+            }),
+            GoogleAuthProvider: class {},
+            signInWithPopup: vi.fn(),
+            signOut: vi.fn(),
+            signInWithEmailAndPassword,
+            connectAuthEmulator: vi.fn(),
+        }));
+
+        const { default: Firebase } = await import('@components/Firebase/Firebase');
+
+        const rootStoreStub = {
+            sessionStore: { setAuthUser: vi.fn() },
+            reeniFirestore: { changePath: vi.fn() },
+        };
+        const firebaseService = new Firebase(rootStoreStub as never);
+
+        await expect(firebaseService.autentikoiTestissa('test@example.com', 'secret')).rejects.toThrow(
+            'autentikoiTestissa() on käytettävissä vain emulaattori-tilassa'
+        );
+        expect(signInWithEmailAndPassword).not.toHaveBeenCalled();
+    });
+
+    /**
+     * Given emulator mode is enabled
+     * When autentikoiTestissa is called
+     * Then method delegates to Firebase email/password sign-in API.
+     */
+    it('given emulator mode when calling autentikoiTestissa then delegates to email password sign-in', async () => {
+        vi.stubEnv('VITE_USE_EMULATOR', 'true');
+
+        const signInResult = { user: { uid: 'emu-user' } };
+        const signInWithEmailAndPassword = vi.fn().mockResolvedValue(signInResult);
+
+        vi.doMock('firebase/compat/app', () => ({
+            default: {
+                initializeApp: vi.fn(() => ({ name: '[DEFAULT]' })),
+                apps: [],
+            },
+        }));
+        vi.doMock('firebase/compat/auth', () => ({}));
+        vi.doMock('firebase/compat/firestore', () => ({}));
+        vi.doMock('firebase/firestore', () => ({
+            getFirestore: vi.fn(() => ({ id: 'firestore-instance' })),
+            connectFirestoreEmulator: vi.fn(),
+        }));
+        vi.doMock('firebase/auth', () => ({
+            getAuth: vi.fn(() => ({ languageCode: '' })),
+            onAuthStateChanged: vi.fn((_auth: unknown, cb: (authUser: MockUser | null) => void) => {
+                cb(null);
+                return vi.fn();
+            }),
+            GoogleAuthProvider: class {},
+            signInWithPopup: vi.fn(),
+            signOut: vi.fn(),
+            signInWithEmailAndPassword,
+            connectAuthEmulator: vi.fn(),
+        }));
+
+        const { default: Firebase } = await import('@components/Firebase/Firebase');
+
+        const rootStoreStub = {
+            sessionStore: { setAuthUser: vi.fn() },
+            reeniFirestore: { changePath: vi.fn() },
+        };
+        const firebaseService = new Firebase(rootStoreStub as never);
+
+        const result = await firebaseService.autentikoiTestissa('test@example.com', 'secret');
+
+        expect(signInWithEmailAndPassword).toHaveBeenCalledWith(firebaseService.auth, 'test@example.com', 'secret');
+        expect(result).toBe(signInResult);
+    });
 });
 
 describe('New feature tests - Phase 1 centralized Firebase initialization', () => {

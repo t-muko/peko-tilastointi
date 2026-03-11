@@ -445,8 +445,17 @@ const Tilasto = observer(class Tilasto extends Component<TilastoProps> {
 			const tilastoVuodenKaikkiTilastot = tilastoDocs
 				.filter((tilasto) => tilasto.data[tilastoVuosi]).map((tilasto) => tilasto.data[tilastoVuosi])
 				.filter((tilasto) => tilasto.sumH > 0)
+			const tilastoVuodenAkmTilastot = tilastoDocs
+				.filter((tilasto) => tilasto.data[tilastoVuosi])
+				.map((tilasto) => tilasto.data[tilastoVuosi])
+				.filter((tilasto) => Number.isInteger(tilasto.akm) && tilasto.akm > 0)
 			const tilastovuoden_tunnit_yhteensa = tilastoVuodenKaikkiTilastot.map((tilasto) => tilasto.sumH || 0).reduce((a, b) => a + b, 0)
 			const tilastovuoden_paivat_yhteensa = tilastoVuodenKaikkiTilastot.map((tilasto) => tilasto.sumD || 0).reduce((a, b) => a + b, 0)
+			const tilastovuoden_akm_yhteensa = tilastoVuodenAkmTilastot.map((tilasto) => tilasto.akm || 0).reduce((a, b) => a + b, 0)
+			const tilastovuoden_akm_kayttajat = tilastoVuodenAkmTilastot.length
+			const tilastovuoden_keskiakm = tilastovuoden_akm_kayttajat > 0
+				? tilastovuoden_akm_yhteensa / tilastovuoden_akm_kayttajat
+				: 0
 
 
 			const yhdistyksenTilastoDocs = tilastoDocs.filter((row) => (row.data.yhd || '') === this.tilastoDokumentti.data.yhd)
@@ -628,6 +637,14 @@ const Tilasto = observer(class Tilasto extends Component<TilastoProps> {
 							* 7
 						).toFixed(2)} päivänä viikossa
 						({tilastoVuodenKaikkiTilastot.length} käyttäjää, {yhdistykset.size} yhdistystä)</Typography>
+
+					{tilastovuoden_akm_kayttajat > 0 && (
+						<Typography variant="body1" gutterBottom>
+							Tilastovuoden {tilastoVuosi} ajokilometrit: yhteensä {tilastovuoden_akm_yhteensa} km,
+							keskiarvo {tilastovuoden_keskiakm.toFixed(1)} km
+							({tilastovuoden_akm_kayttajat} raportoivaa käyttäjää)
+						</Typography>
+					)}
 
 
 				</div>

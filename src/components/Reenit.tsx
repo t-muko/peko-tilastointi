@@ -18,6 +18,7 @@ import Box from '@mui/material/Box';
 
 import Typography from '@mui/material/Typography';
 import { REENI_CATEGORIES } from '../constants/reeniCategories';
+import { buildAkmStats } from '../utils/akmStats';
 
 
 import moment from 'moment';
@@ -177,6 +178,12 @@ const Reenit = observer(class Reenit extends Component {
 						sumH: vuodenReenit.map((reeni) => reeni.data.tunnit || 0).reduce((a, b) => a + b, 0),
 						sumX: vuodenReenit.length,
 						sumD: reenipaivat.size
+					}
+
+					const akmStats = buildAkmStats(vuodenReenit, vuosi)
+					if (akmStats) {
+						vt[vuosi].akm = akmStats.akm
+						vt[vuosi].keskiakm = akmStats.keskiakm
 					}
 
 					REENI_CATEGORIES.map((kategoria) => {

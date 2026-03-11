@@ -31,6 +31,23 @@ class FirestorterReeniRepository implements ReeniRepository {
     return this.collection.add(data);
   }
 
+  async updateAkm(item: any, rawValue: string): Promise<void> {
+    const normalized = String(rawValue ?? '').trim();
+
+    if (normalized === '') {
+      await item.update({ akm: firebase.firestore.FieldValue.delete() });
+      return;
+    }
+
+    const numericValue = Number(normalized);
+    if (!Number.isInteger(numericValue) || numericValue <= 0) {
+      await item.update({ akm: firebase.firestore.FieldValue.delete() });
+      return;
+    }
+
+    await item.update({ akm: numericValue });
+  }
+
   private createCollection(path: string): Collection {
     const reenit = new Collection(path, {
       createDocument: (source: any, options: any) => new Document(source, options),

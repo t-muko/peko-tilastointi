@@ -8,7 +8,7 @@ service cloud.firestore {
     function isValidReeni(data) {
       return
         // Vain tunnetut kentät sallitaan — ei satunnaista dataa
-        data.keys().hasOnly(['pvm', 'tunnit', 'kategoria', 'koira', 'kommentti', 'yhdistys', 'finished'])
+        data.keys().hasOnly(['pvm', 'tunnit', 'kategoria', 'koira', 'kommentti', 'yhdistys', 'finished', 'akm'])
         // Pakolliset kentät ja tyypit
         && data.pvm is string
         && data.pvm.size() == 10          // muoto YYYY-MM-DD
@@ -22,7 +22,8 @@ service cloud.firestore {
         // Valinnaiset kentät — tarkistetaan vain jos läsnä
         && (!('kommentti' in data) || (data.kommentti is string && data.kommentti.size() <= 2000))
         && (!('yhdistys' in data)  || (data.yhdistys is string  && data.yhdistys.size()  <= 200))
-        && (!('finished' in data)  || data.finished is bool);
+        && (!('finished' in data)  || data.finished is bool)
+        && (!('akm' in data)       || (data.akm is int && data.akm > 0));
     }
 
     match /reenit/{userId} {

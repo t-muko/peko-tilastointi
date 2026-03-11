@@ -4,6 +4,7 @@ export interface ReeniData {
   kommentti: string;
   kategoria: string;
   koira: string;
+  akm?: number;
 }
 
 export interface ReeniRepository {

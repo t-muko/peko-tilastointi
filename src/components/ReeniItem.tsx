@@ -20,6 +20,7 @@ import { FirebaseContext } from '@components/Firebase/Firebase';
 
 import fiLocale from 'date-fns/locale/fi';
 import { DEFAULT_REENI_CATEGORY, REENI_CATEGORIES } from '../constants/reeniCategories';
+import { isValidAkm } from '../utils/akmStats';
 
 
 import moment from 'moment';
@@ -136,9 +137,9 @@ class ReeniItem extends Component<ReeniItemProps> {
 									type="number"
 									aria-labelledby="akm-label"
 									variant={"outlined"}
-									inputProps={{ min: 0, step: 1, inputMode: 'numeric' }}
+									inputProps={{ min: 0, step: 0.1, inputMode: 'decimal' }}
 									onBlur={this.onAkmChange}
-									defaultValue={Number.isInteger(akm) && akm > 0 ? akm : ''} />
+									defaultValue={isValidAkm(akm) ? akm : ''} />
 							</Grid>
 
 							<Grid size={{ xs: 6 }}>

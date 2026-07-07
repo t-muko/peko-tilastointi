@@ -24,6 +24,7 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { useTheme, type Theme } from '@mui/material/styles';
 import { buildHashtagStats, type ReeniForHashtagStats } from '../utils/hashtagStats';
+import { isValidAkm } from '../utils/akmStats';
 import { REENI_CATEGORIES } from '../constants/reeniCategories';
 
 import moment from 'moment';
@@ -448,7 +449,7 @@ const Tilasto = observer(class Tilasto extends Component<TilastoProps> {
 			const tilastoVuodenAkmTilastot = tilastoDocs
 				.filter((tilasto) => tilasto.data[tilastoVuosi])
 				.map((tilasto) => tilasto.data[tilastoVuosi])
-				.filter((tilasto) => Number.isInteger(tilasto.akm) && tilasto.akm > 0)
+				.filter((tilasto) => isValidAkm(tilasto.akm))
 			const tilastovuoden_tunnit_yhteensa = tilastoVuodenKaikkiTilastot.map((tilasto) => tilasto.sumH || 0).reduce((a, b) => a + b, 0)
 			const tilastovuoden_paivat_yhteensa = tilastoVuodenKaikkiTilastot.map((tilasto) => tilasto.sumD || 0).reduce((a, b) => a + b, 0)
 			const tilastovuoden_akm_yhteensa = tilastoVuodenAkmTilastot.map((tilasto) => tilasto.akm || 0).reduce((a, b) => a + b, 0)
@@ -640,7 +641,7 @@ const Tilasto = observer(class Tilasto extends Component<TilastoProps> {
 
 					{tilastovuoden_akm_kayttajat > 0 && (
 						<Typography variant="body1" gutterBottom>
-							Tilastovuoden {tilastoVuosi} ajokilometrit: yhteensä {tilastovuoden_akm_yhteensa} km,
+							Tilastovuoden {tilastoVuosi} ajokilometrit: yhteensä {tilastovuoden_akm_yhteensa.toFixed(1)} km,
 							keskiarvo {tilastovuoden_keskiakm.toFixed(1)} km
 							({tilastovuoden_akm_kayttajat} raportoivaa käyttäjää)
 						</Typography>

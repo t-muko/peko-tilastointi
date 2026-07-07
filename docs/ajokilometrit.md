@@ -1,5 +1,8 @@
 # ajokilometrit-laajennus
 
+> **Päivitys (7.7.2026) — toteutettu**
+> `akm`-kenttä sallii nyt yhden desimaalin tarkkuuden (esim. 12.3), aiemmin vain kokonaisluvut. Muutos koskee `firestore.rules`-validointia (`data.akm == math.round(data.akm * 10) / 10.0`), `isValidAkm`-apufunktiota (`src/utils/akmStats.ts`, käytössä myös `ReeniItem.tsx`:ssä, `firestorterReeniRepository.ts`:ssä ja `Tilasto.tsx`:ssä) sekä lomakekentän `step`-arvoa (0.1). Alla oleva "Laskentalogiikka"-osio ("akm käsitellään aina kokonaislukuna") on siis vanhentunut historiatieto.
+
 > **Suunnittelupalaute (10.3.2026)**
 > Alkuperäinen teksti säilyy alla kursivointina. Alla on analyysit, täydennykset ja ehdotettu rakenne seuraavaa TDD-vaihetta varten.
 

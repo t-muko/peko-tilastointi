@@ -5,6 +5,7 @@ import 'firebase/firestore';
 
 import { Collection, Document, initFirestorter } from 'firestorter';
 import { getOrCreateFirebaseApp } from '@components/Firebase/firebaseApp';
+import { isValidAkm } from '../../utils/akmStats';
 import type { ReeniData, ReeniRepository } from './reeniRepository';
 
 class FirestorterReeniRepository implements ReeniRepository {
@@ -39,8 +40,8 @@ class FirestorterReeniRepository implements ReeniRepository {
       return;
     }
 
-    const numericValue = Number(normalized);
-    if (!Number.isInteger(numericValue) || numericValue <= 0) {
+    const numericValue = Math.round(Number(normalized) * 10) / 10;
+    if (!isValidAkm(numericValue)) {
       await item.update({ akm: firebase.firestore.FieldValue.delete() });
       return;
     }

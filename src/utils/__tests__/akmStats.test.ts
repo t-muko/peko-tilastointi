@@ -53,13 +53,13 @@ describe('New feature tests - buildAkmStats', () => {
     });
 
     /**
-     * Given yearly entries with decimal and non-positive akm values
+     * Given yearly entries with multi-decimal and non-positive akm values
      * When akm stats are calculated
-     * Then only positive integers are included in the calculation.
+     * Then only positive values with at most one decimal are included in the calculation.
      */
-    it('given invalid akm values when building then ignores non-integer and non-positive values', () => {
+    it('given invalid akm values when building then ignores multi-decimal and non-positive values', () => {
         const reenit = [
-            makeReeni({ pvm: '2026-01-01', akm: 12.5 }),
+            makeReeni({ pvm: '2026-01-01', akm: 12.55 }),
             makeReeni({ pvm: '2026-02-01', akm: -1 }),
             makeReeni({ pvm: '2026-03-01', akm: 7 }),
         ];
@@ -69,6 +69,25 @@ describe('New feature tests - buildAkmStats', () => {
         expect(result).toEqual({
             akm: 7,
             keskiakm: 7,
+        });
+    });
+
+    /**
+     * Given a yearly entry with a one-decimal akm value
+     * When akm stats are calculated
+     * Then the decimal value is included in the calculation.
+     */
+    it('given one-decimal akm value when building then includes it in the calculation', () => {
+        const reenit = [
+            makeReeni({ pvm: '2026-01-01', akm: 12.3 }),
+            makeReeni({ pvm: '2026-02-01', akm: 7.7 }),
+        ];
+
+        const result = buildAkmStats(reenit, 2026);
+
+        expect(result).toEqual({
+            akm: 20,
+            keskiakm: 10,
         });
     });
 });

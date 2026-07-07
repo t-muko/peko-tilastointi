@@ -23,7 +23,8 @@ service cloud.firestore {
         && (!('kommentti' in data) || (data.kommentti is string && data.kommentti.size() <= 2000))
         && (!('yhdistys' in data)  || (data.yhdistys is string  && data.yhdistys.size()  <= 200))
         && (!('finished' in data)  || data.finished is bool)
-        && (!('akm' in data)       || (data.akm is int && data.akm > 0));
+        && (!('akm' in data)       || (data.akm is number && data.akm > 0
+                                        && data.akm == math.round(data.akm * 10) / 10.0));
     }
 
     match /reenit/{userId} {

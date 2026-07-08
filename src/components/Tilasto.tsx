@@ -592,21 +592,21 @@ const Tilasto = observer(class Tilasto extends Component<TilastoProps> {
 				statRows.push(
 					{
 						label: 'Ajokilometrit yhteensä (km)',
-						oma: oma_akm_yhteensa.toFixed(1),
-						yhdistys: yhdistys_akm_yhteensa.toFixed(1),
-						kaikki: tilastovuoden_akm_yhteensa.toFixed(1)
+						oma: oma_akm_yhteensa.toFixed(0),
+						yhdistys: yhdistys_akm_yhteensa.toFixed(0),
+						kaikki: tilastovuoden_akm_yhteensa.toFixed(0)
 					},
 					{
 						label: 'Ajokilometrit / käyttäjä (km)',
-						oma: oma_akm_yhteensa.toFixed(1),
-						yhdistys: yhdistys_akm_kayttajat > 0 ? (yhdistys_keskiakm/kuluvanVuodenTilastot.length).toFixed(1) : '–',
-						kaikki: (tilastovuoden_keskiakm/tilastoVuodenKaikkiTilastot.length).toFixed(1)
+						oma: oma_akm_yhteensa.toFixed(0),
+						yhdistys: yhdistys_akm_kayttajat > 0 ? (yhdistys_keskiakm/kuluvanVuodenTilastot.length).toFixed(0) : '–',
+						kaikki: (tilastovuoden_keskiakm/tilastoVuodenKaikkiTilastot.length).toFixed(0)
 					},
 					{
 						label: 'Ajokilometrit / merkintä (km)',
 						oma: oma_akm_per_merkinta > 0 ? oma_akm_per_merkinta.toFixed(1) : '–',
-						yhdistys: yhdistys_akm_per_merkinta > 0 ? (yhdistys_akm_per_merkinta/yhdistys_sumX).toFixed(1) : '–',
-						kaikki: (tilastovuoden_akm_per_merkinta/kaikki_sumX).toFixed(1)
+						yhdistys: yhdistys_akm_per_merkinta > 0 ? (yhdistys_akm_per_merkinta).toFixed(1) : '–',
+						kaikki: (tilastovuoden_akm_per_merkinta).toFixed(1)
 					}
 				)
 			}

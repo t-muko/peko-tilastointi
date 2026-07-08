@@ -8,6 +8,7 @@ import Typography from '@mui/material/Typography';
 
 import ReeniItem from '@components/ReeniItem';
 import { makeObservable, observable, action } from 'mobx';
+import { isValidAkm } from '../utils/akmStats';
 
 import moment from 'moment';
 
@@ -64,7 +65,7 @@ class ReeniListItem extends Component<ReeniListItemProps> {
 
 	render() {
 		const { item, expand } = this.props;
-		const { pvm, kategoria, tunnit, kommentti, koira } = item.data;
+		const { pvm, kategoria, tunnit, kommentti, koira, akm } = item.data;
 		if (kategoria === '' && tunnit === 0) {
 			this.openEdit()
 		}
@@ -96,6 +97,7 @@ class ReeniListItem extends Component<ReeniListItemProps> {
 
 						<Typography gutterBottom style={styles.input}>
 							{koira || ''}
+							{isValidAkm(akm) && <div>{akm} km</div>}
 						</Typography>
 
 						<Typography align="left" gutterBottom style={styles.preline} >

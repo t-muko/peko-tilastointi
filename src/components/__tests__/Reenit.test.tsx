@@ -178,3 +178,25 @@ describe('Reenit — hakusuodatus', () => {
         expect(screen.queryByText('Ilmavainu')).not.toBeInTheDocument();
     });
 });
+
+describe('Reenit — CSV-vienti', () => {
+    it('lataa-nappi luo CSV-tiedoston kaikista kirjauksista', () => {
+        const createObjectURL = vi.fn((_blob: Blob) => 'blob:mock-url');
+        const revokeObjectURL = vi.fn();
+        vi.stubGlobal('URL', { ...URL, createObjectURL, revokeObjectURL });
+        const clickSpy = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => { });
+
+        renderReenit();
+        const button = screen.getByRole('button', { name: /lataa csv-tiedostona/i });
+        fireEvent.click(button);
+
+        expect(createObjectURL).toHaveBeenCalledTimes(1);
+        const blob = createObjectURL.mock.calls[0][0];
+        expect(blob.type).toBe('text/csv;charset=utf-8;');
+        expect(clickSpy).toHaveBeenCalledTimes(1);
+        expect(revokeObjectURL).toHaveBeenCalledWith('blob:mock-url');
+
+        clickSpy.mockRestore();
+        vi.unstubAllGlobals();
+    });
+});

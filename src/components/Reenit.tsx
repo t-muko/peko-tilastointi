@@ -14,11 +14,14 @@ import IconButton from '@mui/material/IconButton';
 import TextField from '@mui/material/TextField';
 import ClearIcon from '@mui/icons-material/Clear';
 import SearchIcon from '@mui/icons-material/Search';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 
 import Typography from '@mui/material/Typography';
 import { REENI_CATEGORIES } from '../constants/reeniCategories';
 import { buildAkmStats } from '../utils/akmStats';
+import { buildReeniCsv } from '../utils/csvExport';
 
 
 import moment from 'moment';
@@ -268,6 +271,15 @@ const Reenit = observer(class Reenit extends Component {
 						{children}
 
 					</div>
+					<Box sx={{ p: 2, display: 'flex', justifyContent: 'center' }}>
+						<Button
+							variant="outlined"
+							startIcon={<FileDownloadIcon />}
+							onClick={this.onExportCsv}
+						>
+							Lataa csv-tiedostona
+						</Button>
+					</Box>
 					{isLoading ? <div style={styles.loader}><CircularProgress /></div> : undefined}
 				</div>
 			);
@@ -276,6 +288,19 @@ const Reenit = observer(class Reenit extends Component {
 
 	onCheckExpand = () => {
 		this._expand = !this._expand
+	}
+
+	onExportCsv = () => {
+		const context = this.context;
+		const csv = buildReeniCsv(context.rootStore.reeniFirestore.reenit.docs);
+		const csvBom = String.fromCharCode(0xFEFF) + csv;
+		const blob = new Blob([csvBom], { type: 'text/csv;charset=utf-8;' });
+		const url = URL.createObjectURL(blob);
+		const link = document.createElement('a');
+		link.href = url;
+		link.download = `reenit-${moment().format('YYYY-MM-DD')}.csv`;
+		link.click();
+		URL.revokeObjectURL(url);
 	}
 
 	onAddTilasto = async () => {

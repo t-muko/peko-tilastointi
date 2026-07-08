@@ -58,8 +58,7 @@ const styles = {
 		padding: 0
 	},
 	version: {
-		marginLeft: 8,
-		fontSize: 12,
+		fontSize: 9,
 		color: '#bbb'
 	},
 	h3: {
@@ -209,8 +208,12 @@ export class App extends Component {
 						<div style={styles.header}>
 							<div style={styles.headerRow}>
 								<img src='/tilasto128.png' alt='logo' style={styles.logo} />
-								<h1 style={styles.h1}>Peko-toimintapäiväkirja</h1>
-								<span style={styles.version}>{__BUILD_HASH__}</span>
+								<div>
+									<h1 style={styles.h1}>Peko-toimintapäiväkirja</h1>
+									<div style={styles.version}>
+										Versio {__BUILD_HASH__} — {new Date(__BUILD_DATE__).toLocaleString('fi-FI')}
+									</div>
+								</div>
 							</div>
 						</div>
 						{context.rootStore.sessionStore.userOk && <div>

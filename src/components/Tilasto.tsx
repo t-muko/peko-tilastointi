@@ -11,6 +11,12 @@ import { TextField } from "@mui/material";
 import Autocomplete from '@mui/material/Autocomplete';
 
 import { Paper, Dialog } from '@mui/material';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
 import { Chart } from "react-google-charts";
 
 import Radio from '@mui/material/Radio';
@@ -452,6 +458,13 @@ const Tilasto = observer(class Tilasto extends Component<TilastoProps> {
 				.filter((tilasto) => isValidAkm(tilasto.akm))
 			const tilastovuoden_tunnit_yhteensa = tilastoVuodenKaikkiTilastot.map((tilasto) => tilasto.sumH || 0).reduce((a, b) => a + b, 0)
 			const tilastovuoden_paivat_yhteensa = tilastoVuodenKaikkiTilastot.map((tilasto) => tilasto.sumD || 0).reduce((a, b) => a + b, 0)
+			const kaikki_sumX = tilastoVuodenKaikkiTilastot.map((tilasto) => tilasto.sumX || 0).reduce((a, b) => a + b, 0)
+			const tilastovuoden_paivaa_viikossa = tilastoVuodenKaikkiTilastot.length > 0
+				? tilastovuoden_paivat_yhteensa
+					/ tilastoVuodenKaikkiTilastot.length
+					/ (tilastoVuosi == kuluvaVuosi ? (moment().dayOfYear()) : 365)
+					* 7
+				: 0
 			const tilastovuoden_akm_yhteensa = tilastoVuodenAkmTilastot.map((tilasto) => tilasto.akm || 0).reduce((a, b) => a + b, 0)
 			const tilastovuoden_akm_kayttajat = tilastoVuodenAkmTilastot.length
 			const tilastovuoden_keskiakm = tilastovuoden_akm_kayttajat > 0
@@ -464,15 +477,33 @@ const Tilasto = observer(class Tilasto extends Component<TilastoProps> {
 				? tilastovuoden_akm_yhteensa / tilastovuoden_akm_merkintoja_yhteensa
 				: 0
 
-			const oma_akm_tilasto = tilastoDocs.find((tilasto) => tilasto.id === this.uid)?.data[tilastoVuosi]
-			const oma_keskiakm_per_merkinta = oma_akm_tilasto && isValidAkm(oma_akm_tilasto.akm)
-				? oma_akm_tilasto.keskiakm
+			const oma_tilasto = tilastoDocs.find((tilasto) => tilasto.id === this.uid)?.data[tilastoVuosi]
+			const oma_sumH = oma_tilasto?.sumH || 0
+			const oma_sumX = oma_tilasto?.sumX || 0
+			const oma_sumD = oma_tilasto?.sumD || 0
+			const oma_paivaa_viikossa = oma_sumD > 0
+				? oma_sumD / (tilastoVuosi == kuluvaVuosi ? moment().dayOfYear() : 365) * 7
+				: 0
+			const oma_akm_yhteensa = oma_tilasto && isValidAkm(oma_tilasto.akm) ? oma_tilasto.akm : 0
+			const oma_akm_per_merkinta = oma_tilasto && isValidAkm(oma_tilasto.akm)
+				? oma_tilasto.keskiakm
 				: 0
 
 
 			const yhdistyksenTilastoDocs = tilastoDocs.filter((row) => (row.data.yhd || '') === this.tilastoDokumentti.data.yhd)
 			const yhdistys_yhteensa = yhdistyksenTilastoDocs.map((tilasto) => tilasto.data[tilastoVuosi] ? tilasto.data[tilastoVuosi].sumH : 0).reduce((a, b) => a + b, 0)
 			const kuluvanVuodenTilastot = yhdistyksenTilastoDocs.filter((tilasto) => tilasto.data[tilastoVuosi]).map((tilasto) => tilasto.data[tilastoVuosi]).filter((tilasto) => tilasto.sumH > 0)
+			const yhdistys_sumX = kuluvanVuodenTilastot.map((tilasto) => tilasto.sumX || 0).reduce((a, b) => a + b, 0)
+			const yhdistyksenAkmTilastot = kuluvanVuodenTilastot.filter((tilasto) => isValidAkm(tilasto.akm))
+			const yhdistys_akm_yhteensa = yhdistyksenAkmTilastot.map((tilasto) => tilasto.akm || 0).reduce((a, b) => a + b, 0)
+			const yhdistys_akm_kayttajat = yhdistyksenAkmTilastot.length
+			const yhdistys_keskiakm = yhdistys_akm_kayttajat > 0
+				? yhdistys_akm_yhteensa / yhdistys_akm_kayttajat
+				: 0
+			const yhdistys_akm_merkintoja_yhteensa = yhdistyksenAkmTilastot.map((tilasto) => tilasto.akmX || 0).reduce((a, b) => a + b, 0)
+			const yhdistys_akm_per_merkinta = yhdistys_akm_merkintoja_yhteensa > 0
+				? yhdistys_akm_yhteensa / yhdistys_akm_merkintoja_yhteensa
+				: 0
 
 			const yhdistykset = new Set()
 			tilastoDocs.filter((tilasto) => tilasto.data[tilastoVuosi] !== undefined).map((tilasto) => yhdistykset.add(tilasto.data.yhd))
@@ -530,6 +561,56 @@ const Tilasto = observer(class Tilasto extends Component<TilastoProps> {
 			}
 			const yhdistys = this.tilastoDokumentti.data.yhd || 'PUUTTUU!'
 
+			const statRows: { label: string; oma: string; yhdistys: string; kaikki: string }[] = [
+				{
+					label: 'Käyttäjiä',
+					oma: '1',
+					yhdistys: String(kuluvanVuodenTilastot.length),
+					kaikki: String(tilastoVuodenKaikkiTilastot.length)
+				},
+				{
+					label: 'Merkintöjä yhteensä',
+					oma: String(oma_sumX),
+					yhdistys: String(yhdistys_sumX),
+					kaikki: String(kaikki_sumX)
+				},
+				{
+					label: 'Tunteja yhteensä (h)',
+					oma: oma_sumH.toFixed(1),
+					yhdistys: yhdistys_yhteensa.toFixed(1),
+					kaikki: tilastovuoden_tunnit_yhteensa.toFixed(1)
+				},
+				{
+					label: 'Reenipäiviä / vko',
+					oma: oma_paivaa_viikossa.toFixed(2),
+					yhdistys: reenejaViikossa.toFixed(2),
+					kaikki: tilastovuoden_paivaa_viikossa.toFixed(2)
+				}
+			]
+
+			if (tilastovuoden_akm_kayttajat > 0) {
+				statRows.push(
+					{
+						label: 'Ajokilometrit yhteensä (km)',
+						oma: oma_akm_yhteensa.toFixed(1),
+						yhdistys: yhdistys_akm_yhteensa.toFixed(1),
+						kaikki: tilastovuoden_akm_yhteensa.toFixed(1)
+					},
+					{
+						label: 'Ajokilometrit / käyttäjä (km)',
+						oma: '–',
+						yhdistys: yhdistys_akm_kayttajat > 0 ? yhdistys_keskiakm.toFixed(1) : '–',
+						kaikki: tilastovuoden_keskiakm.toFixed(1)
+					},
+					{
+						label: 'Ajokilometrit / merkintä (km)',
+						oma: oma_akm_per_merkinta > 0 ? oma_akm_per_merkinta.toFixed(1) : '–',
+						yhdistys: yhdistys_akm_per_merkinta > 0 ? yhdistys_akm_per_merkinta.toFixed(1) : '–',
+						kaikki: tilastovuoden_akm_per_merkinta.toFixed(1)
+					}
+				)
+			}
+
 			return (
 				<div>
 					<div>
@@ -580,8 +661,28 @@ const Tilasto = observer(class Tilasto extends Component<TilastoProps> {
 
 
 
-					<Typography variant="body1" gutterBottom >Yhdistyksen vuosi {tilastoVuosi} yhteensä: {yhdistys_yhteensa} h. Merkintöjä
-						keskimäärin {reenejaViikossa.toFixed(2)} päivänä viikossa ({kuluvanVuodenTilastot.length} käyttäjää)</Typography>
+					<TableContainer component={Paper} sx={{ my: 2 }}>
+						<Table size="small">
+							<TableHead>
+								<TableRow>
+									<TableCell>Tilastovuosi {tilastoVuosi}</TableCell>
+									<TableCell align="right">Oma</TableCell>
+									<TableCell align="right">{yhdistys}</TableCell>
+									<TableCell align="right">Kaikki</TableCell>
+								</TableRow>
+							</TableHead>
+							<TableBody>
+								{statRows.map((row) => (
+									<TableRow key={row.label}>
+										<TableCell component="th" scope="row">{row.label}</TableCell>
+										<TableCell align="right">{row.oma}</TableCell>
+										<TableCell align="right">{row.yhdistys}</TableCell>
+										<TableCell align="right">{row.kaikki}</TableCell>
+									</TableRow>
+								))}
+							</TableBody>
+						</Table>
+					</TableContainer>
 
 
 
@@ -641,34 +742,9 @@ const Tilasto = observer(class Tilasto extends Component<TilastoProps> {
 						</Typography>
 					)}
 
-					<Typography variant="body1" gutterBottom >Tilastovuoden {tilastoVuosi} käyttäjien merkinnät
-						yhteensä {tilastovuoden_tunnit_yhteensa} h,
-						hyvinvointia edistävää harrastamista keskimäärin {(tilastovuoden_paivat_yhteensa
-							/ tilastoVuodenKaikkiTilastot.length
-							/ (tilastoVuosi == kuluvaVuosi ? (moment().dayOfYear()) : 365)
-							* 7
-						).toFixed(2)} päivänä viikossa
-						({tilastoVuodenKaikkiTilastot.length} käyttäjää, {yhdistykset.size} yhdistystä)</Typography>
-
-					{tilastovuoden_akm_kayttajat > 0 && (
-						<Typography variant="body1" gutterBottom>
-							Tilastovuoden {tilastoVuosi} ajokilometrit: yhteensä {tilastovuoden_akm_yhteensa.toFixed(1)} km,
-							keskiarvo {tilastovuoden_keskiakm.toFixed(1)} km
-							({tilastovuoden_akm_kayttajat} raportoivaa käyttäjää)
-							{tilastovuoden_akm_merkintoja_yhteensa > 0 && (
-								<>, keskimäärin {tilastovuoden_akm_per_merkinta.toFixed(1)} km / merkintä
-									({tilastovuoden_akm_merkintoja_yhteensa} merkintää, kaikki käyttäjät yhteensä)</>
-							)}
-						</Typography>
-					)}
-
-					{oma_keskiakm_per_merkinta > 0 && (
-						<Typography variant="body1" gutterBottom>
-							Omat ajokilometrisi tilastovuonna {tilastoVuosi}: keskimäärin {oma_keskiakm_per_merkinta.toFixed(1)} km / merkintä
-						</Typography>
-					)}
-
-
+					<Typography variant="caption" color="text.secondary" gutterBottom>
+						{yhdistykset.size} yhdistystä tilastoinnissa
+					</Typography>
 				</div>
 			)
 		}

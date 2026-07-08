@@ -95,10 +95,14 @@ class ReeniListItem extends Component<ReeniListItemProps> {
 
 					{expand && <div style={styles.row}>
 
-						<Typography gutterBottom style={styles.input}>
-							{koira || ''}
-							{isValidAkm(akm) && <div>{akm} km</div>}
-						</Typography>
+						<div style={styles.input}>
+							<Typography gutterBottom>
+								{koira || ''}
+							</Typography>
+							{isValidAkm(akm) && <Typography variant="caption" color="text.secondary">
+								{akm} km
+							</Typography>}
+						</div>
 
 						<Typography align="left" gutterBottom style={styles.preline} >
 							{kommentti || ''}

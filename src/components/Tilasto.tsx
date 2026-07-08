@@ -651,9 +651,16 @@ const Tilasto = observer(class Tilasto extends Component<TilastoProps> {
 				: 0
 
 			// Painotettu keskiarvo yli kaikkien käyttäjien merkintöjen (ei käyttäjäkohtaisten keskiarvojen keskiarvo).
-			const tilastovuoden_akm_merkintoja_yhteensa = tilastoVuodenAkmTilastot.map((tilasto) => tilasto.akmX || 0).reduce((a, b) => a + b, 0)
+			// Rajataan käyttäjiin, joilla on sekä akm että akmX tiedossa — akmX/keskiakm
+			// lisättiin vasta myöhemmin (45a0081), joten osalla vanhemmista
+			// vuosikohtaisista tilastoista on akm mutta ei akmX:ää. Jos ne otettaisiin
+			// mukaan, kilometrimäärä jaettaisiin liian pienellä merkintämäärällä.
+			const tilastoVuodenAkmPerMerkintaTilastot = tilastoVuodenAkmTilastot
+				.filter((tilasto) => typeof tilasto.akmX === 'number' && tilasto.akmX > 0)
+			const tilastovuoden_akm_merkinta_km_yhteensa = tilastoVuodenAkmPerMerkintaTilastot.map((tilasto) => tilasto.akm || 0).reduce((a, b) => a + b, 0)
+			const tilastovuoden_akm_merkintoja_yhteensa = tilastoVuodenAkmPerMerkintaTilastot.map((tilasto) => tilasto.akmX || 0).reduce((a, b) => a + b, 0)
 			const tilastovuoden_akm_per_merkinta = tilastovuoden_akm_merkintoja_yhteensa > 0
-				? tilastovuoden_akm_yhteensa / tilastovuoden_akm_merkintoja_yhteensa
+				? tilastovuoden_akm_merkinta_km_yhteensa / tilastovuoden_akm_merkintoja_yhteensa
 				: 0
 
 			const oma_tilasto = tilastoDocs.find((tilasto) => tilasto.id === this.uid)?.data[tilastoVuosi]
@@ -679,9 +686,14 @@ const Tilasto = observer(class Tilasto extends Component<TilastoProps> {
 			const yhdistys_keskiakm = yhdistys_akm_kayttajat > 0
 				? yhdistys_akm_yhteensa / yhdistys_akm_kayttajat
 				: 0
-			const yhdistys_akm_merkintoja_yhteensa = yhdistyksenAkmTilastot.map((tilasto) => tilasto.akmX || 0).reduce((a, b) => a + b, 0)
+			// Ks. kommentti tilastovuoden_akm_per_merkinta:n yhteydessä — sama akmX-
+			// puuttumisongelma koskee myös yhdistyksen jäseniä.
+			const yhdistyksenAkmPerMerkintaTilastot = yhdistyksenAkmTilastot
+				.filter((tilasto) => typeof tilasto.akmX === 'number' && tilasto.akmX > 0)
+			const yhdistys_akm_merkinta_km_yhteensa = yhdistyksenAkmPerMerkintaTilastot.map((tilasto) => tilasto.akm || 0).reduce((a, b) => a + b, 0)
+			const yhdistys_akm_merkintoja_yhteensa = yhdistyksenAkmPerMerkintaTilastot.map((tilasto) => tilasto.akmX || 0).reduce((a, b) => a + b, 0)
 			const yhdistys_akm_per_merkinta = yhdistys_akm_merkintoja_yhteensa > 0
-				? yhdistys_akm_yhteensa / yhdistys_akm_merkintoja_yhteensa
+				? yhdistys_akm_merkinta_km_yhteensa / yhdistys_akm_merkintoja_yhteensa
 				: 0
 
 			const yhdistykset = new Set()
@@ -778,8 +790,8 @@ const Tilasto = observer(class Tilasto extends Component<TilastoProps> {
 					{
 						label: 'Ajokilometrit / käyttäjä (km)',
 						oma: oma_akm_yhteensa.toFixed(0),
-						yhdistys: yhdistys_akm_kayttajat > 0 ? (yhdistys_keskiakm/kuluvanVuodenTilastot.length).toFixed(0) : '–',
-						kaikki: (tilastovuoden_keskiakm/tilastoVuodenKaikkiTilastot.length).toFixed(0)
+						yhdistys: yhdistys_akm_kayttajat > 0 ? yhdistys_keskiakm.toFixed(0) : '–',
+						kaikki: tilastovuoden_keskiakm.toFixed(0)
 					},
 					{
 						label: 'Ajokilometrit / merkintä (km)',

@@ -49,6 +49,7 @@ describe('New feature tests - buildAkmStats', () => {
         expect(result).toEqual({
             akm: 30,
             keskiakm: 15,
+            count: 2,
         });
     });
 
@@ -69,6 +70,7 @@ describe('New feature tests - buildAkmStats', () => {
         expect(result).toEqual({
             akm: 7,
             keskiakm: 7,
+            count: 1,
         });
     });
 
@@ -88,6 +90,7 @@ describe('New feature tests - buildAkmStats', () => {
         expect(result).toEqual({
             akm: 20,
             keskiakm: 10,
+            count: 2,
         });
     });
 });

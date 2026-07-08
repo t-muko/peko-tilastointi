@@ -1,5 +1,8 @@
 # ajokilometrit-laajennus
 
+> **Päivitys (8.7.2026) — toteutettu**
+> Lisätty ajokilometrien keskiarvo per merkintä (vain `akm > 0` -merkinnät mukana). `AkmStats` (`src/utils/akmStats.ts`) palauttaa nyt myös `count`-kentän, joka tallennetaan vuositilastoon kenttänä `akmX` (`src/components/Reenit.tsx`, `sumX`-nimeämiskäytännön mukaisesti). `Tilasto.tsx` näyttää kaksi riviä: käyttäjän oman keskiarvon (`tilastot/{uid}`-dokumentin valmiiksi laskettu `keskiakm`) sekä painotetun kokonaiskeskiarvon yli kaikkien käyttäjien merkintöjen (`sum(akm) / sum(akmX)` — ei käyttäjäkohtaisten keskiarvojen keskiarvo, jotta paljon merkintöjä tehneet käyttäjät painottuvat oikein). Vanhat `tilastot`-dokumentit ilman `akmX`-kenttää päivittyvät automaattisesti seuraavan kerran kun kyseinen käyttäjä avaa sovelluksen (tilastot lasketaan aina uudelleen clientillä).
+
 > **Päivitys (7.7.2026) — toteutettu**
 > `akm`-kenttä sallii nyt yhden desimaalin tarkkuuden (esim. 12.3), aiemmin vain kokonaisluvut. Muutos koskee `firestore.rules`-validointia (`data.akm == math.round(data.akm * 10) / 10.0`), `isValidAkm`-apufunktiota (`src/utils/akmStats.ts`, käytössä myös `ReeniItem.tsx`:ssä, `firestorterReeniRepository.ts`:ssä ja `Tilasto.tsx`:ssä) sekä lomakekentän `step`-arvoa (0.1). Alla oleva "Laskentalogiikka"-osio ("akm käsitellään aina kokonaislukuna") on siis vanhentunut historiatieto.
 

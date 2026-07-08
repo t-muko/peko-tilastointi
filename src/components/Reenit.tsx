@@ -184,6 +184,7 @@ const Reenit = observer(class Reenit extends Component {
 					if (akmStats) {
 						vt[vuosi].akm = akmStats.akm
 						vt[vuosi].keskiakm = akmStats.keskiakm
+						vt[vuosi].akmX = akmStats.count
 					}
 
 					REENI_CATEGORIES.map((kategoria) => {

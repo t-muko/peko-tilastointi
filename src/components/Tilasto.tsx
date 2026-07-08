@@ -458,6 +458,17 @@ const Tilasto = observer(class Tilasto extends Component<TilastoProps> {
 				? tilastovuoden_akm_yhteensa / tilastovuoden_akm_kayttajat
 				: 0
 
+			// Painotettu keskiarvo yli kaikkien käyttäjien merkintöjen (ei käyttäjäkohtaisten keskiarvojen keskiarvo).
+			const tilastovuoden_akm_merkintoja_yhteensa = tilastoVuodenAkmTilastot.map((tilasto) => tilasto.akmX || 0).reduce((a, b) => a + b, 0)
+			const tilastovuoden_akm_per_merkinta = tilastovuoden_akm_merkintoja_yhteensa > 0
+				? tilastovuoden_akm_yhteensa / tilastovuoden_akm_merkintoja_yhteensa
+				: 0
+
+			const oma_akm_tilasto = tilastoDocs.find((tilasto) => tilasto.id === this.uid)?.data[tilastoVuosi]
+			const oma_keskiakm_per_merkinta = oma_akm_tilasto && isValidAkm(oma_akm_tilasto.akm)
+				? oma_akm_tilasto.keskiakm
+				: 0
+
 
 			const yhdistyksenTilastoDocs = tilastoDocs.filter((row) => (row.data.yhd || '') === this.tilastoDokumentti.data.yhd)
 			const yhdistys_yhteensa = yhdistyksenTilastoDocs.map((tilasto) => tilasto.data[tilastoVuosi] ? tilasto.data[tilastoVuosi].sumH : 0).reduce((a, b) => a + b, 0)
@@ -644,6 +655,16 @@ const Tilasto = observer(class Tilasto extends Component<TilastoProps> {
 							Tilastovuoden {tilastoVuosi} ajokilometrit: yhteensä {tilastovuoden_akm_yhteensa.toFixed(1)} km,
 							keskiarvo {tilastovuoden_keskiakm.toFixed(1)} km
 							({tilastovuoden_akm_kayttajat} raportoivaa käyttäjää)
+							{tilastovuoden_akm_merkintoja_yhteensa > 0 && (
+								<>, keskimäärin {tilastovuoden_akm_per_merkinta.toFixed(1)} km / merkintä
+									({tilastovuoden_akm_merkintoja_yhteensa} merkintää, kaikki käyttäjät yhteensä)</>
+							)}
+						</Typography>
+					)}
+
+					{oma_keskiakm_per_merkinta > 0 && (
+						<Typography variant="body1" gutterBottom>
+							Omat ajokilometrisi tilastovuonna {tilastoVuosi}: keskimäärin {oma_keskiakm_per_merkinta.toFixed(1)} km / merkintä
 						</Typography>
 					)}
 

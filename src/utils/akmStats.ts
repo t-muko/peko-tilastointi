@@ -8,6 +8,7 @@ export type ReeniForAkmStats = {
 export type AkmStats = {
     akm: number;
     keskiakm: number;
+    count: number;
 };
 
 // akm sallii yhden desimaalin tarkkuuden (esim. 12.3), ei useampia (esim. 12.34).
@@ -34,5 +35,6 @@ export function buildAkmStats(reenit: ReeniForAkmStats[], year: number): AkmStat
     return {
         akm,
         keskiakm: akm / values.length,
+        count: values.length,
     };
 }

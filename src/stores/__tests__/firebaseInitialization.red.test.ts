@@ -48,7 +48,7 @@ describe('Regression tests - Firebase emulator wiring', () => {
         const { default: Firebase } = await import('@components/Firebase/Firebase');
 
         const rootStoreStub = {
-            sessionStore: { setAuthUser: vi.fn() },
+            sessionStore: { setAuthUser: vi.fn(), setAuthTokenReady: vi.fn() },
             reeniFirestore: { changePath: vi.fn() },
         };
 
@@ -107,7 +107,7 @@ describe('Regression tests - Firebase emulator wiring', () => {
         const changePath = vi.fn();
         const setAuthUser = vi.fn();
         const rootStoreStub = {
-            sessionStore: { setAuthUser },
+            sessionStore: { setAuthUser, setAuthTokenReady: vi.fn() },
             reeniFirestore: { changePath },
         };
 
@@ -160,7 +160,7 @@ describe('Regression tests - Firebase emulator wiring', () => {
         const changePath = vi.fn();
         const setAuthUser = vi.fn();
         const rootStoreStub = {
-            sessionStore: { setAuthUser },
+            sessionStore: { setAuthUser, setAuthTokenReady: vi.fn() },
             reeniFirestore: { changePath },
         };
 
@@ -208,7 +208,7 @@ describe('Regression tests - Firebase emulator wiring', () => {
 
         const changePath = vi.fn();
         const rootStoreStub = {
-            sessionStore: { setAuthUser: vi.fn() },
+            sessionStore: { setAuthUser: vi.fn(), setAuthTokenReady: vi.fn() },
             reeniFirestore: { changePath },
         };
 
@@ -254,7 +254,7 @@ describe('Regression tests - Firebase emulator wiring', () => {
         const { default: Firebase } = await import('@components/Firebase/Firebase');
 
         const rootStoreStub = {
-            sessionStore: { setAuthUser: vi.fn() },
+            sessionStore: { setAuthUser: vi.fn(), setAuthTokenReady: vi.fn() },
             reeniFirestore: { changePath: vi.fn() },
         };
         const firebaseService = new Firebase(rootStoreStub as never);
@@ -301,7 +301,7 @@ describe('Regression tests - Firebase emulator wiring', () => {
         const { default: Firebase } = await import('@components/Firebase/Firebase');
 
         const rootStoreStub = {
-            sessionStore: { setAuthUser: vi.fn() },
+            sessionStore: { setAuthUser: vi.fn(), setAuthTokenReady: vi.fn() },
             reeniFirestore: { changePath: vi.fn() },
         };
         const firebaseService = new Firebase(rootStoreStub as never);

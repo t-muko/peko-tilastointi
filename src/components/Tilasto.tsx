@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { makeObservable, observable, action } from 'mobx';
+import { makeObservable, observable, action, reaction } from 'mobx';
 import { FirebaseContext } from '@components/Firebase/Firebase';
 import { Collection, Document } from 'firestorter';
 import { CircularProgress } from "@mui/material";
@@ -450,9 +450,10 @@ const Tilasto = observer(class Tilasto extends Component<TilastoProps> {
 	editYhdistys = false;
 	yksikko = "X";
 	tilastoVuosi = (new Date()).getFullYear();
-	tilastotColl!: Collection<Document<any>>;
-	tilastoDokumentti!: Document<any>;
+	tilastotColl: Collection<Document<any>> | null = null;
+	tilastoDokumentti: Document<any> | null = null;
 	uid!: string;
+	disposeAuthReaction?: () => void;
 
 	static contextType = FirebaseContext;
 	declare context: any;
@@ -464,21 +465,46 @@ const Tilasto = observer(class Tilasto extends Component<TilastoProps> {
 			editYhdistys: observable,
 			yksikko: observable,
 			tilastoVuosi: observable,
+			tilastotColl: observable.ref,
+			tilastoDokumentti: observable.ref,
 			vaihdaVuosi: action,
 			vaihdaYksikko: action,
 			closeYhdistysEdit: action,
-			openYhdistysEdit: action
+			openYhdistysEdit: action,
+			initFirestore: action
 		})
-
-		this.tilastotColl = new Collection('tilastot');
-
-
 	}
 
-	componentWillMount() {
-		this.uid = this.context.rootStore.sessionStore.authUser.uid
-		this.tilastoDokumentti = new Document('tilastot/' + this.uid);
+	componentDidMount() {
+		// this.context is a mobx-react tracked getter and can't be read inside a plain
+		// reaction() — copy the (stable) rootStore reference out here first, per
+		// https://github.com/mobxjs/mobx/blob/main/packages/mobx-react/README.md#note-on-using-props-and-state-in-derivations
+		const sessionStore = this.context.rootStore.sessionStore;
 
+		// Firestore rules require an authenticated request to read `tilastot`. The auth
+		// token needs a moment to propagate to the Firestore client after sign-in
+		// (see Firebase.ts) — subscribing before that gets a permission-denied that
+		// firestorter's listener never retries. Wait for authTokenReady instead of
+		// subscribing immediately in componentWillMount/constructor.
+		this.disposeAuthReaction = reaction(
+			() => sessionStore.authTokenReady ? sessionStore.authUser : null,
+			(authUser) => {
+				if (authUser) {
+					this.initFirestore(authUser.uid);
+				}
+			},
+			{ fireImmediately: true }
+		);
+	}
+
+	componentWillUnmount() {
+		this.disposeAuthReaction?.();
+	}
+
+	initFirestore = (uid: string) => {
+		this.uid = uid;
+		this.tilastotColl = new Collection('tilastot');
+		this.tilastoDokumentti = new Document('tilastot/' + uid);
 	}
 
 	vaihdaYksikko = (event: any) => {
@@ -504,6 +530,11 @@ const Tilasto = observer(class Tilasto extends Component<TilastoProps> {
 			return (
 				<div>
 				</div>
+			);
+		} else if (!this.tilastoDokumentti || !this.tilastotColl) {
+			// Waiting for the auth token to propagate before subscribing to Firestore — see initFirestore().
+			return (
+				<div><CircularProgress /></div>
 			);
 		} else {
 			const yksikko = this.yksikko

@@ -33,6 +33,7 @@ class Firebase {
         // firestorter starts listening, preventing a transient permissions error.
         onAuthStateChanged(this.auth, async user => {
             this.rootStore.sessionStore.setAuthUser(user);
+            this.rootStore.sessionStore.setAuthTokenReady(false);
             if (user) {
                 try {
                     await user.getIdToken();
@@ -41,6 +42,7 @@ class Firebase {
                     console.warn('Unable to refresh auth token before path switch', error);
                 }
             }
+            this.rootStore.sessionStore.setAuthTokenReady(true);
             const uid = user ? user.uid : "anonyymi";
             this.rootStore.reeniFirestore.changePath("reenit/" + uid + "/reenit");
         });

@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git stash *)",
+      "Bash(firebase --version)",
+      "Bash(pnpm install *)",
+      "Bash(pnpm build *)",
+      "Bash(java -version)",
+      "Bash(npx firebase *)",
+      "Bash(echo \"started with pid $!\")",
+      "Bash(pnpm exec *)",
+      "Bash(timeout 300 pnpm test:e2e)",
+      "Bash(timeout 300 pnpm test:e2e --reporter=list)",
+      "Bash(FIRESTORE_EMULATOR_HOST=localhost:8080 node repro.mjs)",
+      "Bash(git status *)"
+    ]
+  }
+}

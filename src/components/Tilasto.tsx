@@ -296,8 +296,8 @@ const Tilasto = observer(class Tilasto extends Component<TilastoProps> {
 	editYhdistys = false;
 	yksikko = "X";
 	tilastoVuosi = (new Date()).getFullYear();
-	tilastotColl!: Collection;
-	tilastoDokumentti!: Document;
+	tilastotColl!: Collection<Document<any>>;
+	tilastoDokumentti!: Document<any>;
 	uid!: string;
 
 	static contextType = FirebaseContext;

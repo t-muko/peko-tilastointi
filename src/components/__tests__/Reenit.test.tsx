@@ -4,15 +4,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // --- Firebase / firestorter mocks (hoisted before imports) ---
 
-vi.mock('firebase/compat/app', () => {
-    const firebase = {
-        initializeApp: vi.fn().mockReturnValue({}),
-        apps: [] as any[],
-    };
-    return { default: firebase };
-});
-vi.mock('firebase/compat/auth', () => ({}));
-vi.mock('firebase/compat/firestore', () => ({}));
+vi.mock('firebase/app', () => ({
+    getApps: vi.fn(() => []),
+    getApp: vi.fn(),
+    initializeApp: vi.fn().mockReturnValue({}),
+}));
 vi.mock('firebase/firestore', () => ({ getFirestore: vi.fn() }));
 vi.mock('firebase/auth', () => ({
     getAuth: vi.fn(() => ({ languageCode: '' })),

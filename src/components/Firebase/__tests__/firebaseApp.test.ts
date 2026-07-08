@@ -13,12 +13,13 @@ describe('firebaseApp singleton initialization', () => {
             apps.push(app);
             return app;
         });
+        const getApps = vi.fn(() => apps);
+        const getApp = vi.fn(() => apps[0]);
 
-        vi.doMock('firebase/compat/app', () => ({
-            default: {
-                apps,
-                initializeApp,
-            },
+        vi.doMock('firebase/app', () => ({
+            getApps,
+            getApp,
+            initializeApp,
         }));
 
         const { getOrCreateFirebaseApp } = await import('../firebaseApp');
@@ -34,12 +35,13 @@ describe('firebaseApp singleton initialization', () => {
     it('returns existing default app without calling initializeApp', async () => {
         const existingApp = { name: '[DEFAULT]' };
         const initializeApp = vi.fn();
+        const getApps = vi.fn(() => [existingApp]);
+        const getApp = vi.fn(() => existingApp);
 
-        vi.doMock('firebase/compat/app', () => ({
-            default: {
-                apps: [existingApp],
-                initializeApp,
-            },
+        vi.doMock('firebase/app', () => ({
+            getApps,
+            getApp,
+            initializeApp,
         }));
 
         const { getOrCreateFirebaseApp } = await import('../firebaseApp');

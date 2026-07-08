@@ -22,14 +22,11 @@ describe('Regression tests - Firebase emulator wiring', () => {
         const connectFirestoreEmulator = vi.fn();
         const getFirestore = vi.fn(() => ({ id: 'firestore-instance' }));
 
-        vi.doMock('firebase/compat/app', () => ({
-            default: {
-                initializeApp,
-                apps: [],
-            },
+        vi.doMock('firebase/app', () => ({
+            getApps: vi.fn(() => []),
+            getApp: vi.fn(),
+            initializeApp,
         }));
-        vi.doMock('firebase/compat/auth', () => ({}));
-        vi.doMock('firebase/compat/firestore', () => ({}));
         vi.doMock('firebase/firestore', () => ({
             getFirestore,
             connectFirestoreEmulator,
@@ -77,14 +74,11 @@ describe('Regression tests - Firebase emulator wiring', () => {
     it('given logged in user when auth state changes then switches to user path', async () => {
         vi.stubEnv('VITE_USE_EMULATOR', 'false');
 
-        vi.doMock('firebase/compat/app', () => ({
-            default: {
-                initializeApp: vi.fn(() => ({ name: '[DEFAULT]' })),
-                apps: [],
-            },
+        vi.doMock('firebase/app', () => ({
+            getApps: vi.fn(() => []),
+            getApp: vi.fn(),
+            initializeApp: vi.fn(() => ({ name: '[DEFAULT]' })),
         }));
-        vi.doMock('firebase/compat/auth', () => ({}));
-        vi.doMock('firebase/compat/firestore', () => ({}));
         vi.doMock('firebase/firestore', () => ({
             getFirestore: vi.fn(() => ({ id: 'firestore-instance' })),
             connectFirestoreEmulator: vi.fn(),
@@ -133,14 +127,11 @@ describe('Regression tests - Firebase emulator wiring', () => {
     it('given token refresh failure when auth state changes then still switches to user path', async () => {
         vi.stubEnv('VITE_USE_EMULATOR', 'false');
 
-        vi.doMock('firebase/compat/app', () => ({
-            default: {
-                initializeApp: vi.fn(() => ({ name: '[DEFAULT]' })),
-                apps: [],
-            },
+        vi.doMock('firebase/app', () => ({
+            getApps: vi.fn(() => []),
+            getApp: vi.fn(),
+            initializeApp: vi.fn(() => ({ name: '[DEFAULT]' })),
         }));
-        vi.doMock('firebase/compat/auth', () => ({}));
-        vi.doMock('firebase/compat/firestore', () => ({}));
         vi.doMock('firebase/firestore', () => ({
             getFirestore: vi.fn(() => ({ id: 'firestore-instance' })),
             connectFirestoreEmulator: vi.fn(),
@@ -191,14 +182,11 @@ describe('Regression tests - Firebase emulator wiring', () => {
 
         const signOut = vi.fn().mockResolvedValue(undefined);
 
-        vi.doMock('firebase/compat/app', () => ({
-            default: {
-                initializeApp: vi.fn(() => ({ name: '[DEFAULT]' })),
-                apps: [],
-            },
+        vi.doMock('firebase/app', () => ({
+            getApps: vi.fn(() => []),
+            getApp: vi.fn(),
+            initializeApp: vi.fn(() => ({ name: '[DEFAULT]' })),
         }));
-        vi.doMock('firebase/compat/auth', () => ({}));
-        vi.doMock('firebase/compat/firestore', () => ({}));
         vi.doMock('firebase/firestore', () => ({
             getFirestore: vi.fn(() => ({ id: 'firestore-instance' })),
             connectFirestoreEmulator: vi.fn(),
@@ -241,14 +229,11 @@ describe('Regression tests - Firebase emulator wiring', () => {
 
         const signInWithEmailAndPassword = vi.fn();
 
-        vi.doMock('firebase/compat/app', () => ({
-            default: {
-                initializeApp: vi.fn(() => ({ name: '[DEFAULT]' })),
-                apps: [],
-            },
+        vi.doMock('firebase/app', () => ({
+            getApps: vi.fn(() => []),
+            getApp: vi.fn(),
+            initializeApp: vi.fn(() => ({ name: '[DEFAULT]' })),
         }));
-        vi.doMock('firebase/compat/auth', () => ({}));
-        vi.doMock('firebase/compat/firestore', () => ({}));
         vi.doMock('firebase/firestore', () => ({
             getFirestore: vi.fn(() => ({ id: 'firestore-instance' })),
             connectFirestoreEmulator: vi.fn(),
@@ -291,14 +276,11 @@ describe('Regression tests - Firebase emulator wiring', () => {
         const signInResult = { user: { uid: 'emu-user' } };
         const signInWithEmailAndPassword = vi.fn().mockResolvedValue(signInResult);
 
-        vi.doMock('firebase/compat/app', () => ({
-            default: {
-                initializeApp: vi.fn(() => ({ name: '[DEFAULT]' })),
-                apps: [],
-            },
+        vi.doMock('firebase/app', () => ({
+            getApps: vi.fn(() => []),
+            getApp: vi.fn(),
+            initializeApp: vi.fn(() => ({ name: '[DEFAULT]' })),
         }));
-        vi.doMock('firebase/compat/auth', () => ({}));
-        vi.doMock('firebase/compat/firestore', () => ({}));
         vi.doMock('firebase/firestore', () => ({
             getFirestore: vi.fn(() => ({ id: 'firestore-instance' })),
             connectFirestoreEmulator: vi.fn(),
@@ -350,17 +332,28 @@ describe('New feature tests - Phase 1 centralized Firebase initialization', () =
             return app;
         });
 
-        vi.doMock('firebase/compat/app', () => ({
-            default: {
-                initializeApp,
-                apps,
-            },
+        vi.doMock('firebase/app', () => ({
+            getApps: vi.fn(() => apps),
+            getApp: vi.fn(() => apps[0]),
+            initializeApp,
         }));
-        vi.doMock('firebase/compat/auth', () => ({}));
-        vi.doMock('firebase/compat/firestore', () => ({}));
         vi.doMock('firebase/firestore', () => ({
             getFirestore: vi.fn(() => ({})),
             connectFirestoreEmulator: vi.fn(),
+            collection: vi.fn(),
+            doc: vi.fn(),
+            getDocs: vi.fn(),
+            where: vi.fn(),
+            query: vi.fn(),
+            addDoc: vi.fn(),
+            getDoc: vi.fn(),
+            setDoc: vi.fn(),
+            updateDoc: vi.fn(),
+            deleteDoc: vi.fn(),
+            onSnapshot: vi.fn(),
+            deleteField: vi.fn(),
+            serverTimestamp: vi.fn(),
+            orderBy: vi.fn(),
         }));
         vi.doMock('firebase/auth', () => ({
             getAuth: vi.fn(() => ({ languageCode: '' })),

@@ -1,9 +1,4 @@
-// Firebase compat API is used for firestorter compatibility
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
-import 'firebase/compat/firestore';
-import 'firebase/firestore';
-
+import type { FirebaseApp } from "firebase/app";
 import { getAuth, onAuthStateChanged, GoogleAuthProvider, Auth, signInWithEmailAndPassword } from "firebase/auth";
 import { signInWithPopup, signOut, connectAuthEmulator } from "firebase/auth";
 import { getFirestore, Firestore, connectFirestoreEmulator } from "firebase/firestore";
@@ -14,7 +9,7 @@ import { getOrCreateFirebaseApp } from './firebaseApp';
  * Firebase service for auth operations and auth-state wiring to stores.
  */
 class Firebase {
-    app: any;
+    app: FirebaseApp;
     provider: GoogleAuthProvider;
     auth: Auth;
     rootStore: RootStore;

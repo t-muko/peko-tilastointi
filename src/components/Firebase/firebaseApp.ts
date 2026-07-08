@@ -1,7 +1,7 @@
-import firebase from 'firebase/compat/app';
+import { initializeApp, getApps, getApp } from 'firebase/app';
 
 /**
- * Shared Firebase configuration for compat-based initialization.
+ * Shared Firebase configuration.
  */
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY ?? '',
@@ -17,10 +17,10 @@ const firebaseConfig = {
  * Returns the default Firebase app, creating it only once.
  */
 export function getOrCreateFirebaseApp() {
-    if (firebase.apps.length === 0) {
-        return firebase.initializeApp(firebaseConfig);
+    if (getApps().length === 0) {
+        return initializeApp(firebaseConfig);
     }
-    return firebase.apps[0];
+    return getApp();
 }
 
 export { firebaseConfig };

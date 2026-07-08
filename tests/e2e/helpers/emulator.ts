@@ -69,7 +69,7 @@ export async function seedReenit(uid: string, docs: Record<string, any>[]) {
             `${FIRESTORE_EMULATOR}/v1/projects/${PROJECT_ID}/databases/(default)/documents/reenit/${uid}/reenit`,
             {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', Authorization: 'Bearer owner' },
                 body: JSON.stringify({ fields: toFirestoreFields(doc) }),
             }
         );

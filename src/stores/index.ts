@@ -4,7 +4,6 @@ import MessageStore from './messageStore';
 import React from 'react'
 import Firebase from '@components/Firebase/Firebase';
 import ReeniFireStorter from './reeniStore';
-import TilastoFireStorter from './tilastoFirebase';
 
 class RootStore {
   sessionStore: SessionStore;
@@ -18,7 +17,6 @@ class RootStore {
     this.messageStore = new MessageStore(this);
     this.reeniFirestore = new ReeniFireStorter(this);
     this.firebase = new Firebase(this);
-    // this.tilastoFirestore = new TilastoFireStorter(this);
   }
 }
 

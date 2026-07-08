@@ -4,6 +4,10 @@ import path from 'path';
 
 export default defineConfig({
     plugins: [react()],
+    define: {
+        __BUILD_HASH__: JSON.stringify('test'),
+        __BUILD_DATE__: JSON.stringify(new Date(0).toISOString()),
+    },
     resolve: {
         alias: {
             '@root': path.resolve(__dirname, '.'),

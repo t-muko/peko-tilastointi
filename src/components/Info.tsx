@@ -86,6 +86,10 @@ class Info extends Component<InfoProps> {
 
 					<Typography variant="body1" gutterBottom>Palvelun tarjoaa Teemu Koivisto teemu@pirkanmaanpelastuskoirat.fi</Typography>
 					<Typography variant="body1" gutterBottom>Logon taiteili Kaisa Kuisma</Typography>
+
+					<Typography variant="body2" sx={{ color: 'text.secondary', mt: 2 }}>
+						Versio {__BUILD_HASH__} — {new Date(__BUILD_DATE__).toLocaleString('fi-FI')}
+					</Typography>
 				</Paper>
 			</Dialog>
 		);

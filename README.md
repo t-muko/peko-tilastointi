@@ -26,7 +26,7 @@ Tietokantana toimii Googlen Firestore, johon kukin kayttaja tallentaa merkintans
 - Vite
 - Firebase CLI (`pnpm add -g firebase-tools`)
 
-Asenna Node ja pnpm. Kloonaa repository ja aja komento `pnpm install`.
+Asenna Node ja pnpm (corepack enable pnpm). Kloonaa repository ja aja komento `pnpm install`.
 Tämä asentaa kehitysympäristön ja tarvittavat kirjastot.
 
 ## Environment Variables

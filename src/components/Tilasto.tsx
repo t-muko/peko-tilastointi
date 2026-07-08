@@ -598,15 +598,15 @@ const Tilasto = observer(class Tilasto extends Component<TilastoProps> {
 					},
 					{
 						label: 'Ajokilometrit / käyttäjä (km)',
-						oma: '–',
-						yhdistys: yhdistys_akm_kayttajat > 0 ? yhdistys_keskiakm.toFixed(1) : '–',
-						kaikki: tilastovuoden_keskiakm.toFixed(1)
+						oma: oma_akm_yhteensa.toFixed(1),
+						yhdistys: yhdistys_akm_kayttajat > 0 ? (yhdistys_keskiakm/kuluvanVuodenTilastot.length).toFixed(1) : '–',
+						kaikki: (tilastovuoden_keskiakm/tilastoVuodenKaikkiTilastot.length).toFixed(1)
 					},
 					{
 						label: 'Ajokilometrit / merkintä (km)',
 						oma: oma_akm_per_merkinta > 0 ? oma_akm_per_merkinta.toFixed(1) : '–',
-						yhdistys: yhdistys_akm_per_merkinta > 0 ? yhdistys_akm_per_merkinta.toFixed(1) : '–',
-						kaikki: tilastovuoden_akm_per_merkinta.toFixed(1)
+						yhdistys: yhdistys_akm_per_merkinta > 0 ? (yhdistys_akm_per_merkinta/yhdistys_sumX).toFixed(1) : '–',
+						kaikki: (tilastovuoden_akm_per_merkinta/kaikki_sumX).toFixed(1)
 					}
 				)
 			}
@@ -661,31 +661,7 @@ const Tilasto = observer(class Tilasto extends Component<TilastoProps> {
 
 
 
-					<TableContainer component={Paper} sx={{ my: 2 }}>
-						<Table size="small">
-							<TableHead>
-								<TableRow>
-									<TableCell>Tilastovuosi {tilastoVuosi}</TableCell>
-									<TableCell align="right">Oma</TableCell>
-									<TableCell align="right">{yhdistys}</TableCell>
-									<TableCell align="right">Kaikki</TableCell>
-								</TableRow>
-							</TableHead>
-							<TableBody>
-								{statRows.map((row) => (
-									<TableRow key={row.label}>
-										<TableCell component="th" scope="row">{row.label}</TableCell>
-										<TableCell align="right">{row.oma}</TableCell>
-										<TableCell align="right">{row.yhdistys}</TableCell>
-										<TableCell align="right">{row.kaikki}</TableCell>
-									</TableRow>
-								))}
-							</TableBody>
-						</Table>
-					</TableContainer>
-
-
-
+					
 					<FormControl>
 						<FormLabel id="yksikko-buttons">Kuvaajien yksikkö</FormLabel>
 						<RadioGroup
@@ -741,6 +717,31 @@ const Tilasto = observer(class Tilasto extends Component<TilastoProps> {
 							Ei hashtag-merkintöjä vuodelle {tilastoVuosi}
 						</Typography>
 					)}
+
+					<TableContainer component={Paper} sx={{ my: 2 }}>
+						<Table size="small">
+							<TableHead>
+								<TableRow>
+									<TableCell>Tilastovuosi {tilastoVuosi}</TableCell>
+									<TableCell align="right">Oma</TableCell>
+									<TableCell align="right">{yhdistys}</TableCell>
+									<TableCell align="right">Kaikki</TableCell>
+								</TableRow>
+							</TableHead>
+							<TableBody>
+								{statRows.map((row) => (
+									<TableRow key={row.label}>
+										<TableCell component="th" scope="row">{row.label}</TableCell>
+										<TableCell align="right">{row.oma}</TableCell>
+										<TableCell align="right">{row.yhdistys}</TableCell>
+										<TableCell align="right">{row.kaikki}</TableCell>
+									</TableRow>
+								))}
+							</TableBody>
+						</Table>
+					</TableContainer>
+
+
 
 					<Typography variant="caption" color="text.secondary" gutterBottom>
 						{yhdistykset.size} yhdistystä tilastoinnissa

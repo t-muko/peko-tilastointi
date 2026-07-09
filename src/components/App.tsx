@@ -257,10 +257,10 @@ export class App extends Component {
 					</Box>}
 
 
-					{context.rootStore.sessionStore.userOk && <Tooltip title="Info">
+					<Tooltip title="Info">
 						<IconButton color="primary" aria-label="info" style={styles.info}
 							onClick={() => { this.toggleShowInfo(); }}
-						><InfoIcon /></IconButton></Tooltip>}
+						><InfoIcon /></IconButton></Tooltip>
 
 					{context.rootStore.sessionStore.userOk && <Tooltip title="Kirjaudu ulos"><IconButton color="primary" aria-label="logout" style={styles.logout} onClick={() => {
 						context.rootStore.firebase.logout();

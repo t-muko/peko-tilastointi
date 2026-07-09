@@ -37,6 +37,11 @@ import moment from 'moment';
 import 'moment/locale/fi';
 moment.locale('fi')
 
+// moment.locale('fi') isn't reliably applied in this app's bundled runtime (verified:
+// works under plain Node, not in the Vite bundle) — same reason ReeniListItem.tsx
+// hardcodes its own Finnish weekday names instead of trusting moment's locale.
+const FI_MONTHS_SHORT = ['tammi', 'helmi', 'maalis', 'huhti', 'touko', 'kesä', 'heinä', 'elo', 'syys', 'loka', 'marras', 'joulu'];
+
 const jasenjarjestot = [
 	{ label: '' },
 	{ label: '100SAR ry' },
@@ -634,6 +639,75 @@ const Tilasto = observer(class Tilasto extends Component<TilastoProps> {
 					}
 			});
 
+			const getStackedColumnChartOptions = (title: string) => ({
+				title,
+				isStacked: true,
+				backgroundColor: chartBackground,
+				titleTextStyle: { color: chartTextColor },
+				hAxis: {
+					textStyle: { color: chartTextColor }
+				},
+				vAxis: {
+					textStyle: { color: chartTextColor },
+					gridlines: { color: isDarkMode ? '#333' : '#e0e0e0' },
+					minValue: 0
+				},
+				legend: isMobileView
+					? {
+						position: 'bottom',
+						alignment: 'center',
+						maxLines: 3,
+						textStyle: { fontSize: 12, color: chartTextColor }
+					}
+					: {
+						position: 'right',
+						alignment: 'center',
+						textStyle: { fontSize: 13, color: chartTextColor }
+					},
+				chartArea: isMobileView
+					? {
+						left: 40,
+						right: 8,
+						top: 48,
+						bottom: 90,
+						width: '100%',
+						height: '60%',
+						backgroundColor: chartAreaBackground
+					}
+					: {
+						left: 60,
+						right: 16,
+						top: 56,
+						bottom: 40,
+						width: '100%',
+						height: '74%',
+						backgroundColor: chartAreaBackground
+					}
+			});
+
+			/**
+			 * Builds a stacked column chart of the user's own monthly reeni counts by
+			 * category, for the selected year only.
+			 */
+			const createMonthlyCategoryChartData = () => {
+				const omatVuodenReenit = (context.rootStore.reeniFirestore.reenit.docs as { data: { pvm: string; kategoria: string } }[])
+					.filter((reeni) => reeni.data.pvm && reeni.data.pvm.startsWith(`${tilastoVuosi}-`));
+
+				if (omatVuodenReenit.length === 0) {
+					return null;
+				}
+
+				const monthlyRows = Array.from({ length: 12 }, (_, monthIndex) => {
+					const monthReenit = omatVuodenReenit.filter((reeni) => moment(reeni.data.pvm).month() === monthIndex);
+					const counts = REENI_CATEGORIES.map((cat) => monthReenit.filter((reeni) => (reeni.data.kategoria || '').includes(cat)).length);
+					return [FI_MONTHS_SHORT[monthIndex], ...counts];
+				});
+
+				return [['Kuukausi', ...REENI_CATEGORIES], ...monthlyRows];
+			};
+
+			const monthlyCategoryChartData = createMonthlyCategoryChartData();
+
 			/**
 			 * Builds pie chart rows from local hashtag statistics and merges overflow into "Muut".
 			 */
@@ -945,6 +1019,21 @@ const Tilasto = observer(class Tilasto extends Component<TilastoProps> {
 						width={"100%"}
 						height={"300px"}
 					/>
+
+					{monthlyCategoryChartData ? (
+						<Chart
+							key={`monthly-category-${chartThemeKey}`}
+							chartType="ColumnChart"
+							data={monthlyCategoryChartData}
+							options={getStackedColumnChartOptions(`Omat merkinnät kuukausittain kategorioittain (${tilastoVuosi})`)}
+							width={"100%"}
+							height={"300px"}
+						/>
+					) : (
+						<Typography variant="body1" gutterBottom>
+							Ei merkintöjä vuodelle {tilastoVuosi}
+						</Typography>
+					)}
 
 					{hashtagChartData ? (
 						<Chart

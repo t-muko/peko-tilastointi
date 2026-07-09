@@ -17,6 +17,7 @@ vi.mock('firestorter', () => ({
     Document: class {
         data: any = {};
         constructor(...args: any[]) { documentCtor(...args); }
+        ready() { return Promise.resolve(); }
     },
 }));
 

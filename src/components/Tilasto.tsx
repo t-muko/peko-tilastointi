@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { makeObservable, observable, action, reaction } from 'mobx';
+import { makeObservable, observable, action, reaction, runInAction } from 'mobx';
 import { FirebaseContext } from '@components/Firebase/Firebase';
 import { Collection, Document } from 'firestorter';
 import { CircularProgress } from "@mui/material";
@@ -448,10 +448,19 @@ const Tilasto = observer(class Tilasto extends Component<TilastoProps> {
 
 	yhteensa: number | null = null;
 	editYhdistys = false;
+	yhdistysSaveError = false;
+	savingYhdistys = false;
 	yksikko = "X";
 	tilastoVuosi = (new Date()).getFullYear();
 	tilastotColl: Collection<Document<any>> | null = null;
 	tilastoDokumentti: Document<any> | null = null;
+	// Document.hasData reflects Firestore existence (false forever for a brand-new
+	// user who's never set a club), so it can't gate rendering. This tracks whether
+	// tilastoDokumentti's *first snapshot* has arrived — existence-agnostic — via
+	// Document.ready(). Without it, "Oma yhdistys" can render from the still-empty
+	// placeholder data before the real snapshot lands, showing 'PUUTTUU!' even
+	// though the field is correctly set in Firestore.
+	ownTilastoReady = false;
 	uid!: string;
 	disposeAuthReaction?: () => void;
 
@@ -463,15 +472,19 @@ const Tilasto = observer(class Tilasto extends Component<TilastoProps> {
 
 		makeObservable(this, {
 			editYhdistys: observable,
+			yhdistysSaveError: observable,
+			savingYhdistys: observable,
 			yksikko: observable,
 			tilastoVuosi: observable,
 			tilastotColl: observable.ref,
 			tilastoDokumentti: observable.ref,
+			ownTilastoReady: observable,
 			vaihdaVuosi: action,
 			vaihdaYksikko: action,
 			closeYhdistysEdit: action,
 			openYhdistysEdit: action,
-			initFirestore: action
+			initFirestore: action,
+			setYhdistysSaveState: action
 		})
 	}
 
@@ -505,6 +518,12 @@ const Tilasto = observer(class Tilasto extends Component<TilastoProps> {
 		this.uid = uid;
 		this.tilastotColl = new Collection('tilastot');
 		this.tilastoDokumentti = new Document('tilastot/' + uid);
+		this.ownTilastoReady = false;
+		this.tilastoDokumentti.ready().then(() => {
+			runInAction(() => {
+				this.ownTilastoReady = true;
+			});
+		});
 	}
 
 	vaihdaYksikko = (event: any) => {
@@ -517,10 +536,37 @@ const Tilasto = observer(class Tilasto extends Component<TilastoProps> {
 
 	openYhdistysEdit = (_event?: any) => {
 		this.editYhdistys = true
+		this.yhdistysSaveError = false
 	}
 
 	closeYhdistysEdit = (_event?: any) => {
 		this.editYhdistys = false
+		this.yhdistysSaveError = false
+	}
+
+	setYhdistysSaveState = (saving: boolean, error: boolean) => {
+		this.savingYhdistys = saving
+		this.yhdistysSaveError = error
+	}
+
+	// Firestore write, not merge — must confirm success before closing the dialog.
+	// A write that silently fails (rules rejection, network hiccup) previously left
+	// the dialog closing anyway, so the user believed their selection was saved when
+	// it never reached Firestore at all.
+	saveYhdistys = async (value: string) => {
+		if (!this.tilastoDokumentti) {
+			return
+		}
+		this.setYhdistysSaveState(true, false)
+		try {
+			await this.tilastoDokumentti.set({ yhd: value }, { merge: true })
+			this.setYhdistysSaveState(false, false)
+			this.closeYhdistysEdit()
+		}
+		catch (error) {
+			console.error('Oman yhdistyksen tallennus epäonnistui', error)
+			this.setYhdistysSaveState(false, true)
+		}
 	}
 
 	render() {
@@ -531,8 +577,11 @@ const Tilasto = observer(class Tilasto extends Component<TilastoProps> {
 				<div>
 				</div>
 			);
-		} else if (!this.tilastoDokumentti || !this.tilastotColl) {
-			// Waiting for the auth token to propagate before subscribing to Firestore — see initFirestore().
+		} else if (!this.tilastoDokumentti || !this.tilastotColl || !this.ownTilastoReady) {
+			// Waiting for the auth token to propagate before subscribing to Firestore
+			// (see initFirestore()), and then for tilastoDokumentti's first snapshot to
+			// actually arrive — reading "yhd" from its still-empty placeholder data
+			// would show 'PUUTTUU!' even when it's correctly set in Firestore.
 			return (
 				<div><CircularProgress /></div>
 			);
@@ -820,17 +869,21 @@ const Tilasto = observer(class Tilasto extends Component<TilastoProps> {
 								sx={{ width: 400 }}
 								id={"edityhdistys"}
 								value={this.tilastoDokumentti.data.yhd || ''}
+								disabled={this.savingYhdistys}
 								onChange={(e, value) => {
 									if (value !== null) {
-										this.tilastoDokumentti.set({ yhd: value }, { merge: true });
-										this.closeYhdistysEdit();
+										this.saveYhdistys(value);
 									}
 								}}
 								renderInput={(params) => (
 									<TextField {...params} label={"Oma yhdistys"} variant={"filled"} />
 								)}
 							/>
-
+							{this.yhdistysSaveError && (
+								<Typography variant="body2" color="error" sx={{ mt: 1 }}>
+									Tallennus epäonnistui. Tarkista verkkoyhteys ja yritä uudelleen.
+								</Typography>
+							)}
 
 						</Paper>
 					</Dialog>

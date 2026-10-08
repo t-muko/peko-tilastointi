@@ -39,7 +39,8 @@ describe('Regression tests - Firebase emulator wiring', () => {
                 return vi.fn();
             }),
             GoogleAuthProvider: class {},
-            signInWithPopup: vi.fn(),
+            signInWithRedirect: vi.fn(),
+            getRedirectResult: vi.fn().mockResolvedValue(null),
             signOut: vi.fn(),
             signInWithEmailAndPassword: vi.fn(),
             connectAuthEmulator,
@@ -96,7 +97,8 @@ describe('Regression tests - Firebase emulator wiring', () => {
                 return vi.fn();
             }),
             GoogleAuthProvider: class {},
-            signInWithPopup: vi.fn(),
+            signInWithRedirect: vi.fn(),
+            getRedirectResult: vi.fn().mockResolvedValue(null),
             signOut: vi.fn(),
             signInWithEmailAndPassword: vi.fn(),
             connectAuthEmulator: vi.fn(),
@@ -149,7 +151,8 @@ describe('Regression tests - Firebase emulator wiring', () => {
                 return vi.fn();
             }),
             GoogleAuthProvider: class {},
-            signInWithPopup: vi.fn(),
+            signInWithRedirect: vi.fn(),
+            getRedirectResult: vi.fn().mockResolvedValue(null),
             signOut: vi.fn(),
             signInWithEmailAndPassword: vi.fn(),
             connectAuthEmulator: vi.fn(),
@@ -198,7 +201,8 @@ describe('Regression tests - Firebase emulator wiring', () => {
                 return vi.fn();
             }),
             GoogleAuthProvider: class {},
-            signInWithPopup: vi.fn(),
+            signInWithRedirect: vi.fn(),
+            getRedirectResult: vi.fn().mockResolvedValue(null),
             signOut,
             signInWithEmailAndPassword: vi.fn(),
             connectAuthEmulator: vi.fn(),
@@ -245,7 +249,8 @@ describe('Regression tests - Firebase emulator wiring', () => {
                 return vi.fn();
             }),
             GoogleAuthProvider: class {},
-            signInWithPopup: vi.fn(),
+            signInWithRedirect: vi.fn(),
+            getRedirectResult: vi.fn().mockResolvedValue(null),
             signOut: vi.fn(),
             signInWithEmailAndPassword,
             connectAuthEmulator: vi.fn(),
@@ -292,7 +297,8 @@ describe('Regression tests - Firebase emulator wiring', () => {
                 return vi.fn();
             }),
             GoogleAuthProvider: class {},
-            signInWithPopup: vi.fn(),
+            signInWithRedirect: vi.fn(),
+            getRedirectResult: vi.fn().mockResolvedValue(null),
             signOut: vi.fn(),
             signInWithEmailAndPassword,
             connectAuthEmulator: vi.fn(),
@@ -362,7 +368,8 @@ describe('New feature tests - Phase 1 centralized Firebase initialization', () =
                 return vi.fn();
             }),
             GoogleAuthProvider: class {},
-            signInWithPopup: vi.fn(),
+            signInWithRedirect: vi.fn(),
+            getRedirectResult: vi.fn().mockResolvedValue(null),
             signOut: vi.fn(),
             signInWithEmailAndPassword: vi.fn(),
             connectAuthEmulator: vi.fn(),

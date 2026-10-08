@@ -34,7 +34,7 @@ Autentikointi toteutetaan tiedostossa `src/components/Firebase/firebaseService.t
 
 Toteutuksen pääkohdat:
 - Firebase-app alustetaan keskitetysti tiedoston `src/components/Firebase/firebaseApp.ts` funktion `getOrCreateFirebaseApp()` kautta.
-- Google-kirjautuminen: `signInWithPopup(this.auth, this.provider)`.
+- Google-kirjautuminen: `signInWithRedirect(this.auth, this.provider)` (ei `signInWithPopup` — popup-flow oli epäluotettava Android Chromella/asennetussa PWA:ssa kolmannen osapuolen storage-rajoitusten vuoksi). Redirectin tulos käsitellään konstruktorissa `getRedirectResult(this.auth)`-kutsulla virheiden näkyväksi saamiseksi.
 - Uloskirjautuminen: `signOut(this.auth)`.
 - Auth-tilan kuuntelu: `onAuthStateChanged(...)`.
 - Auth-callbackissa `user.getIdToken()` on suojattu `try/catch`-lohkoon, ja Firestore-polku vaihdetaan myos virhetilanteessa.

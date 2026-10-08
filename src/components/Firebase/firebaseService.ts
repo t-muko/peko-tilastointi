@@ -1,6 +1,6 @@
 import type { FirebaseApp } from "firebase/app";
 import { getAuth, onAuthStateChanged, GoogleAuthProvider, Auth, signInWithEmailAndPassword } from "firebase/auth";
-import { signInWithPopup, signOut, connectAuthEmulator } from "firebase/auth";
+import { signInWithRedirect, getRedirectResult, signOut, connectAuthEmulator } from "firebase/auth";
 import { getFirestore, Firestore, connectFirestoreEmulator } from "firebase/firestore";
 import type { RootStore } from '@stores/index';
 import { getOrCreateFirebaseApp } from './firebaseApp';
@@ -46,17 +46,26 @@ class Firebase {
             const uid = user ? user.uid : "anonyymi";
             this.rootStore.reeniFirestore.changePath("reenit/" + uid + "/reenit");
         });
-    }
 
-    autentikoi() {
-        signInWithPopup(this.auth, this.provider)
+        // Resolve the redirect sign-in result (if the page just loaded back from one).
+        // onAuthStateChanged above already updates sessionStore on success; this only
+        // surfaces sign-in errors that a popup's .catch() used to report synchronously.
+        getRedirectResult(this.auth)
             .then((result) => {
-                this.db = getFirestore();
+                if (result) {
+                    this.db = getFirestore();
+                }
             }).catch((error) => {
                 const errorMessage = error.message;
                 const email = (error as any).email;
                 console.error("User auth error", email, errorMessage);
             });
+    }
+
+    autentikoi() {
+        signInWithRedirect(this.auth, this.provider).catch((error) => {
+            console.error("User auth error", error.message);
+        });
     }
 
     logout() {

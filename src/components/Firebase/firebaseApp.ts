@@ -5,7 +5,11 @@ import { initializeApp, getApps, getApp } from 'firebase/app';
  */
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY ?? '',
-    authDomain: "peko-tilastointi.firebaseapp.com",
+    // Must match the domain the app is actually served from (peko-tilastointi.web.app).
+    // A mismatched authDomain forces Firebase Auth's popup/redirect flows through a
+    // cross-origin iframe+storage handshake that Chrome's storage partitioning breaks —
+    // this was the real cause of login requiring repeated attempts / failing outright.
+    authDomain: "peko-tilastointi.web.app",
     projectId: "peko-tilastointi",
     storageBucket: "peko-tilastointi.appspot.com",
     messagingSenderId: "1051905962064",

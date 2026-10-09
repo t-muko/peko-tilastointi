@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
 import { FirebaseContext } from '@components/Firebase/Firebase';
 
 import { observer } from "mobx-react";
@@ -200,6 +201,8 @@ export class App extends Component {
 		const showIosInstallHint = this.showIosInstallHint
 		const shouldShowInstallBanner = this.isMobileDevice() && (showInstallPrompt || showIosInstallHint)
 		const userEmail = context.rootStore.sessionStore.authUser ? context.rootStore.sessionStore.authUser.email : "nobody"
+		const authResolved = context.rootStore.sessionStore.authResolved
+		const userOk = context.rootStore.sessionStore.userOk
 
 		return (
 			<div className="App">
@@ -216,7 +219,7 @@ export class App extends Component {
 								</div>
 							</div>
 						</div>
-						{context.rootStore.sessionStore.userOk && <div>
+						{authResolved && userOk && <div>
 							<h3>{userEmail}</h3>
 
 							{showInfo && <Info toggleShowInfoF={this.toggleShowInfo} />}
@@ -246,7 +249,9 @@ export class App extends Component {
 
 
 					</div>
-					{!context.rootStore.sessionStore.userOk && <Box style={styles.login}><Button variant="contained" onClick={() => {
+					{!authResolved && <Box style={styles.login}><CircularProgress sx={{ color: 'white' }} /></Box>}
+
+					{authResolved && !userOk && <Box style={styles.login}><Button variant="contained" onClick={() => {
 						context.rootStore.firebase.autentikoi();
 					}}
 					>Login</Button>
@@ -262,7 +267,7 @@ export class App extends Component {
 							onClick={() => { this.toggleShowInfo(); }}
 						><InfoIcon /></IconButton></Tooltip>
 
-					{context.rootStore.sessionStore.userOk && <Tooltip title="Kirjaudu ulos"><IconButton color="primary" aria-label="logout" style={styles.logout} onClick={() => {
+					{userOk && <Tooltip title="Kirjaudu ulos"><IconButton color="primary" aria-label="logout" style={styles.logout} onClick={() => {
 						context.rootStore.firebase.logout();
 					}}
 					><LogoutIcon /></IconButton></Tooltip>}

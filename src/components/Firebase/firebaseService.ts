@@ -33,6 +33,7 @@ class Firebase {
         // firestorter starts listening, preventing a transient permissions error.
         onAuthStateChanged(this.auth, async user => {
             this.rootStore.sessionStore.setAuthUser(user);
+            this.rootStore.sessionStore.setAuthResolved(true);
             this.rootStore.sessionStore.setAuthTokenReady(false);
             if (user) {
                 try {

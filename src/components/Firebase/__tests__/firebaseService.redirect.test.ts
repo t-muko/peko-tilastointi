@@ -54,7 +54,7 @@ describe('Firebase.autentikoi — redirect-based Google sign-in', () => {
         const { default: Firebase } = await import('@components/Firebase/firebaseService');
 
         const rootStoreStub = {
-            sessionStore: { setAuthUser: vi.fn(), setAuthTokenReady: vi.fn() },
+            sessionStore: { setAuthUser: vi.fn(), setAuthResolved: vi.fn(), setAuthTokenReady: vi.fn() },
             reeniFirestore: { changePath: vi.fn() },
         };
 
@@ -96,7 +96,7 @@ describe('Firebase.autentikoi — redirect-based Google sign-in', () => {
         const { default: Firebase } = await import('@components/Firebase/firebaseService');
 
         const rootStoreStub = {
-            sessionStore: { setAuthUser: vi.fn(), setAuthTokenReady: vi.fn() },
+            sessionStore: { setAuthUser: vi.fn(), setAuthResolved: vi.fn(), setAuthTokenReady: vi.fn() },
             reeniFirestore: { changePath: vi.fn() },
         };
 
